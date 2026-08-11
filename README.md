@@ -16,15 +16,15 @@ The examples below are real Draw.io exports with editable source files. Click an
 
 ### Architecture Overview
 
-[![ZMentorAI system architecture overview](assets/examples/architecture-overview.png)](assets/examples/architecture-overview.png)
+[![Learning website architecture overview](assets/examples/architecture-overview.png)](assets/examples/architecture-overview.png)
 
-[Open the editable `.drawio` source](examples/zmentorai-system-architecture-overview.drawio)
+[Open the editable `.drawio` source](examples/learning-website-architecture-overview.drawio)
 
 ### Detailed Request Flow
 
-[![ZMentorAI detailed request flow](assets/examples/detailed-request-flow.png)](assets/examples/detailed-request-flow.png)
+[![Python practice detailed request flow](assets/examples/detailed-request-flow.png)](assets/examples/detailed-request-flow.png)
 
-[Open the editable `.drawio` source](examples/zmentorai-detailed-request-flow.drawio)
+[Open the editable `.drawio` source](examples/learning-website-python-practice-detailed-request.drawio)
 
 ## What makes this skill different
 
@@ -257,8 +257,8 @@ The important flag is `-e` / `--embed-diagram`. It keeps the exported PNG, SVG, 
 From the repository root:
 
 ```bash
-python scripts/drawio_qa.py examples/zmentorai-system-architecture-overview.drawio --diagram-type overview
-python scripts/drawio_qa.py examples/zmentorai-detailed-request-flow.drawio --diagram-type detailed
+python scripts/drawio_qa.py examples/learning-website-architecture-overview.drawio --diagram-type overview
+python scripts/drawio_qa.py examples/learning-website-python-practice-detailed-request.drawio --diagram-type detailed
 python -m unittest discover -s scripts -p "test_*.py"
 ```
 

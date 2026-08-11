@@ -16,13 +16,13 @@ The examples below are real Draw.io exports with editable source files. Click an
 
 ### Architecture Overview
 
-[![Learning website architecture overview](assets/examples/architecture-overview.png)](assets/examples/architecture-overview.png)
+[![Learning website architecture overview](assets/examples/architecture-overview.png?v=20260811-vimic)](assets/examples/architecture-overview.png)
 
 [Open the editable `.drawio` source](examples/learning-website-architecture-overview.drawio)
 
 ### Detailed Request Flow
 
-[![Python practice detailed request flow](assets/examples/detailed-request-flow.png)](assets/examples/detailed-request-flow.png)
+[![Python practice detailed request flow](assets/examples/detailed-request-flow.png?v=20260811-vimic)](assets/examples/detailed-request-flow.png)
 
 [Open the editable `.drawio` source](examples/learning-website-python-practice-detailed-request.drawio)
 

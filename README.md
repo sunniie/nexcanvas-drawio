@@ -10,28 +10,71 @@ NexCanvas Draw.io is designed for architecture diagrams, detailed request flows,
 
 The repository contains one standalone Codex skill. Future NexCanvas repositories can use the same family naming, for example `nexcanvas-slides` or `nexcanvas-docs`, while remaining independently installable.
 
-## Example output
+## Choose your diagram profile
 
-The examples below are real Draw.io exports with editable source files. Click an image to view it at full resolution.
+NexCanvas uses a two-stage picker. First choose **what level of information the diagram should contain**. Then choose **how that information should look**. Diagram type and visual style are independent, so every combination is supported.
 
-### Architecture Overview
+### Step 1 — Pick the diagram type
 
-[![Learning website architecture overview](assets/examples/architecture-overview.png?v=20260811-vimic)](assets/examples/architecture-overview.png)
+<table>
+  <tr>
+    <th width="50%">Architecture Overview</th>
+    <th width="50%">Detailed Request Flow</th>
+  </tr>
+  <tr>
+    <td><a href="assets/examples/architecture-overview.png"><img src="assets/examples/architecture-overview.png" alt="Architecture Overview example"></a></td>
+    <td><a href="assets/examples/detailed-request-flow.png"><img src="assets/examples/detailed-request-flow.png" alt="Detailed Request Flow example"></a></td>
+  </tr>
+  <tr>
+    <td>System boundaries, capabilities, ownership, major dependencies, and the primary system story. Best for READMEs, slides, portfolios, onboarding, and high-level design reviews.</td>
+    <td>Concrete interactions, true event order, request and response lanes, state changes, authority, fallbacks, and failures. Best for implementation and debugging.</td>
+  </tr>
+  <tr>
+    <td><a href="examples/learning-website-architecture-overview.drawio">Open editable source</a></td>
+    <td><a href="examples/learning-website-python-practice-detailed-request.drawio">Open editable source</a></td>
+  </tr>
+</table>
 
-[Open the editable `.drawio` source](examples/learning-website-architecture-overview.drawio)
+### Step 2 — Pick the visual style
 
-### Detailed Request Flow
+<table>
+  <tr>
+    <th width="50%">Color Visual</th>
+    <th width="50%">Compact Monochrome</th>
+  </tr>
+  <tr>
+    <td><a href="assets/examples/architecture-overview.png"><img src="assets/examples/architecture-overview.png" alt="Color Visual style example"></a></td>
+    <td><a href="assets/examples/compact-monochrome-system-flow.png"><img src="assets/examples/compact-monochrome-system-flow.png" alt="Compact Monochrome style example"></a></td>
+  </tr>
+  <tr>
+    <td>Restrained semantic color, verified technology logos, pale boundaries, task glyphs, and presentation-friendly technical cards.</td>
+    <td>Black-and-white hierarchy, compact nested cards, local lifecycle badges, concise relationship labels, and print-friendly geometry.</td>
+  </tr>
+  <tr>
+    <td><a href="examples/learning-website-architecture-overview.drawio">Open editable style sample</a></td>
+    <td><a href="examples/zmentorai-compact-monochrome-system-architecture.drawio">Open editable style sample</a></td>
+  </tr>
+</table>
 
-[![Python practice detailed request flow](assets/examples/detailed-request-flow.png?v=20260811-vimic)](assets/examples/detailed-request-flow.png)
+The Compact Monochrome preview is the source-backed Z-MentorAI system architecture developed during real skill iteration. Its layout is a visual reference, not a fixed component template.
 
-[Open the editable `.drawio` source](examples/learning-website-python-practice-detailed-request.drawio)
+### Supported combinations
+
+| Diagram profile | Best fit |
+|---|---|
+| **Architecture Overview × Color Visual** | Slide-ready system maps with strong visual scanning and technology identity |
+| **Architecture Overview × Compact Monochrome** | Dense architecture documentation, academic reports, and print-friendly system maps |
+| **Detailed Request Flow × Color Visual** | Implementation walkthroughs where event classes, responses, data, and errors benefit from semantic color |
+| **Detailed Request Flow × Compact Monochrome** | Precise engineering traces with compact stages, labeled relationships, and minimal visual noise |
+
+You can also provide your own reference instead of choosing a bundled style. NexCanvas transfers its visual grammar without copying its topology or component count.
 
 ## What makes this skill different
 
-- **Collaborative intake:** it asks for diagram mode, language, audience, scope, and source material when those choices are not already known.
+- **Two-stage visual intake:** it asks for diagram type first, visual style second, then language and audience—while reusing anything already known.
 - **Content-driven composition:** sections, tracks, component counts, and step numbers are derived from the actual system rather than copied from a fixed template.
 - **Two workflow modes:** Architecture Overview for system boundaries and responsibilities; Detailed Request Flow for concrete interactions, state changes, responses, and failures.
-- **Independent visual styles:** use the bright technical-card grammar, a compact monochrome relationship-led grammar, or a user-supplied reference without coupling style to information depth.
+- **Independent visual styles:** use Color Visual, Compact Monochrome, or a user-supplied reference with either workflow mode.
 - **Source-aware modeling:** the skill inspects repositories, documentation, screenshots, and attachments before proposing the diagram structure.
 - **Useful iconography:** verified product logos are used for real services, while Draw.io-native semantic glyphs illustrate internal tasks such as validation, OCR, scoring, queues, and persistence.
 - **Strict connector rules:** arrows attach to component perimeters, use short orthogonal routes, enter on the intended side, and avoid text or unrelated cards.
@@ -182,7 +225,8 @@ Use this mode for a README, slide, portfolio, system map, ownership boundary, or
 Use $drawio to create an English Architecture Overview for new backend engineers.
 Inspect this repository as the source of truth. Show system boundaries, primary
 responsibilities, real dependencies, and verified service logos. Keep the main
-workflow dominant and deliver both .drawio and .drawio.png.
+workflow dominant, use the Color Visual style, and deliver both .drawio and
+.drawio.png.
 ```
 
 ### Detailed Request Flow
@@ -193,15 +237,27 @@ Use this mode for an endpoint, user interaction, state transition, debugging pat
 Use $drawio to create a Detailed Request Flow for the profile scan interaction.
 Separate independent HTTP requests into tracks, show request/response/error lanes,
 include status codes and fallbacks verified from source, and deliver editable source
-plus an embedded PNG preview.
+plus an embedded PNG preview. Use the Color Visual style.
+```
+
+### Compact Monochrome system architecture
+
+Use this style for dense engineering documentation, academic material, or print-friendly system maps.
+
+```text
+Use $drawio to create an Architecture Overview × Compact Monochrome diagram for
+this repository. Inspect the implementation first, use compact numbered stages only
+for real internal lifecycles, label only relationships that add information, keep
+connector shafts away from every label, and deliver .drawio plus .drawio.png.
 ```
 
 ### Let the skill help define scope
 
 ```text
 Use $drawio for this system. I am not sure whether I need an Architecture Overview
-or Detailed Request Flow. Show the bundled examples, ask for the missing language,
-audience, and scope, then propose a concise diagram brief before drawing.
+or Detailed Request Flow, or whether Color Visual or Compact Monochrome fits better.
+Show the type previews first and the style previews second. Ask for the missing
+language, audience, and scope, then propose a concise diagram brief before drawing.
 ```
 
 ### Other diagram types
@@ -215,12 +271,13 @@ editable PNG with the native .drawio source.
 ## Recommended workflow
 
 1. **Discover:** inspect the supplied code, documents, screenshots, and known conversation context.
-2. **Classify:** choose Architecture Overview, Detailed Request Flow, or another appropriate diagram type.
-3. **Confirm:** propose real boundaries, tracks, events, dependencies, icon plan, language, and output format.
-4. **Model:** build native Draw.io XML from the confirmed content model.
-5. **Validate:** run XML and visual heuristics with the matching QA profile.
-6. **Export:** create `.drawio.png`, SVG, or PDF with embedded diagram XML when needed.
-7. **Inspect:** review at 100% for hierarchy and at 200% for connector attachment and arrow direction.
+2. **Choose type:** select Architecture Overview, Detailed Request Flow, both, or another appropriate diagram type.
+3. **Choose style:** select Color Visual, Compact Monochrome, or a supplied reference independently of type.
+4. **Confirm:** record the `type × style` profile and propose real boundaries, tracks, events, dependencies, icon plan, language, and output format.
+5. **Model:** build native Draw.io XML from the confirmed content model.
+6. **Validate:** run XML and visual heuristics with the matching QA profile.
+7. **Export:** create `.drawio.png`, SVG, or PDF with embedded diagram XML when needed.
+8. **Inspect:** review at 100% for hierarchy and at 200% for connector attachment, label clearance, and arrow direction.
 
 The number of zones, tracks, cards, and sequence badges must follow the subject. The examples are visual references, not fixed templates.
 
@@ -261,6 +318,7 @@ From the repository root:
 ```bash
 python scripts/drawio_qa.py examples/learning-website-architecture-overview.drawio --diagram-type overview
 python scripts/drawio_qa.py examples/learning-website-python-practice-detailed-request.drawio --diagram-type detailed
+python scripts/drawio_qa.py examples/zmentorai-compact-monochrome-system-architecture.drawio --diagram-type overview
 python -m unittest discover -s scripts -p "test_*.py"
 ```
 
@@ -275,13 +333,14 @@ Before publishing a diagram, resolve every `ERROR` and all actionable `WARNING` 
 ├── references/
 │   ├── compact-monochrome-style.md  # Compact labeled system-flow grammar
 │   ├── intake-and-discovery.md      # Collaborative intake workflow
+│   ├── style-catalog.md              # Type-independent visual style picker
 │   ├── visual-contract.md           # Shared visual and geometry rules
 │   └── workflow-types.md            # Overview vs. Detailed Request guidance
 ├── scripts/
 │   ├── drawio_qa.py                 # Diagram QA CLI
 │   └── test_drawio_qa.py            # Standard-library unit tests
-├── assets/examples/                 # README-ready PNG examples
-└── examples/                        # Editable Draw.io example sources
+├── assets/examples/                 # Type and style preview images for intake and README
+└── examples/                        # Editable Draw.io type and style sources
 ```
 
 ## Troubleshooting
@@ -321,8 +380,8 @@ Issues and pull requests are welcome. When changing the QA script or visual rule
 
 1. Add or update a standard-library unit test.
 2. Run the complete test suite.
-3. Validate both editable examples with their matching diagram profiles.
-4. Export and visually inspect both previews before submitting the change.
+3. Validate every editable catalog example with its matching diagram profile.
+4. Export and visually inspect every affected preview before submitting the change.
 
 ## License
 

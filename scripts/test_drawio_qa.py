@@ -121,6 +121,41 @@ class DrawioQaProfileTests(unittest.TestCase):
         )
         self.assertTrue(any("uses opaque background" in warning for warning in warnings))
 
+    def test_important_relationship_label_requires_perpendicular_clearance(self):
+        _, warnings = self.run_fixture(
+            """
+            <mxCell id="source" value="Feature" vertex="1" parent="1" style="rounded=1"><mxGeometry x="50" y="100" width="100" height="50" as="geometry"/></mxCell>
+            <mxCell id="target" value="History" vertex="1" parent="1" style="shape=cylinder"><mxGeometry x="500" y="100" width="100" height="70" as="geometry"/></mxCell>
+            <mxCell id="flow" value="Save result" tags="qa-labeled-flow" edge="1" parent="1" source="source" target="target" style="edgeStyle=orthogonalEdgeStyle;labelBackgroundColor=none"><mxGeometry x="0" y="-6" relative="1" as="geometry"/></mxCell>
+            """,
+            "overview",
+        )
+        self.assertTrue(any("perpendicular offset" in warning for warning in warnings))
+
+    def test_important_relationship_label_accepts_clear_offset(self):
+        _, warnings = self.run_fixture(
+            """
+            <mxCell id="source" value="Feature" vertex="1" parent="1" style="rounded=1"><mxGeometry x="50" y="100" width="100" height="50" as="geometry"/></mxCell>
+            <mxCell id="target" value="History" vertex="1" parent="1" style="shape=cylinder"><mxGeometry x="500" y="100" width="100" height="70" as="geometry"/></mxCell>
+            <mxCell id="flow" value="Save result" tags="qa-labeled-flow" edge="1" parent="1" source="source" target="target" style="edgeStyle=orthogonalEdgeStyle;labelBackgroundColor=none"><mxGeometry x="0" y="-16" relative="1" as="geometry"/></mxCell>
+            """,
+            "overview",
+        )
+        self.assertFalse(any("perpendicular offset" in warning for warning in warnings))
+
+    def test_labeled_flow_accepts_associated_standalone_text_vertex(self):
+        errors, warnings = self.run_fixture(
+            """
+            <mxCell id="source" value="Frontend" vertex="1" parent="1" style="rounded=1"><mxGeometry x="50" y="100" width="100" height="50" as="geometry"/></mxCell>
+            <mxCell id="target" value="API" vertex="1" parent="1" style="rounded=1"><mxGeometry x="500" y="100" width="100" height="50" as="geometry"/></mxCell>
+            <mxCell id="flow-label" value="Upload CV" tags="qa-flow-label:flow" vertex="1" parent="1" style="text;html=1;strokeColor=none;fillColor=none"><mxGeometry x="220" y="70" width="100" height="16" as="geometry"/></mxCell>
+            <mxCell id="flow" value="" tags="qa-labeled-flow" edge="1" parent="1" source="source" target="target" style="edgeStyle=orthogonalEdgeStyle;labelBackgroundColor=none"><mxGeometry relative="1" as="geometry"/></mxCell>
+            """,
+            "overview",
+        )
+        self.assertFalse(any("Labeled flow" in error for error in errors))
+        self.assertFalse(any("perpendicular offset" in warning for warning in warnings))
+
     def test_text_led_stage_is_valid(self):
         errors, warnings = self.run_fixture(
             """

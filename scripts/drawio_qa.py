@@ -92,6 +92,7 @@ class Edge:
     points: list[tuple[float, float]]
     style: str
     label: str
+    label_offset_y: float
     tags: frozenset[str]
 
 
@@ -208,6 +209,7 @@ def load_cells(path: Path) -> tuple[list[Box], list[Edge], float, float]:
                     points=points,
                     style=style,
                     label=clean_label(cell.attrib.get("value")),
+                    label_offset_y=parse_float(geom.attrib.get("y")) if geom is not None else 0.0,
                     tags=parse_tags(cell.attrib.get("tags")),
                 )
             )
@@ -588,6 +590,14 @@ def run_checks(path: Path, padding: float, diagram_type: str = "general") -> tup
                 "redistribute functional groups or reduce the boundary."
             )
 
+    standalone_flow_labels: dict[str, list[Box]] = {}
+    for box in boxes:
+        for tag in box.tags:
+            if tag.startswith("qa-flow-label:"):
+                edge_id = tag.split(":", 1)[1].strip()
+                if edge_id:
+                    standalone_flow_labels.setdefault(edge_id, []).append(box)
+
     for edge in edges:
         polyline = edge_polyline(edge, boxes_by_id)
         if len(polyline) < 2:
@@ -605,9 +615,10 @@ def run_checks(path: Path, padding: float, diagram_type: str = "general") -> tup
 
         style = parse_style(edge.style)
         style_ci = {key.lower(): value.lower() for key, value in style.items()}
-        if "qa-labeled-flow" in edge.tags and not edge.label:
+        associated_labels = [box for box in standalone_flow_labels.get(edge.cell_id, []) if box.label]
+        if "qa-labeled-flow" in edge.tags and not edge.label and not associated_labels:
             errors.append(
-                f"Labeled flow: edge {edge.cell_id} is tagged qa-labeled-flow but has no action, payload, branch, or result label."
+                f"Labeled flow: edge {edge.cell_id} is tagged qa-labeled-flow but has no inline label or non-empty qa-flow-label:{edge.cell_id} text vertex."
             )
         if edge.label and diagram_type in {"overview", "detailed"}:
             background = style_ci.get("labelbackgroundcolor", "none")
@@ -616,6 +627,10 @@ def run_checks(path: Path, padding: float, diagram_type: str = "general") -> tup
                     f"Edge {edge.cell_id} label '{edge.label}' uses opaque background {background}; keep relationship labels transparent and fix the route instead of masking it."
                 )
             if "qa-labeled-flow" in edge.tags:
+                if abs(edge.label_offset_y) < 14.0:
+                    warnings.append(
+                        f"Edge {edge.cell_id} label '{edge.label}' has only {abs(edge.label_offset_y):.1f}px perpendicular offset; use at least 14px or a transparent standalone text vertex so the connector cannot touch the glyph box."
+                    )
                 orthogonal_lengths = [
                     abs(b[0] - a[0]) + abs(b[1] - a[1])
                     for a, b in pairwise(polyline)

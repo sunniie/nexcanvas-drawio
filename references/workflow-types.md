@@ -2,7 +2,7 @@
 
 Use this reference only for workflow, architecture, integration, and system-flow requests.
 
-Choose the workflow mode for information depth, then choose a visual style independently. Either mode may use the default colorful technical grammar, the compact monochrome system-flow grammar, or a user-supplied reference.
+Choose the workflow mode for information depth, then choose a visual style independently through [style-catalog.md](style-catalog.md). Either mode may use Color Visual, Compact Monochrome, or a user-supplied reference.
 
 ## Architecture Overview
 

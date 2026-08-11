@@ -2,28 +2,41 @@
 
 Use this reference before drawing a new workflow, architecture, integration, or system-flow artifact. The goal is to prevent unsupported autonomous layout decisions without making a well-specified user repeat themselves.
 
-## Gate 1: choose the artifact and language
+## Gate 1: choose the diagram profile and language
 
 First inventory what the conversation already answers. Ask only for unresolved high-impact choices.
 
-If the workflow mode is not explicit, display both bundled examples before asking:
+### Gate 1A: choose information depth
+
+If the workflow mode is not explicit, display both bundled type examples before asking:
 
 - `../assets/examples/architecture-overview.png` — a high-level capability and dependency map for README, portfolio, presentation, and system communication.
 - `../assets/examples/detailed-request-flow.png` — an implementation-level interaction view with independent tracks, event order, authority, data access, fallbacks, and response behavior.
 
 Use a local image-view tool so the user sees the previews in the conversation. If that tool is unavailable, provide clickable file paths plus the descriptions above.
 
+Ask for **Architecture Overview**, **Detailed Request Flow**, or both. Resolve this before treating any preview as a layout reference.
+
+### Gate 1B: choose visual style
+
+If visual style is not explicit and the user supplied no reference, display both bundled style examples:
+
+- `../assets/examples/architecture-overview.png` — **Color Visual**, using restrained semantic color, verified logos, pale zones, and technical cards.
+- `../assets/examples/compact-monochrome-system-flow.png` — **Compact Monochrome**, using black-and-white hierarchy, compact nested cards, numbered local stages, labeled relationships, and print-friendly geometry.
+
+Ask for **Color Visual**, **Compact Monochrome**, or a supplied reference. Either style works with either workflow mode. The preview demonstrates visual grammar only; never inherit its subject, boundary count, component count, or topology.
+
 Ask one compact round, normally no more than three questions:
 
-1. **Artifact and visual style:** Architecture Overview, Detailed Request Flow, or both; default colorful technical cards, Compact Monochrome System Flow, or a supplied reference?
-2. **Language:** match the user's language, English, Vietnamese, or bilingual?
-3. **Audience and use:** README/presentation/portfolio, product discussion, or engineering/debugging? Ask for the repository, document, or source description only if none is available.
+1. **Diagram type:** Architecture Overview, Detailed Request Flow, or both?
+2. **Visual style:** Color Visual, Compact Monochrome, or a supplied reference?
+3. **Language and use:** language plus README/presentation/portfolio, product discussion, or engineering/debugging? Ask for the repository, document, or source description only if none is available.
 
 Ask output format and canvas together with question 3 when relevant. Default repository documentation output to editable `.drawio` plus `.drawio.png` with embedded XML.
 
 Do not ask for a visual style when the user has already supplied a reference or named a preference. A reference determines visual grammar, not content topology: extract its palette, shape hierarchy, nesting, icon treatment, routing, and label placement without copying its number of groups or components.
 
-Do not ask Gate 1 again when the user has already named the mode, language, audience, source, and output. If only one field is missing, ask only that field.
+Do not ask Gate 1 again when the user has already named the type, style, language, audience, source, and output. If only one field is missing, ask only that field. Record the resolved pair as `Diagram profile: <type> × <style>`.
 
 ## Investigate before proposing boxes
 

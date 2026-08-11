@@ -38,4 +38,6 @@ Workflow mode and visual style are orthogonal. When the user selects or supplies
 - Reject false request continuity, hidden client authority, unqualified non-atomic writes, incorrect execution direction, and errors attached to the wrong stage even when the geometry is clean.
 - Reject a response, acknowledgement, callback, retry, or feedback label placed on the opposite-direction request edge. Use separate one-way connectors and verify the visible arrowhead direction in the exported image.
 - Reject a required relationship connector without its action/payload label, a label placed over a component or group title, a connector running through its own label, or an opaque label background used to conceal a poor route.
+- Reject an important edge label left on Draw.io's automatic centerline, a label whose glyph box touches the connector, or paired request/response annotations stacked between their two lanes.
+- Reject an ordered agent lifecycle rendered as oversized sparse text cards when compact locally numbered stages would communicate order more clearly. Do not number peer capabilities, passive stores, or dependencies merely for decoration.
 - Reject remote-only icon URLs, invisible image cells, or a substitute brand that visually claims to be the named product.

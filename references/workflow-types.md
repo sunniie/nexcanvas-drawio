@@ -2,6 +2,8 @@
 
 Use this reference only for workflow, architecture, integration, and system-flow requests.
 
+Choose the workflow mode for information depth, then choose a visual style independently. Either mode may use the default colorful technical grammar, the compact monochrome system-flow grammar, or a user-supplied reference.
+
 ## Architecture Overview
 
 Choose this mode for README files, slides, portfolios, executive communication, system maps, ownership boundaries, and high-level dependency views.

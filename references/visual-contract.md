@@ -2,6 +2,8 @@
 
 Use this contract for Architecture Overview and Detailed Request workflow diagrams unless the user supplies a newer reference.
 
+Workflow mode and visual style are orthogonal. When the user selects or supplies a compact monochrome, relationship-led reference, also read [compact-monochrome-style.md](compact-monochrome-style.md). Its palette, shape, and connector-label grammar override the colorful defaults below; the shared rejection criteria still apply.
+
 ## Architecture Overview grammar
 
 - Use a white or very light gray canvas with a concise title/subtitle and a compact line legend when multiple flow types exist.
@@ -35,4 +37,5 @@ Use this contract for Architecture Overview and Detailed Request workflow diagra
 - Reject low-contrast gray text, washed-out strokes, clipped labels, or excessive empty fields inside populated layers.
 - Reject false request continuity, hidden client authority, unqualified non-atomic writes, incorrect execution direction, and errors attached to the wrong stage even when the geometry is clean.
 - Reject a response, acknowledgement, callback, retry, or feedback label placed on the opposite-direction request edge. Use separate one-way connectors and verify the visible arrowhead direction in the exported image.
+- Reject a required relationship connector without its action/payload label, a label placed over a component or group title, a connector running through its own label, or an opaque label background used to conceal a poor route.
 - Reject remote-only icon URLs, invisible image cells, or a substitute brand that visually claims to be the named product.

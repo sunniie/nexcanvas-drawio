@@ -2,8 +2,9 @@
 """Lightweight QA checks for draw.io mxGraphModel files.
 
 Uses only Python standard library. It catches common presentation-quality issues:
-invalid XML, overlapping boxes, connector segments crossing unrelated boxes, and
-likely service labels rendered as plain boxes instead of icon/library shapes.
+invalid XML, overlapping boxes, connector segments crossing unrelated boxes,
+misconfigured relationship labels, and likely service labels rendered as plain
+boxes instead of icon/library shapes.
 """
 
 from __future__ import annotations
@@ -603,6 +604,36 @@ def run_checks(path: Path, padding: float, diagram_type: str = "general") -> tup
                 errors.append(f"Initial direction: edge {edge.cell_id} {issue}.")
 
         style = parse_style(edge.style)
+        style_ci = {key.lower(): value.lower() for key, value in style.items()}
+        if "qa-labeled-flow" in edge.tags and not edge.label:
+            errors.append(
+                f"Labeled flow: edge {edge.cell_id} is tagged qa-labeled-flow but has no action, payload, branch, or result label."
+            )
+        if edge.label and diagram_type in {"overview", "detailed"}:
+            background = style_ci.get("labelbackgroundcolor", "none")
+            if background not in {"", "none", "default"}:
+                warnings.append(
+                    f"Edge {edge.cell_id} label '{edge.label}' uses opaque background {background}; keep relationship labels transparent and fix the route instead of masking it."
+                )
+            if "qa-labeled-flow" in edge.tags:
+                orthogonal_lengths = [
+                    abs(b[0] - a[0]) + abs(b[1] - a[1])
+                    for a, b in pairwise(polyline)
+                    if math.isclose(a[0], b[0], abs_tol=1e-9)
+                    or math.isclose(a[1], b[1], abs_tol=1e-9)
+                ]
+                if not orthogonal_lengths and "orthogonal" in style_ci.get("edgestyle", ""):
+                    for a, b in pairwise(polyline):
+                        orthogonal_lengths.extend(
+                            length
+                            for length in (abs(b[0] - a[0]), abs(b[1] - a[1]))
+                            if length > 0
+                        )
+                estimated_label_span = min(240.0, max(48.0, len(edge.label) * 5.5 + 16.0))
+                if orthogonal_lengths and max(orthogonal_lengths) < estimated_label_span:
+                    warnings.append(
+                        f"Edge {edge.cell_id} label '{edge.label}' has no clear segment long enough for its estimated {estimated_label_span:.0f}px span; widen the gutter, wrap the label, or use a standalone text vertex."
+                    )
         if "exitX" in style or "exitY" in style:
             if style.get("exitPerimeter") != "1" or parse_float(style.get("sourcePerimeterSpacing"), float("nan")) != 0.0:
                 warnings.append(

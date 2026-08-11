@@ -88,6 +88,39 @@ class DrawioQaProfileTests(unittest.TestCase):
         self.assertIn("Response edge response", joined)
         self.assertIn("nearest response lane", joined)
 
+    def test_required_relationship_label_is_enforced(self):
+        errors, _ = self.run_fixture(
+            """
+            <mxCell id="source" value="Feature" vertex="1" parent="1" style="rounded=1"><mxGeometry x="50" y="100" width="100" height="50" as="geometry"/></mxCell>
+            <mxCell id="target" value="History" vertex="1" parent="1" style="shape=cylinder"><mxGeometry x="400" y="100" width="100" height="70" as="geometry"/></mxCell>
+            <mxCell id="flow" tags="qa-labeled-flow" edge="1" parent="1" source="source" target="target" style="edgeStyle=orthogonalEdgeStyle"><mxGeometry relative="1" as="geometry"/></mxCell>
+            """,
+            "overview",
+        )
+        self.assertTrue(any("tagged qa-labeled-flow but has no" in error for error in errors))
+
+    def test_relationship_label_needs_a_clear_segment(self):
+        _, warnings = self.run_fixture(
+            """
+            <mxCell id="source" value="Feature" vertex="1" parent="1" style="rounded=1"><mxGeometry x="50" y="100" width="100" height="50" as="geometry"/></mxCell>
+            <mxCell id="target" value="History" vertex="1" parent="1" style="shape=cylinder"><mxGeometry x="175" y="100" width="100" height="50" as="geometry"/></mxCell>
+            <mxCell id="flow" value="Export structured analysis history" tags="qa-labeled-flow" edge="1" parent="1" source="source" target="target" style="edgeStyle=orthogonalEdgeStyle;labelBackgroundColor=none"><mxGeometry relative="1" as="geometry"/></mxCell>
+            """,
+            "overview",
+        )
+        self.assertTrue(any("no clear segment long enough" in warning for warning in warnings))
+
+    def test_opaque_relationship_label_background_is_flagged(self):
+        _, warnings = self.run_fixture(
+            """
+            <mxCell id="source" value="Feature" vertex="1" parent="1" style="rounded=1"><mxGeometry x="50" y="100" width="100" height="50" as="geometry"/></mxCell>
+            <mxCell id="target" value="History" vertex="1" parent="1" style="shape=cylinder"><mxGeometry x="400" y="100" width="100" height="70" as="geometry"/></mxCell>
+            <mxCell id="flow" value="Save result" tags="qa-labeled-flow" edge="1" parent="1" source="source" target="target" style="edgeStyle=orthogonalEdgeStyle;labelBackgroundColor=#FFFFFF"><mxGeometry relative="1" as="geometry"/></mxCell>
+            """,
+            "detailed",
+        )
+        self.assertTrue(any("uses opaque background" in warning for warning in warnings))
+
     def test_text_led_stage_is_valid(self):
         errors, warnings = self.run_fixture(
             """

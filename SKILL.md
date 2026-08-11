@@ -29,6 +29,16 @@ For workflow, architecture, integration, and system-flow requests, choose one mo
 
 Read [references/workflow-types.md](references/workflow-types.md) and [references/visual-contract.md](references/visual-contract.md) whenever either workflow mode applies. Do not force this taxonomy onto ERDs, class diagrams, sequence diagrams, wireframes, or unrelated diagram types.
 
+## Select visual style after workflow mode
+
+Treat information depth and visual style as separate decisions. Architecture Overview and Detailed Request Flow can both use the default colorful technical-card grammar, a user-supplied reference, or the **Compact Monochrome System Flow** grammar in [references/compact-monochrome-style.md](references/compact-monochrome-style.md).
+
+- When the user supplies a reference, analyze it before drawing and follow its visual grammar unless doing so would make the content inaccurate or unreadable.
+- When the user asks for a monochrome, academic, compact, relationship-led, or labeled system flow, read and apply the compact monochrome reference.
+- Ask about style only when no reference or preference is available and the choice would materially change the artifact. Combine it with the artifact question so intake remains short.
+- Never infer that a raster reference came from Draw.io. State uncertainty about its authoring tool, then reproduce compatible geometry natively in Draw.io.
+- Do not copy the reference's component count, group count, or topology. Transfer visual rules, then derive the actual structure from the source system.
+
 ## Local enterprise QA customization
 
 For workflow, architecture, integration, cloud, data-flow, ERD, sequence, or slide-ready diagrams, apply this local QA layer in addition to the upstream draw.io instructions.
@@ -89,6 +99,7 @@ At 100% zoom, the grouping, main route, real technology logos, and hierarchy mus
 14. When repository ownership is shown, put confirmed repo names inside the corresponding component card. Mark unconfirmed ownership as `TBD`; do not infer a repository from the service name alone.
 15. Use a consistent corner-radius hierarchy. Make large system boundaries square (`rounded=0`) or nearly square; use only a light radius (`arcSize=3-5`) on their title strips; use a modest radius (`arcSize=6-10`) on component cards. Never combine a mildly rounded header with a heavily rounded content boundary.
 16. Render connector annotations as transparent standalone text by default (`fillColor=none;strokeColor=none`). Do not use opaque white label boxes to mask lines. Offset each annotation 6-12 px beside the related segment so the connector does not run through the text.
+16a. Use concise verb-led edge labels when the relationship itself matters, such as `Read history`, `Save score`, `Export JSON`, or `Return result`. Put responsibilities inside cards and transported actions or payloads beside connectors. Reserve a label gutter before routing; never place an annotation on a component, group title, arrowhead, or another line.
 17. Keep orthogonal connectors straight (`rounded=0`) unless the user explicitly requests curved lines. Preserve at least 25-30 px of straight terminal line between the final 90-degree elbow and each arrowhead; add an explicit final waypoint when automatic routing would place the arrowhead directly on the bend.
 18. When a request and response travel both ways, prefer two parallel one-way connectors with separate lanes and labels. Avoid a single bent connector with both `startArrow` and `endArrow` when it makes direction or arrowhead geometry ambiguous.
 19. Size cards according to content density rather than making every card equal. Keep short queue/config/note nodes compact, allocate more width or height to dense processing nodes, reduce metadata text before body text, and remove oversized icon or whitespace areas.
@@ -124,7 +135,7 @@ python <DRAWIO_SKILL_DIR>/scripts/drawio_qa.py OVERVIEW.drawio --diagram-type ov
 python <DRAWIO_SKILL_DIR>/scripts/drawio_qa.py DETAILED.drawio --diagram-type detailed
 ```
 
-For workflow profiles, add Draw.io cell tags where they help automated QA: `qa-primary`, `qa-support`, `qa-stage`, `qa-title-rail`, `qa-metadata`, `qa-legend`, `qa-primary-flow`, `qa-response-flow`, `qa-data-flow`, `qa-error-flow`, and `qa-sequence:<track>`. Tag an intentional layered pictogram group with `qa-illustrative` only so overlap QA can distinguish its internal composition. Tag a page-sized export-forcing rectangle as `qa-background` so composition and crossing checks ignore it. Use `qa-layout-exempt` or `qa-density-exempt` only for a reviewed composition where the heuristic is demonstrably misleading, never to hide real whitespace. Tags are QA metadata and must not appear in rendered labels.
+For workflow profiles, add Draw.io cell tags where they help automated QA: `qa-primary`, `qa-support`, `qa-stage`, `qa-title-rail`, `qa-metadata`, `qa-legend`, `qa-primary-flow`, `qa-response-flow`, `qa-data-flow`, `qa-error-flow`, `qa-labeled-flow`, and `qa-sequence:<track>`. Use `qa-labeled-flow` when the connector's action or payload is necessary to understand the system; the edge must then carry a concise label. Tag an intentional layered pictogram group with `qa-illustrative` only so overlap QA can distinguish its internal composition. Tag a page-sized export-forcing rectangle as `qa-background` so composition and crossing checks ignore it. Use `qa-layout-exempt` or `qa-density-exempt` only for a reviewed composition where the heuristic is demonstrably misleading, never to hide real whitespace. Tags are QA metadata and must not appear in rendered labels.
 
 Fix every `ERROR` before delivery. Review every `WARNING`, especially warnings about known service/component labels rendered without an icon style.
 

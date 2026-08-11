@@ -15,11 +15,13 @@ Use a local image-view tool so the user sees the previews in the conversation. I
 
 Ask one compact round, normally no more than three questions:
 
-1. **Artifact:** Architecture Overview, Detailed Request Flow, or both?
+1. **Artifact and visual style:** Architecture Overview, Detailed Request Flow, or both; default colorful technical cards, Compact Monochrome System Flow, or a supplied reference?
 2. **Language:** match the user's language, English, Vietnamese, or bilingual?
 3. **Audience and use:** README/presentation/portfolio, product discussion, or engineering/debugging? Ask for the repository, document, or source description only if none is available.
 
 Ask output format and canvas together with question 3 when relevant. Default repository documentation output to editable `.drawio` plus `.drawio.png` with embedded XML.
+
+Do not ask for a visual style when the user has already supplied a reference or named a preference. A reference determines visual grammar, not content topology: extract its palette, shape hierarchy, nesting, icon treatment, routing, and label placement without copying its number of groups or components.
 
 Do not ask Gate 1 again when the user has already named the mode, language, audience, source, and output. If only one field is missing, ask only that field.
 
@@ -33,6 +35,7 @@ Inspect available code, documents, diagrams, screenshots, and prior decisions. S
 - state authorities, stores, queues, and external dependencies;
 - responses, downstream consumers, fallbacks, and errors;
 - official technologies versus internal/custom concepts.
+- relationships that require an action, payload, branch, or result label.
 
 Do not start with a target number of parts, columns, lanes, or badges.
 
@@ -49,6 +52,7 @@ Proposed structure:
 Primary flow:
 - capability relationship for Overview, or true events per track for Detailed
 - response/callback owner and direction for every externally visible interaction
+- connector labels for relationships whose meaning is not obvious from the endpoint names
 Dependencies and authority:
 Icon plan:
 - official logos: ...
@@ -91,6 +95,8 @@ source -> target | meaning | line class | authority/result owner
 ```
 
 Trace the rendered arrowhead, not only the XML source/target fields. Reject any connector whose label describes the opposite direction. Represent request/response, delivery/acknowledgement, attempt/retry, and review/feedback as separate one-way edges when both directions matter.
+
+For every labeled edge, verify that the annotation states an action, payload, or result; sits beside a clear segment; stays at least 6 px from shapes; and does not use an opaque box to mask a crossing. A label is not a substitute for an unclear source or target.
 
 Only call an artifact review-ready after the mode-specific QA profile is clean, the semantic edge ledger is consistent, and the PNG has been inspected at 100% plus connector terminals at 200%. A preliminary content draft must be labeled as such.
 

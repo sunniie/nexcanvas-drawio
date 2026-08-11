@@ -31,9 +31,11 @@ The examples below are real Draw.io exports with editable source files. Click an
 - **Collaborative intake:** it asks for diagram mode, language, audience, scope, and source material when those choices are not already known.
 - **Content-driven composition:** sections, tracks, component counts, and step numbers are derived from the actual system rather than copied from a fixed template.
 - **Two workflow modes:** Architecture Overview for system boundaries and responsibilities; Detailed Request Flow for concrete interactions, state changes, responses, and failures.
+- **Independent visual styles:** use the bright technical-card grammar, a compact monochrome relationship-led grammar, or a user-supplied reference without coupling style to information depth.
 - **Source-aware modeling:** the skill inspects repositories, documentation, screenshots, and attachments before proposing the diagram structure.
 - **Useful iconography:** verified product logos are used for real services, while Draw.io-native semantic glyphs illustrate internal tasks such as validation, OCR, scoring, queues, and persistence.
 - **Strict connector rules:** arrows attach to component perimeters, use short orthogonal routes, enter on the intended side, and avoid text or unrelated cards.
+- **Meaningful edge labels:** action, payload, branch, and result annotations stay close to clear connector segments without masking crossings.
 - **Visual QA:** bundled checks cover overlaps, crossings, attachment geometry, density, support-zone dominance, response detours, badge consistency, and workflow-specific composition.
 - **Editable deliverables:** repository documentation can keep both the native `.drawio` file and an embedded-XML `.drawio.png` preview.
 
@@ -271,6 +273,7 @@ Before publishing a diagram, resolve every `ERROR` and all actionable `WARNING` 
 ├── SKILL.md                         # Codex skill entry point
 ├── agents/openai.yaml              # UI metadata
 ├── references/
+│   ├── compact-monochrome-style.md  # Compact labeled system-flow grammar
 │   ├── intake-and-discovery.md      # Collaborative intake workflow
 │   ├── visual-contract.md           # Shared visual and geometry rules
 │   └── workflow-types.md            # Overview vs. Detailed Request guidance
@@ -306,6 +309,7 @@ Before publishing a diagram, resolve every `ERROR` and all actionable `WARNING` 
 ### The diagram is technically valid but still looks weak
 
 - Compare the export beside the selected visual reference at the same scale.
+- For a compact monochrome system flow, use nesting and shape semantics for hierarchy, label meaningful relationships, and reserve routing gutters before placing cards.
 - Reduce low-information cards and redistribute real components across unused space.
 - Add semantic task glyphs where text-only stages become visually repetitive.
 - Shorten response routes and ensure the primary path remains visually dominant.

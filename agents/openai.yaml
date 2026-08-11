@@ -1,4 +1,4 @@
 interface:
   display_name: "NexCanvas Draw.io"
   short_description: "Create source-accurate, polished technical diagrams"
-  default_prompt: "Use $drawio to design a polished technical diagram after confirming the audience, language, scope, and diagram mode."
+  default_prompt: "Use $drawio to design a polished technical diagram after confirming the audience, language, scope, diagram mode, and visual style."

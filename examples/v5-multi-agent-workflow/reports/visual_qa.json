@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "2.0",
+  "reviewedAt": "2026-09-06T14:48:45Z",
+  "artifact": "artifacts/diagram.drawio.png",
+  "sha256": "84c7d232d41611712600135771536e6c6d7f77c12b2b79e2b87129c4611a4c77",
+  "dimensions": {
+    "width": 2002,
+    "height": 1202
+  },
+  "automatedChecks": [
+    {
+      "name": "non-empty-artifact",
+      "ok": true,
+      "detail": "324203 bytes"
+    },
+    {
+      "name": "minimum-readable-size",
+      "ok": true,
+      "detail": "2002x1202"
+    },
+    {
+      "name": "aspect-ratio",
+      "ok": true,
+      "detail": "actual=1.666, expected=1.667"
+    }
+  ],
+  "manualReview": {
+    "status": "approved",
+    "reviewer": "Codex visual inspection",
+    "notes": "Inspected the final migrated render at original resolution. Semantic view intent metadata changed only; phase hierarchy, icon/text clearance, connector terminals, labels, badges, and reference composition remain visually clean. viewIntent=workflow.",
+    "requiredCriteria": [
+      "No clipped, overlapping, or unreadable text",
+      "Connector direction and labels match the intended meaning",
+      "Parallel connectors use independent lanes or one documented semantic bus",
+      "Callouts mask only their own long rail and labels remain clear of badges",
+      "Hierarchy, grouping, and visual balance are clear at target size",
+      "Technology marks are exact, visible, and not misleading",
+      "The composition looks intentional rather than template-filled"
+    ]
+  },
+  "ok": true
+}

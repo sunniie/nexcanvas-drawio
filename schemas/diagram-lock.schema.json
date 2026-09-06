@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nexcanvas.dev/schemas/diagram-lock.schema.json",
+  "title": "NexCanvas Diagram Lock",
+  "type": "object",
+  "required": ["schemaVersion", "status", "route", "theme", "canvas", "sourceHash", "decisions"],
+  "properties": {
+    "schemaVersion": {"const": "2.0"},
+    "status": {"enum": ["draft", "confirmed"]},
+    "viewIntent": {"enum": ["architecture", "workflow", "sequence", "data-flow", "lifecycle"]},
+    "route": {"type": "object", "required": ["family", "profile"]},
+    "theme": {"type": "string", "minLength": 1},
+    "visualArchetype": {"type": "string", "minLength": 1},
+    "canvas": {"type": "object", "required": ["width", "height"]},
+    "sourceHash": {"type": "string"},
+    "decisions": {
+      "type": "object",
+      "required": ["audience", "deliveryTarget", "notation", "layout", "assetPolicy"],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

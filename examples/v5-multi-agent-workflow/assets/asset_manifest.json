@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "2.0",
+  "catalogVersion": "2026.09",
+  "updatedAt": "2026-09-06T14:48:45Z",
+  "assets": [
+    {
+      "key": "generic-user",
+      "requested": "User",
+      "state": "RenderVerified",
+      "provider": "nexcanvas-generic",
+      "sourceUrl": "",
+      "localPath": "assets/user.svg",
+      "sha256": "0fa1beb56131e6fb8d72328a1d567b1c3afbae7772fb6db4ed8d26c7b09f5821",
+      "license": "MIT; generic NexCanvas vector asset, not a vendor logo.",
+      "message": "",
+      "updatedAt": "2026-09-06T14:48:45Z"
+    },
+    {
+      "key": "generic-guardrail",
+      "requested": "Input policy and guardrails",
+      "state": "RenderVerified",
+      "provider": "nexcanvas-generic",
+      "sourceUrl": "",
+      "localPath": "assets/guardrail.svg",
+      "sha256": "cd8456dbbb83fc74ed9309c4ee127b05c972f23f4ed3c94eefaed76e2078d3f3",
+      "license": "MIT; generic NexCanvas vector asset, not a vendor logo.",
+      "message": "",
+      "updatedAt": "2026-09-06T14:48:45Z"
+    },
+    {
+      "key": "generic-orchestrator",
+      "requested": "Orchestrator",
+      "state": "RenderVerified",
+      "provider": "nexcanvas-generic",
+      "sourceUrl": "",
+      "localPath": "assets/orchestrator.svg",
+      "sha256": "cec670fe126ad092f32d59f10e7b98f6beb5879cb151c49adad1836077da2345",
+      "license": "MIT; generic NexCanvas vector asset, not a vendor logo.",
+      "message": "",
+      "updatedAt": "2026-09-06T14:48:45Z"
+    },
+    {
+      "key": "generic-agent",
+      "requested": "AI agent",
+      "state": "RenderVerified",
+      "provider": "nexcanvas-generic",
+      "sourceUrl": "",
+      "localPath": "assets/agent.svg",
+      "sha256": "ea804860fa0fb56b99a542dd4ffbedb33deba5475877027180ada007f42b5751",
+      "license": "MIT; generic NexCanvas vector asset, not a vendor logo.",
+      "message": "",
+      "updatedAt": "2026-09-06T14:48:45Z"
+    },
+    {
+      "key": "generic-review",
+      "requested": "Review and validation",
+      "state": "RenderVerified",
+      "provider": "nexcanvas-generic",
+      "sourceUrl": "",
+      "localPath": "assets/review.svg",
+      "sha256": "24827df8eade74920974eff3f2bf8eb69f89afbbf7e0485bd808f992fcfae807",
+      "license": "MIT; generic NexCanvas vector asset, not a vendor logo.",
+      "message": "",
+      "updatedAt": "2026-09-06T14:48:45Z"
+    },
+    {
+      "key": "generic-state",
+      "requested": "State or memory",
+      "state": "RenderVerified",
+      "provider": "nexcanvas-generic",
+      "sourceUrl": "",
+      "localPath": "assets/state.svg",
+      "sha256": "8eb4c54da3c237e2f0d7e9f345fab3f6431f890382fa11e71d4d483249fea770",
+      "license": "MIT; generic NexCanvas vector asset, not a vendor logo.",
+      "message": "",
+      "updatedAt": "2026-09-06T14:48:45Z"
+    },
+    {
+      "key": "generic-gateway",
+      "requested": "Tool gateway",
+      "state": "RenderVerified",
+      "provider": "nexcanvas-generic",
+      "sourceUrl": "",
+      "localPath": "assets/gateway.svg",
+      "sha256": "f85618b1d4244fcc14759d9f85cf1cc9c07b0dc322b3faf11600b4c0b2221378",
+      "license": "MIT; generic NexCanvas vector asset, not a vendor logo.",
+      "message": "",
+      "updatedAt": "2026-09-06T14:48:45Z"
+    },
+    {
+      "key": "generic-external-tools",
+      "requested": "External tools",
+      "state": "RenderVerified",
+      "provider": "nexcanvas-generic",
+      "sourceUrl": "",
+      "localPath": "assets/external-tools.svg",
+      "sha256": "fb8a2eb094936301749564a60dafecfc71ac34019c37fc819e9348815f9fd1eb",
+      "license": "MIT; generic NexCanvas vector asset, not a vendor logo.",
+      "message": "",
+      "updatedAt": "2026-09-06T14:48:45Z"
+    },
+    {
+      "key": "generic-response",
+      "requested": "Evidence-bearing response",
+      "state": "RenderVerified",
+      "provider": "nexcanvas-generic",
+      "sourceUrl": "",
+      "localPath": "assets/response.svg",
+      "sha256": "9aa584e18bc066c62c1e159182f28e595c7f6848cf46560a83e7636aab2241ec",
+      "license": "MIT; generic NexCanvas vector asset, not a vendor logo.",
+      "message": "",
+      "updatedAt": "2026-09-06T14:48:45Z"
+    },
+    {
+      "key": "generic-retry",
+      "requested": "Bounded retry",
+      "state": "RenderVerified",
+      "provider": "nexcanvas-generic",
+      "sourceUrl": "",
+      "localPath": "assets/retry.svg",
+      "sha256": "8cd03f75abf1e80bf936c3badc2e54a92c0e774752aa89b65fedc8df677f22cf",
+      "license": "MIT; generic NexCanvas vector asset, not a vendor logo.",
+      "message": "",
+      "updatedAt": "2026-09-06T14:48:45Z"
+    },
+    {
+      "key": "generic-telemetry",
+      "requested": "Telemetry and audit",
+      "state": "RenderVerified",
+      "provider": "nexcanvas-generic",
+      "sourceUrl": "",
+      "localPath": "assets/telemetry.svg",
+      "sha256": "138ca2780c4649bf0d274724d6875328809b4ab2d1edf4b15351e274e1b6b7c0",
+      "license": "MIT; generic NexCanvas vector asset, not a vendor logo.",
+      "message": "",
+      "updatedAt": "2026-09-06T14:48:45Z"
+    }
+  ]
+}

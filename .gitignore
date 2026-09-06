@@ -5,3 +5,5 @@ Thumbs.db
 *.tmp
 *.bak
 ~$*
+/nexcanvas-output/*
+!/nexcanvas-output/README.md

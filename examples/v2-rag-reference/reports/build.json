@@ -1,0 +1,19 @@
+{
+  "output": "artifacts/diagram.drawio",
+  "route": "ai-ml/rag",
+  "nodes": 13,
+  "edges": 8,
+  "embeddedAssets": [
+    "azure-ai-search",
+    "azure-app-service",
+    "azure-content-safety",
+    "azure-functions",
+    "azure-key-vault",
+    "azure-managed-identity",
+    "azure-monitor",
+    "azure-storage-accounts",
+    "microsoft-defender-for-cloud",
+    "microsoft-foundry-models"
+  ],
+  "modelHash": "99f4315d627701ecbdfe187483eb82fd0876d5aa06483a72b2e03e4686fa94a6"
+}

@@ -1,0 +1,255 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="NexCanvas Draw.io" agent="nexcanvas-drawio/2.0" version="2.0" type="device" modified="2026-09-06T14:48:18Z" nc-model-hash="2637584e01e1a7b284f600c9da0c9d40d5c4f0e4614161db9fb80149a4250012" nc-route="ai-ml/agent-orchestration" nc-view-intent="workflow" nc-visual-archetype="provider-neutral-reference" nc-layout-strategy="hybrid-grid" pageWidth="2000" pageHeight="1200">
+  <diagram id="nexcanvas-page-1" name="Workflow">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1200" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="nc-background" value="" style="fillColor=#FFFFFF;strokeColor=none;pointerEvents=0;locked=1;" vertex="1" parent="1" nc-kind="background" tags="qa-background">
+          <mxGeometry x="0.0" y="0.0" width="2000.0" height="1200.0" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary-coordinate" value="Coordinate" style="swimlane;html=1;whiteSpace=wrap;horizontal=1;startSize=38;rounded=0;fillColor=#F8F9FA;swimlaneFillColor=#F8F9FA;strokeColor=none;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontStyle=1;fontSize=14;align=center;verticalAlign=middle;shadow=0;collapsible=0;" vertex="1" parent="1" nc-kind="boundary" nc-boundary-kind="phase" nc-model-id="coordinate" qa-container="true" tags="qa-container">
+          <mxGeometry x="349.4" y="54.0" width="344.2" height="938.0" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary-platform" value="" style="swimlane;html=1;whiteSpace=wrap;horizontal=0;startSize=132;rounded=0;fillColor=#F1F3F5;swimlaneFillColor=#F1F3F5;strokeColor=none;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontStyle=1;fontSize=14;align=center;verticalAlign=middle;shadow=0;collapsible=0;" vertex="1" parent="1" nc-kind="boundary" nc-boundary-kind="foundation" nc-model-id="platform" qa-container="true" tags="qa-container">
+          <mxGeometry x="58.0" y="1016.0" width="1884.0" height="142.0" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary-label-platform" value="&lt;b&gt;Tools, state, and observability&lt;/b&gt;" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=14;" vertex="1" parent="boundary-platform" nc-kind="boundary-label" tags="qa-illustrative">
+          <mxGeometry x="0.0" y="0.0" width="132.0" height="142.0" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary-request" value="Request" style="swimlane;html=1;whiteSpace=wrap;horizontal=1;startSize=38;rounded=0;fillColor=#F1F3F5;swimlaneFillColor=#F1F3F5;strokeColor=none;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontStyle=1;fontSize=14;align=center;verticalAlign=middle;shadow=0;collapsible=0;" vertex="1" parent="1" nc-kind="boundary" nc-boundary-kind="phase" nc-model-id="request" qa-container="true" tags="qa-container">
+          <mxGeometry x="58.0" y="54.0" width="269.4" height="938.0" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary-respond" value="Respond" style="swimlane;html=1;whiteSpace=wrap;horizontal=1;startSize=38;rounded=0;fillColor=#F1F3F5;swimlaneFillColor=#F1F3F5;strokeColor=none;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontStyle=1;fontSize=14;align=center;verticalAlign=middle;shadow=0;collapsible=0;" vertex="1" parent="1" nc-kind="boundary" nc-boundary-kind="phase" nc-model-id="respond" qa-container="true" tags="qa-container">
+          <mxGeometry x="1672.6" y="54.0" width="269.4" height="938.0" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary-specialists" value="Specialist work" style="swimlane;html=1;whiteSpace=wrap;horizontal=1;startSize=38;rounded=0;fillColor=#F1F3F5;swimlaneFillColor=#F1F3F5;strokeColor=none;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontStyle=1;fontSize=14;align=center;verticalAlign=middle;shadow=0;collapsible=0;" vertex="1" parent="1" nc-kind="boundary" nc-boundary-kind="phase" nc-model-id="specialists" qa-container="true" tags="qa-container">
+          <mxGeometry x="715.6" y="54.0" width="538.8" height="938.0" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary-validate" value="Validate and govern" style="swimlane;html=1;whiteSpace=wrap;horizontal=1;startSize=38;rounded=0;fillColor=#F8F9FA;swimlaneFillColor=#F8F9FA;strokeColor=none;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontStyle=1;fontSize=14;align=center;verticalAlign=middle;shadow=0;collapsible=0;" vertex="1" parent="1" nc-kind="boundary" nc-boundary-kind="phase" nc-model-id="validate" qa-container="true" tags="qa-container">
+          <mxGeometry x="1276.4" y="54.0" width="374.2" height="938.0" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary-parallel-work" value="Parallel execution" style="swimlane;html=1;whiteSpace=wrap;horizontal=1;startSize=30;rounded=0;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#6B7280;strokeWidth=1;dashed=1;dashPattern=5 4;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontStyle=1;fontSize=12;collapsible=0;" vertex="1" parent="boundary-specialists" nc-kind="boundary" nc-boundary-kind="group" nc-model-id="parallel-work" qa-container="true" tags="qa-container">
+          <mxGeometry x="26.9" y="84.4" width="484.9" height="356.4" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary-synthesis" value="Synthesis" style="swimlane;html=1;whiteSpace=wrap;horizontal=1;startSize=30;rounded=0;fillColor=#FFFFFF;swimlaneFillColor=#FFFFFF;strokeColor=#6B7280;strokeWidth=1;dashed=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontStyle=1;fontSize=12;collapsible=0;" vertex="1" parent="boundary-specialists" nc-kind="boundary" nc-boundary-kind="group" nc-model-id="synthesis" qa-container="true" tags="qa-container">
+          <mxGeometry x="97.0" y="544.0" width="344.8" height="262.6" as="geometry" />
+        </mxCell>
+        <mxCell id="node-user" value="&lt;b&gt;User&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Goal and constraints&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2219%22%20r%3D%2210%22%20fill%3D%22%2350E6FF%22%2F%3E%3Cpath%20d%3D%22M12%2054c2-13%209-20%2020-20s18%207%2020%2020%22%20fill%3D%22%230078D4%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2219%22%20r%3D%227%22%20fill%3D%22%23fff%22%20opacity%3D%22.35%22%2F%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-request" nc-kind="node" nc-node-kind="actor" nc-model-id="user" nc-boundary="request" nc-asset-ref="generic-user" qa-primary="true" tags="qa-primary">
+          <mxGeometry x="29.7" y="197.6" width="210.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-guardrails" value="&lt;b&gt;Input policy and guardrails&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Normalize, classify risk, and constrain scope&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cpath%20d%3D%22M32%205%2054%2013v16c0%2014-9%2024-22%2030C19%2053%2010%2043%2010%2029V13z%22%20fill%3D%22%230078D4%22%2F%3E%3Cpath%20d%3D%22m21%2031%207%207%2015-17%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-request" nc-kind="node" nc-node-kind="service" nc-model-id="guardrails" nc-boundary="request" nc-asset-ref="generic-guardrail" qa-primary="true" tags="qa-primary">
+          <mxGeometry x="47.7" y="588.2" width="174.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-orchestrator" value="&lt;b&gt;Orchestrator and planner&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Plan, delegate, merge, and own final authority&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cpath%20d%3D%22M32%207%2052%2019v26L32%2057%2012%2045V19z%22%20fill%3D%22%230078D4%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%228%22%20fill%3D%22%23fff%22%2F%3E%3Cg%20fill%3D%22%2350E6FF%22%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2213%22%20r%3D%225%22%2F%3E%3Ccircle%20cx%3D%2251%22%20cy%3D%2232%22%20r%3D%225%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2251%22%20r%3D%225%22%2F%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2232%22%20r%3D%225%22%2F%3E%3C%2Fg%3E%3Cg%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%3E%3Cpath%20d%3D%22M32%2018v6M46%2032h-6M32%2040v6M18%2032h6%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-coordinate" nc-kind="node" nc-node-kind="orchestrator" nc-model-id="orchestrator" nc-boundary="coordinate" nc-asset-ref="generic-orchestrator" qa-primary="true" tags="qa-primary">
+          <mxGeometry x="82.1" y="206.3" width="180.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-task-state" value="&lt;b&gt;Session and task state&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Plan, status, evidence pointers, and retry count&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cellipse%20cx%3D%2232%22%20cy%3D%2213%22%20rx%3D%2222%22%20ry%3D%228%22%20fill%3D%22%2350E6FF%22%2F%3E%3Cpath%20d%3D%22M10%2013v36c0%205%2010%209%2022%209s22-4%2022-9V13%22%20fill%3D%22%230078D4%22%2F%3E%3Cpath%20d%3D%22M10%2026c0%205%2010%209%2022%209s22-4%2022-9M10%2039c0%205%2010%209%2022%209s22-4%2022-9%22%20fill%3D%22none%22%20stroke%3D%22%23BDEFFF%22%20stroke-width%3D%223%22%2F%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-coordinate" nc-kind="node" nc-node-kind="datastore" nc-model-id="task-state" nc-boundary="coordinate" nc-asset-ref="generic-state" qa-primary="true" tags="qa-primary">
+          <mxGeometry x="84.1" y="605.6" width="176.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-research-agent" value="&lt;b&gt;Research agent&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Gather sources and citations&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cg%20fill%3D%22%236B4EFF%22%3E%3Cpath%20d%3D%22m20%208%2010%206v12l-10%206-10-6V14z%22%2F%3E%3Cpath%20d%3D%22m44%208%2010%206v12l-10%206-10-6V14z%22%2F%3E%3Cpath%20d%3D%22m32%2032%2010%206v12l-10%206-10-6V38z%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22%23B4A0FF%22%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%2244%22%20cy%3D%2220%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2244%22%20r%3D%224%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M25%2027%2029%2036M39%2027l-4%209%22%20stroke%3D%22%236B4EFF%22%20stroke-width%3D%224%22%2F%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-parallel-work" nc-kind="node" nc-node-kind="agent" nc-model-id="research-agent" nc-boundary="parallel-work" nc-asset-ref="generic-agent" qa-primary="true" tags="qa-primary">
+          <mxGeometry x="20.2" y="122.2" width="210.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-data-agent" value="&lt;b&gt;Data and tool agent&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Query systems and prepare structured results&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cg%20fill%3D%22%236B4EFF%22%3E%3Cpath%20d%3D%22m20%208%2010%206v12l-10%206-10-6V14z%22%2F%3E%3Cpath%20d%3D%22m44%208%2010%206v12l-10%206-10-6V14z%22%2F%3E%3Cpath%20d%3D%22m32%2032%2010%206v12l-10%206-10-6V38z%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22%23B4A0FF%22%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%2244%22%20cy%3D%2220%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2244%22%20r%3D%224%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M25%2027%2029%2036M39%2027l-4%209%22%20stroke%3D%22%236B4EFF%22%20stroke-width%3D%224%22%2F%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-parallel-work" nc-kind="node" nc-node-kind="agent" nc-model-id="data-agent" nc-boundary="parallel-work" nc-asset-ref="generic-agent" qa-primary="true" tags="qa-primary">
+          <mxGeometry x="270.7" y="122.2" width="170.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-analysis-agent" value="&lt;b&gt;Analysis agent&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Synthesize evidence and resolve conflicts&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cg%20fill%3D%22%236B4EFF%22%3E%3Cpath%20d%3D%22m20%208%2010%206v12l-10%206-10-6V14z%22%2F%3E%3Cpath%20d%3D%22m44%208%2010%206v12l-10%206-10-6V14z%22%2F%3E%3Cpath%20d%3D%22m32%2032%2010%206v12l-10%206-10-6V38z%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22%23B4A0FF%22%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%2244%22%20cy%3D%2220%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2244%22%20r%3D%224%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M25%2027%2029%2036M39%2027l-4%209%22%20stroke%3D%22%236B4EFF%22%20stroke-width%3D%224%22%2F%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-synthesis" nc-kind="node" nc-node-kind="agent" nc-model-id="analysis-agent" nc-boundary="synthesis" nc-asset-ref="generic-agent" qa-primary="true" tags="qa-primary">
+          <mxGeometry x="83.4" y="75.3" width="174.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-review-agent" value="&lt;b&gt;Review and validation agent&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Check evidence, policy, and completion criteria&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ccircle%20cx%3D%2228%22%20cy%3D%2228%22%20r%3D%2219%22%20fill%3D%22%23107C10%22%2F%3E%3Cpath%20d%3D%22m18%2028%207%207%2014-16%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22m42%2042%2013%2013%22%20stroke%3D%22%23505050%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-validate" nc-kind="node" nc-node-kind="agent" nc-model-id="review-agent" nc-boundary="validate" nc-asset-ref="generic-review" qa-primary="true" tags="qa-primary">
+          <mxGeometry x="95.1" y="154.2" width="184.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-retry-policy" value="&lt;b&gt;Bounded retry&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Revise plan or tasks; maximum two attempts&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cpath%20d%3D%22M51%2027A21%2021%200%201%200%2048%2044%22%20fill%3D%22none%22%20stroke%3D%22%23CA5010%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22m42%2013%2011%2014-18%202%22%20fill%3D%22%23FFB900%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2239%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%22%20font-size%3D%2218%22%20font-weight%3D%22700%22%20fill%3D%22%23CA5010%22%3E2%C3%97%3C%2Ftext%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-validate" nc-kind="node" nc-node-kind="gateway" nc-model-id="retry-policy" nc-boundary="validate" nc-asset-ref="generic-retry" qa-primary="true" tags="qa-primary">
+          <mxGeometry x="100.1" y="432.0" width="174.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-human-approval" value="&lt;b&gt;Human approval&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Required for high risk or exhausted retries&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2219%22%20r%3D%2210%22%20fill%3D%22%2350E6FF%22%2F%3E%3Cpath%20d%3D%22M12%2054c2-13%209-20%2020-20s18%207%2020%2020%22%20fill%3D%22%230078D4%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2219%22%20r%3D%227%22%20fill%3D%22%23fff%22%20opacity%3D%22.35%22%2F%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-validate" nc-kind="node" nc-node-kind="actor" nc-model-id="human-approval" nc-boundary="validate" nc-asset-ref="generic-user" qa-primary="true" tags="qa-primary">
+          <mxGeometry x="100.1" y="709.8" width="174.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-final-response" value="&lt;b&gt;Evidence-bearing response&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Answer, citations, decisions, and limitations&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cpath%20d%3D%22M13%205h29l10%2010v44H13z%22%20fill%3D%22%230078D4%22%2F%3E%3Cpath%20d%3D%22M42%205v12h10%22%20fill%3D%22%2350E6FF%22%2F%3E%3Cpath%20d%3D%22M22%2028h20M22%2038h20%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22m23%2049%205%205%2011-12%22%20fill%3D%22none%22%20stroke%3D%22%23B4EC51%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-respond" nc-kind="node" nc-node-kind="document" nc-model-id="final-response" nc-boundary="respond" nc-asset-ref="generic-response" qa-primary="true" tags="qa-primary">
+          <mxGeometry x="45.7" y="241.0" width="178.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-user-result" value="&lt;b&gt;User receives result&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Approved response or escalation outcome&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2219%22%20r%3D%2210%22%20fill%3D%22%2350E6FF%22%2F%3E%3Cpath%20d%3D%22M12%2054c2-13%209-20%2020-20s18%207%2020%2020%22%20fill%3D%22%230078D4%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2219%22%20r%3D%227%22%20fill%3D%22%23fff%22%20opacity%3D%22.35%22%2F%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-respond" nc-kind="node" nc-node-kind="actor" nc-model-id="user-result" nc-boundary="respond" nc-asset-ref="generic-user" qa-primary="true" tags="qa-primary">
+          <mxGeometry x="29.7" y="631.6" width="210.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-durable-memory" value="&lt;b&gt;Durable memory&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Approved results only&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cellipse%20cx%3D%2232%22%20cy%3D%2213%22%20rx%3D%2222%22%20ry%3D%228%22%20fill%3D%22%2350E6FF%22%2F%3E%3Cpath%20d%3D%22M10%2013v36c0%205%2010%209%2022%209s22-4%2022-9V13%22%20fill%3D%22%230078D4%22%2F%3E%3Cpath%20d%3D%22M10%2026c0%205%2010%209%2022%209s22-4%2022-9M10%2039c0%205%2010%209%2022%209s22-4%2022-9%22%20fill%3D%22none%22%20stroke%3D%22%23BDEFFF%22%20stroke-width%3D%223%22%2F%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-platform" nc-kind="node" nc-node-kind="datastore" nc-model-id="durable-memory" nc-boundary="platform" nc-asset-ref="generic-state" qa-primary="false" tags="qa-support">
+          <mxGeometry x="259.0" y="16.0" width="210.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-tool-gateway" value="&lt;b&gt;Tool gateway&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Per-agent permissions; normalized observations&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cpath%20d%3D%22M19%209H8v46h11M45%209h11v46H45%22%20fill%3D%22none%22%20stroke%3D%22%23CA5010%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%2F%3E%3Cg%20fill%3D%22%23FFB900%22%3E%3Ccircle%20cx%3D%2228%22%20cy%3D%2221%22%20r%3D%225%22%2F%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%2232%22%20r%3D%225%22%2F%3E%3Ccircle%20cx%3D%2228%22%20cy%3D%2243%22%20r%3D%225%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22m31%2024%206%205M37%2035l-6%205%22%20stroke%3D%22%23CA5010%22%20stroke-width%3D%223%22%2F%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-platform" nc-kind="node" nc-node-kind="gateway" nc-model-id="tool-gateway" nc-boundary="platform" nc-asset-ref="generic-gateway" qa-primary="false" tags="qa-support">
+          <mxGeometry x="687.0" y="16.0" width="210.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-external-tools" value="&lt;b&gt;External tools&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Web, APIs, and databases&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2225%22%20fill%3D%22%230078D4%22%2F%3E%3Cpath%20d%3D%22M8%2032h48M32%207c8%207%2012%2016%2012%2025S40%2050%2032%2057M32%207c-8%207-12%2016-12%2025s4%2018%2012%2025%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M12%2019h40M12%2045h40%22%20stroke%3D%22%2350E6FF%22%20stroke-width%3D%223%22%2F%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-platform" nc-kind="node" nc-node-kind="api" nc-model-id="external-tools" nc-boundary="platform" nc-asset-ref="generic-external-tools" qa-primary="false" tags="qa-support">
+          <mxGeometry x="1115.0" y="16.0" width="210.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-telemetry" value="&lt;b&gt;Telemetry and audit&lt;/b&gt;&lt;br&gt;&lt;font color='#4A4A4A' size='2'&gt;Agent, tool, review, and outcome events&lt;/font&gt;" style="shape=label;image=data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cpath%20d%3D%22M10%2052V36M22%2052V24M34%2052V31M46%2052V14M58%2052V20%22%20stroke%3D%22%230078D4%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22m8%2025%2014-10%2012%207L49%208%22%20fill%3D%22none%22%20stroke%3D%22%2350E6FF%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E%0A;imageWidth=56;imageHeight=56;imageAlign=center;imageVerticalAlign=top;spacingTop=62;html=1;whiteSpace=wrap;align=center;verticalAlign=bottom;rounded=0;fillColor=none;strokeColor=none;strokeWidth=0;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;spacingBottom=2;shadow=0;" vertex="1" parent="boundary-platform" nc-kind="node" nc-node-kind="service" nc-model-id="telemetry" nc-boundary="platform" nc-asset-ref="generic-telemetry" qa-primary="false" tags="qa-support">
+          <mxGeometry x="1543.0" y="16.0" width="210.0" height="112.0" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-e1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#202124;strokeWidth=1.6;dashed=0;endArrow=block;endFill=1;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" source="node-user" target="node-guardrails" nc-kind="edge" nc-edge-kind="sync" nc-model-id="e1" nc-label-mode="none" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="192.7" y="502.9" />
+              <mxPoint x="192.7" y="502.9" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-e2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#202124;strokeWidth=1.6;dashed=0;endArrow=block;endFill=1;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.42;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" source="node-guardrails" target="node-orchestrator" nc-kind="edge" nc-edge-kind="sync" nc-model-id="e2" nc-label-mode="none" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="355.6" y="698.2" />
+              <mxPoint x="355.6" y="307.4" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-e3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.6;dashed=0;endArrow=block;endFill=1;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.25;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.75;entryY=0.0;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" source="node-orchestrator" target="node-task-state" nc-kind="edge" nc-edge-kind="write" nc-model-id="e3" nc-label-mode="none" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow   qa-data-flow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="476.5" y="516.0" />
+              <mxPoint x="565.5" y="516.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-e4a" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#202124;strokeWidth=1.6;dashed=0;endArrow=block;endFill=1;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.5028571429;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" source="node-orchestrator" target="node-research-agent" nc-kind="edge" nc-edge-kind="sync" nc-model-id="e4a" nc-label-mode="none" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="687.2" y="316.6" />
+              <mxPoint x="687.2" y="316.6" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-e4b" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#202124;strokeWidth=1.6;dashed=0;endArrow=block;endFill=1;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.25;exitY=0.0;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" source="node-orchestrator" target="node-data-agent" nc-kind="edge" nc-edge-kind="sync" nc-model-id="e4b" nc-label-mode="none" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow      qa-explicit-route">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="476.5" y="190.0" />
+              <mxPoint x="1098.3" y="190.0" />
+              <mxPoint x="1098.3" y="236.6" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-e5a" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.6;dashed=0;endArrow=block;endFill=1;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.35;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.35;entryY=0.0;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" source="node-research-agent" target="node-analysis-agent" nc-kind="edge" nc-edge-kind="data" nc-model-id="e5a" nc-label-mode="none" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow   qa-data-flow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="836.3" y="530.0" />
+              <mxPoint x="956.9" y="530.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-e5b" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.6;dashed=0;endArrow=block;endFill=1;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.65;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.65;entryY=0.0;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" source="node-data-agent" target="node-analysis-agent" nc-kind="edge" nc-edge-kind="data" nc-model-id="e5b" nc-label-mode="none" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow   qa-data-flow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1123.8" y="550.0" />
+              <mxPoint x="1009.1" y="550.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-e6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#202124;strokeWidth=1.6;dashed=0;endArrow=block;endFill=1;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.3;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" source="node-analysis-agent" target="node-review-agent" nc-kind="edge" nc-edge-kind="sync" nc-model-id="e6" nc-label-mode="none" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1266.0" y="729.4" />
+              <mxPoint x="1266.0" y="241.8" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-e7a" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#202124;strokeWidth=1.6;dashed=0;endArrow=block;endFill=1;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.28;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.38;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" source="node-review-agent" target="node-final-response" nc-kind="edge" nc-edge-kind="sync" nc-model-id="e7a" nc-label-mode="none" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1662.0" y="239.6" />
+              <mxPoint x="1662.0" y="337.6" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-e7b" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#202124;strokeWidth=1.6;dashed=1;dashPattern=7 5;endArrow=block;endFill=1;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" source="node-review-agent" target="node-retry-policy" nc-kind="edge" nc-edge-kind="failure" nc-model-id="e7b" nc-label-mode="none" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow    qa-error-flow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1463.5" y="403.1" />
+              <mxPoint x="1463.5" y="403.1" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-e8a" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#202124;strokeWidth=1.6;dashed=1;dashPattern=7 5;endArrow=block;endFill=1;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.25;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" source="node-retry-policy" target="node-orchestrator" nc-kind="edge" nc-edge-kind="feedback" nc-model-id="e8a" nc-label-mode="none" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow      qa-explicit-route">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1340.0" y="542.0" />
+              <mxPoint x="1340.0" y="900.0" />
+              <mxPoint x="380.0" y="900.0" />
+              <mxPoint x="380.0" y="288.3" />
+              <mxPoint x="407.5" y="288.3" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-e7c" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#202124;strokeWidth=1.6;dashed=0;endArrow=block;endFill=1;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.55;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=1.0;entryY=0.35;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" source="node-review-agent" target="node-human-approval" nc-kind="edge" nc-edge-kind="sync" nc-model-id="e7c" nc-label-mode="none" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow      qa-explicit-route">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1590.0" y="269.8" />
+              <mxPoint x="1590.0" y="803.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-e8b" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#202124;strokeWidth=1.6;dashed=0;endArrow=block;endFill=1;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.7;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.7;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" source="node-human-approval" target="node-final-response" nc-kind="edge" nc-edge-kind="sync" nc-model-id="e8b" nc-label-mode="none" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1664.0" y="842.2" />
+              <mxPoint x="1664.0" y="373.4" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-e9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#202124;strokeWidth=1.6;dashed=0;endArrow=block;endFill=1;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" source="node-final-response" target="node-user-result" nc-kind="edge" nc-edge-kind="response" nc-model-id="e9" nc-label-mode="none" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow  qa-response-flow">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1807.3" y="546.3" />
+              <mxPoint x="1807.3" y="546.3" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-e-tool-external" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#202124;strokeWidth=1.6;dashed=1;dashPattern=7 5;endArrow=block;endFill=1;fontColor=#171717;fontFamily=Segoe UI,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.35;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.35;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" source="node-tool-gateway" target="node-external-tools" nc-kind="edge" nc-edge-kind="sync" nc-model-id="e-tool-external" nc-label-mode="none" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1070.0" y="1071.2" />
+              <mxPoint x="1070.0" y="1071.2" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="step-e1" value="1" style="ellipse;html=1;fillColor=#15803D;strokeColor=none;fontColor=#FFFFFF;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;shadow=0;" vertex="1" parent="1" nc-kind="step-badge" nc-edge-id="e1" tags="qa-step-badge qa-illustrative">
+          <mxGeometry x="178.7" y="425.5" width="28.0" height="28.0" as="geometry" />
+        </mxCell>
+        <mxCell id="step-e2" value="2" style="ellipse;html=1;fillColor=#15803D;strokeColor=none;fontColor=#FFFFFF;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;shadow=0;" vertex="1" parent="1" nc-kind="step-badge" nc-edge-id="e2" tags="qa-step-badge qa-illustrative">
+          <mxGeometry x="313.6" y="684.2" width="28.0" height="28.0" as="geometry" />
+        </mxCell>
+        <mxCell id="step-e3" value="3" style="ellipse;html=1;fillColor=#15803D;strokeColor=none;fontColor=#FFFFFF;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;shadow=0;" vertex="1" parent="1" nc-kind="step-badge" nc-edge-id="e3" tags="qa-step-badge qa-illustrative">
+          <mxGeometry x="508.8" y="502.0" width="28.0" height="28.0" as="geometry" />
+        </mxCell>
+        <mxCell id="step-e4a" value="4a" style="ellipse;html=1;fillColor=#15803D;strokeColor=none;fontColor=#FFFFFF;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;shadow=0;" vertex="1" parent="1" nc-kind="step-badge" nc-edge-id="e4a" tags="qa-step-badge qa-illustrative">
+          <mxGeometry x="646.3" y="302.6" width="28.0" height="28.0" as="geometry" />
+        </mxCell>
+        <mxCell id="step-e4b" value="4b" style="ellipse;html=1;fillColor=#15803D;strokeColor=none;fontColor=#FFFFFF;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;shadow=0;" vertex="1" parent="1" nc-kind="step-badge" nc-edge-id="e4b" tags="qa-step-badge qa-illustrative">
+          <mxGeometry x="910.2" y="176.0" width="28.0" height="28.0" as="geometry" />
+        </mxCell>
+        <mxCell id="step-e5a" value="5a" style="ellipse;html=1;fillColor=#15803D;strokeColor=none;fontColor=#FFFFFF;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;shadow=0;" vertex="1" parent="1" nc-kind="step-badge" nc-edge-id="e5a" tags="qa-step-badge qa-illustrative">
+          <mxGeometry x="864.5" y="516.0" width="28.0" height="28.0" as="geometry" />
+        </mxCell>
+        <mxCell id="step-e5b" value="5b" style="ellipse;html=1;fillColor=#15803D;strokeColor=none;fontColor=#FFFFFF;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;shadow=0;" vertex="1" parent="1" nc-kind="step-badge" nc-edge-id="e5b" tags="qa-step-badge qa-illustrative">
+          <mxGeometry x="1038.7" y="536.0" width="28.0" height="28.0" as="geometry" />
+        </mxCell>
+        <mxCell id="step-e6" value="6" style="ellipse;html=1;fillColor=#15803D;strokeColor=none;fontColor=#FFFFFF;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;shadow=0;" vertex="1" parent="1" nc-kind="step-badge" nc-edge-id="e6" tags="qa-step-badge qa-illustrative">
+          <mxGeometry x="1148.8" y="715.4" width="28.0" height="28.0" as="geometry" />
+        </mxCell>
+        <mxCell id="step-e7a" value="7a" style="ellipse;html=1;fillColor=#15803D;strokeColor=none;fontColor=#FFFFFF;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;shadow=0;" vertex="1" parent="1" nc-kind="step-badge" nc-edge-id="e7a" tags="qa-step-badge qa-illustrative">
+          <mxGeometry x="1600.2" y="225.6" width="28.0" height="28.0" as="geometry" />
+        </mxCell>
+        <mxCell id="step-e7b" value="7b" style="ellipse;html=1;fillColor=#15803D;strokeColor=none;fontColor=#FFFFFF;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;shadow=0;" vertex="1" parent="1" nc-kind="step-badge" nc-edge-id="e7b" tags="qa-step-badge qa-illustrative">
+          <mxGeometry x="1449.5" y="356.7" width="28.0" height="28.0" as="geometry" />
+        </mxCell>
+        <mxCell id="step-e8a" value="8a" style="ellipse;html=1;fillColor=#15803D;strokeColor=none;fontColor=#FFFFFF;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;shadow=0;" vertex="1" parent="1" nc-kind="step-badge" nc-edge-id="e8a" tags="qa-step-badge qa-illustrative">
+          <mxGeometry x="826.8" y="886.0" width="28.0" height="28.0" as="geometry" />
+        </mxCell>
+        <mxCell id="step-e7c" value="7c" style="ellipse;html=1;fillColor=#15803D;strokeColor=none;fontColor=#FFFFFF;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;shadow=0;" vertex="1" parent="1" nc-kind="step-badge" nc-edge-id="e7c" tags="qa-step-badge qa-illustrative">
+          <mxGeometry x="1576.0" y="533.1" width="28.0" height="28.0" as="geometry" />
+        </mxCell>
+        <mxCell id="step-e8b" value="8b" style="ellipse;html=1;fillColor=#15803D;strokeColor=none;fontColor=#FFFFFF;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;shadow=0;" vertex="1" parent="1" nc-kind="step-badge" nc-edge-id="e8b" tags="qa-step-badge qa-illustrative">
+          <mxGeometry x="1600.8" y="828.2" width="28.0" height="28.0" as="geometry" />
+        </mxCell>
+        <mxCell id="step-e9" value="9" style="ellipse;html=1;fillColor=#15803D;strokeColor=none;fontColor=#FFFFFF;fontFamily=Segoe UI,Arial,sans-serif;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;shadow=0;" vertex="1" parent="1" nc-kind="step-badge" nc-edge-id="e9" tags="qa-step-badge qa-illustrative">
+          <mxGeometry x="1793.3" y="470.1" width="28.0" height="28.0" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

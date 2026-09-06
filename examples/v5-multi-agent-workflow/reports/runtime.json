@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "2.0",
+  "checkedAt": "2026-09-06T02:47:06Z",
+  "tier": "full",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.4",
+  "node": "v20.15.1",
+  "drawio": "C:\\Users\\ADMIN\\AppData\\Local\\Programs\\draw.io\\draw.io.exe",
+  "skillRoot": "C:\\Users\\ADMIN\\Work\\GitTool\\nexcanvas-drawio",
+  "capabilities": {
+    "authorNativeDrawio": true,
+    "validateContracts": true,
+    "structuralQa": true,
+    "layoutBuiltIn": true,
+    "layoutElk": true,
+    "renderCli": true,
+    "openBrowser": true,
+    "imageGeneration": false
+  },
+  "limitations": []
+}

@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "1.0",
+  "metrics": {
+    "nodes": 27,
+    "edges": 23,
+    "boundaries": 11,
+    "phases": 6,
+    "nestedBoundaries": 4,
+    "containmentRatio": 0.364,
+    "maxNodesPerPhase": 5,
+    "crossBoundaryEdges": 18,
+    "crossBoundaryRatio": 0.783,
+    "feedbackEdges": 0,
+    "aspectRatio": 1.625,
+    "topologyTerms": [],
+    "branchNodes": 6,
+    "cycleDetected": false,
+    "longestPath": 9,
+    "maxDegree": 4,
+    "hubScore": 0.154
+  },
+  "candidates": [
+    {
+      "strategy": "dense-phase-columns",
+      "score": 9.0,
+      "reasons": [
+        "+4.0: sixteen or more nodes",
+        "+3.0: at least one dense phase",
+        "+2.0: nested groups inside an ordered lifecycle"
+      ]
+    },
+    {
+      "strategy": "phase-columns",
+      "score": 5.0,
+      "reasons": [
+        "+2.0: ordered phase narrative",
+        "+3.0: ordered flow without phase feedback"
+      ]
+    },
+    {
+      "strategy": "nested-topology",
+      "score": 4.0,
+      "reasons": [
+        "+4.0: nested boundaries dominate the model"
+      ]
+    },
+    {
+      "strategy": "compact-pipeline",
+      "score": 0.0,
+      "reasons": [
+        "+2.0: three to six ordered phases",
+        "-2.0: node count exceeds sparse pipeline range"
+      ]
+    },
+    {
+      "strategy": "hybrid-grid",
+      "score": 0.0,
+      "reasons": []
+    },
+    {
+      "strategy": "hub-and-spoke",
+      "score": 0.0,
+      "reasons": []
+    },
+    {
+      "strategy": "phase-rows",
+      "score": -1.0,
+      "reasons": [
+        "-1.0: landscape target favors columns"
+      ]
+    }
+  ],
+  "automaticRecommendation": "dense-phase-columns",
+  "selectedStrategy": "dense-phase-columns",
+  "selectionSource": "explicit-model",
+  "geometryPlan": {
+    "orientation": "landscape",
+    "phaseWeights": {
+      "sources": 1.06,
+      "ingest": 1.06,
+      "store": 1.06,
+      "process": 1.66,
+      "serve": 1.54,
+      "consume": 1.06
+    },
+    "phaseTreatment": "filled-or-scope-based",
+    "foundationBand": true,
+    "reservedRails": [
+      "top",
+      "bottom"
+    ],
+    "stepPolicy": "badge primary handoffs; suffix parallel substeps; leave context edges unnumbered"
+  },
+  "manualReviewRisks": [
+    "High node count requires target-size label inspection and possible progressive disclosure."
+  ]
+}

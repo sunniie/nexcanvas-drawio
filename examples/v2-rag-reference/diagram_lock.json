@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "2.0",
+  "status": "confirmed",
+  "viewIntent": "architecture",
+  "route": {"family": "ai-ml", "profile": "rag"},
+  "theme": "microsoft-reference",
+  "visualArchetype": "microsoft-reference",
+  "canvas": {"width": 1800, "height": 1050},
+  "sourceHash": "e2d36357c63a6c1d8d4386d575412519a3767dffff3f23a5fca09d2a294602d2",
+  "decisions": {
+    "audience": "AI platform engineers and solution architects",
+    "deliveryTarget": "engineering-doc",
+    "notation": "rag",
+    "layout": "reference",
+    "visualArchetype": "microsoft-reference",
+    "assetPolicy": "official-provider-icons-embedded"
+  }
+}

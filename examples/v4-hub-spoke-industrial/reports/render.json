@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "2.0",
+  "renderedAt": "2026-09-06T14:48:18Z",
+  "source": "artifacts/diagram.drawio",
+  "output": "artifacts/diagram.drawio.png",
+  "format": "png",
+  "scale": 1.0,
+  "bytes": 387610,
+  "sha256": "d5e20d162426ba36a62e340627985646a4b774f78db82b2a2988f360047afcaa",
+  "dimensions": {
+    "width": 2302,
+    "height": 1502
+  },
+  "renderer": "draw.io.exe",
+  "command": [
+    "draw.io.exe",
+    "--export",
+    "--format",
+    "png",
+    "--embed-diagram",
+    "--scale",
+    "1.0",
+    "--border",
+    "0",
+    "--output",
+    "artifacts/diagram.drawio.png",
+    "artifacts/diagram.drawio"
+  ]
+}

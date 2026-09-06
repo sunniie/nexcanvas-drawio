@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nexcanvas.dev/schemas/diagram-model.schema.json",
+  "title": "NexCanvas Diagram Model",
+  "type": "object",
+  "required": ["schemaVersion", "title", "route", "audience", "deliveryTarget", "canvas", "theme", "nodes", "edges"],
+  "properties": {
+    "schemaVersion": {"const": "2.0"},
+    "title": {"type": "string", "minLength": 1},
+    "viewIntent": {"enum": ["architecture", "workflow", "sequence", "data-flow", "lifecycle"]},
+    "subtitle": {"type": "string"},
+    "route": {
+      "type": "object",
+      "required": ["family", "profile"],
+      "properties": {
+        "family": {"type": "string", "minLength": 1},
+        "profile": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "audience": {"type": "string", "minLength": 1},
+    "deliveryTarget": {"enum": ["readme", "engineering-doc", "slide", "poster", "print", "interactive"]},
+    "language": {"type": "string", "default": "en"},
+    "theme": {"type": "string", "minLength": 1},
+    "visualArchetype": {"type": "string", "minLength": 1},
+    "layoutStrategy": {"enum": ["auto", "compact-pipeline", "phase-columns", "dense-phase-columns", "phase-rows", "hybrid-grid", "hub-and-spoke", "nested-topology"]},
+    "showTitle": {"type": "boolean", "default": true},
+    "direction": {"enum": ["LR", "RL", "TB", "BT"], "default": "LR"},
+    "canvas": {
+      "type": "object",
+      "required": ["width", "height"],
+      "properties": {
+        "width": {"type": "integer", "minimum": 640, "maximum": 10000},
+        "height": {"type": "integer", "minimum": 480, "maximum": 10000},
+        "background": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "boundaries": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/boundary"},
+      "default": []
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/node"}
+    },
+    "edges": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/edge"}
+    },
+    "legend": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "label"],
+        "properties": {"kind": {"type": "string"}, "label": {"type": "string"}}
+      }
+    },
+    "sourceSnapshot": {"type": "string"},
+    "assumptions": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "boundary": {
+      "type": "object",
+      "required": ["id", "label", "kind"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "label": {"type": "string", "minLength": 1},
+        "kind": {"type": "string", "minLength": 1},
+        "parent": {"$ref": "#/$defs/id"},
+        "description": {"type": "string"},
+        "presentation": {"enum": ["phase-column", "outline-phase", "phase-row", "foundation-band", "solid-group", "dashed-group", "hub-ring", "provider-boundary", "semantic-container"]},
+        "weight": {"type": "number", "exclusiveMinimum": 0},
+        "order": {"type": "number"},
+        "tags": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "node": {
+      "type": "object",
+      "required": ["id", "label", "kind"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "label": {"type": "string", "minLength": 1},
+        "kind": {"type": "string", "minLength": 1},
+        "boundary": {"$ref": "#/$defs/id"},
+        "description": {"type": "string"},
+        "caption": {"type": "string"},
+        "presentation": {"enum": ["service-icon", "service-tile", "compact-glyph", "semantic-card", "note"]},
+        "technology": {"type": "string"},
+        "assetRef": {"type": "string"},
+        "importance": {"enum": ["primary", "secondary", "support"]},
+        "fields": {"type": "array", "items": {"type": "string"}},
+        "evidence": {"type": "array", "items": {"type": "string"}},
+        "tags": {"type": "array", "items": {"type": "string"}},
+        "layout": {"type": "object"}
+      },
+      "additionalProperties": true
+    },
+    "edge": {
+      "type": "object",
+      "required": ["id", "source", "target", "kind"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "source": {"$ref": "#/$defs/id"},
+        "target": {"$ref": "#/$defs/id"},
+        "kind": {"type": "string", "minLength": 1},
+        "label": {"type": "string"},
+        "labelMode": {"enum": ["none", "offset", "callout", "note"]},
+        "labelPlacement": {
+          "type": "object",
+          "properties": {
+            "segment": {"type": "integer", "minimum": 0},
+            "t": {"type": "number", "minimum": 0, "maximum": 1},
+            "side": {"enum": ["auto", "above", "below", "left", "right", "center"]},
+            "offset": {"type": "number", "minimum": 0},
+            "dx": {"type": "number"},
+            "dy": {"type": "number"},
+            "width": {"type": "number", "minimum": 24},
+            "height": {"type": "number", "minimum": 16}
+          },
+          "additionalProperties": false
+        },
+        "laneId": {"$ref": "#/$defs/id"},
+        "busId": {"$ref": "#/$defs/id"},
+        "allowCrossing": {"type": "boolean", "default": false},
+        "protocol": {"type": "string"},
+        "payload": {"type": "string"},
+        "async": {"type": "boolean"},
+        "authority": {"type": "string"},
+        "trustCrossing": {"type": "boolean"},
+        "step": {"oneOf": [{"type": "integer", "minimum": 1}, {"type": "string", "minLength": 1}]},
+        "annotation": {"type": "string"},
+        "lineClass": {"enum": ["control", "data", "optional", "response", "dependency"]},
+        "evidence": {"type": "array", "items": {"type": "string"}},
+        "tags": {"type": "array", "items": {"type": "string"}},
+        "layout": {"type": "object"}
+      },
+      "additionalProperties": true
+    },
+    "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.:-]*$"}
+  },
+  "additionalProperties": true
+}

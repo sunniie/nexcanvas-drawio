@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "2.0",
+  "status": "confirmed",
+  "viewIntent": "architecture",
+  "route": {"family": "data", "profile": "streaming"},
+  "theme": "microsoft-reference",
+  "visualArchetype": "microsoft-reference",
+  "layoutStrategy": "hub-and-spoke",
+  "canvas": {"width": 2300, "height": 1500},
+  "sourceHash": "e950cf9226e9214be75e86b94256193dad2904b88749f62d30ce91f19b20257b",
+  "decisions": {
+    "audience": "Data, IoT, and cloud solution architects",
+    "deliveryTarget": "engineering-doc",
+    "notation": "event-stream",
+    "layout": "reference",
+    "layoutStrategy": "hub-and-spoke",
+    "orientation": "landscape",
+    "runnerUp": "dense-phase-columns",
+    "selectionReason": "One analytical service owns the highest degree and narrative importance, while source and consumer towers remain stable and advanced analytics is subordinate below the hub.",
+    "visualArchetype": "microsoft-reference",
+    "assetPolicy": "official-provider-icons-embedded; neutral external-source glyphs bundled locally"
+  }
+}

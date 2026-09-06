@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "2.0",
+  "status": "confirmed",
+  "viewIntent": "architecture",
+  "route": {"family": "ai-ml", "profile": "mlops"},
+  "theme": "microsoft-reference",
+  "visualArchetype": "microsoft-reference",
+  "layoutStrategy": "dense-phase-columns",
+  "canvas": {"width": 2600, "height": 1600},
+  "sourceHash": "d42e28bf4813c9c199b1926fcff44fe5225557948c5f6dac4670fc5b2d40d9fa",
+  "decisions": {
+    "audience": "Data, AI, and cloud solution architects",
+    "deliveryTarget": "engineering-doc",
+    "notation": "mlops",
+    "layout": "reference",
+    "layoutStrategy": "dense-phase-columns",
+    "orientation": "landscape",
+    "runnerUp": "phase-columns",
+    "selectionReason": "Six ordered macro phases, 27 nodes, four nested groups, and a 0.783 cross-boundary edge ratio require weighted phase widths, nested scopes, and reserved top/bottom rails; the sparse phase-column alternative does not provide enough routing lanes.",
+    "visualArchetype": "microsoft-reference",
+    "assetPolicy": "official-provider-icons-embedded; generic external-source glyphs bundled locally"
+  }
+}

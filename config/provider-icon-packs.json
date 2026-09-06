@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "2.0",
+  "packs": {
+    "microsoft-azure-official": {
+      "label": "Microsoft Azure Architecture Icons",
+      "version": "V24",
+      "downloadUrl": "https://arch-center.azureedge.net/icons/Azure_Public_Service_Icons_V24.zip",
+      "termsUrl": "https://learn.microsoft.com/en-us/azure/architecture/icons/",
+      "license": "Microsoft permits these icons in architectural diagrams, training materials, and documentation; all other rights are reserved.",
+      "archiveType": "zip",
+      "destination": "assets/icons/microsoft-azure-official",
+      "entries": {
+        "azure-storage-accounts": {"title": "Azure Storage", "aliases": ["azure blob storage", "blob storage", "storage account"], "filename": "10086-icon-service-Storage-Accounts.svg"},
+        "azure-functions": {"title": "Azure Functions", "aliases": ["function app", "function apps"], "filename": "10029-icon-service-Function-Apps.svg"},
+        "azure-app-service": {"title": "Azure App Service", "aliases": ["app services", "web app"], "filename": "10035-icon-service-App-Services.svg"},
+        "azure-ai-search": {"title": "Azure AI Search", "aliases": ["cognitive search", "vector search"], "filename": "10044-icon-service-Cognitive-Search.svg"},
+        "microsoft-foundry-models": {"title": "Microsoft Foundry Models", "aliases": ["foundry models", "azure openai model"], "filename": "038470614-icon-service-Foundry-Models.svg"},
+        "azure-openai": {"title": "Azure OpenAI", "aliases": ["openai service"], "filename": "03438-icon-service-Azure-OpenAI.svg"},
+        "azure-content-safety": {"title": "Azure AI Content Safety", "aliases": ["content safety"], "filename": "03390-icon-service-Content-Safety.svg"},
+        "azure-managed-identity": {"title": "Managed identities", "aliases": ["managed identity", "entra managed identity"], "filename": "10227-icon-service-Managed-Identities.svg"},
+        "azure-key-vault": {"title": "Azure Key Vault", "aliases": ["key vault", "key vaults"], "filename": "10245-icon-service-Key-Vaults.svg"},
+        "azure-monitor": {"title": "Azure Monitor", "aliases": ["monitor"], "filename": "00001-icon-service-Monitor.svg"},
+        "microsoft-defender-for-cloud": {"title": "Microsoft Defender for Cloud", "aliases": ["defender for cloud"], "filename": "10241-icon-service-Microsoft-Defender-for-Cloud.svg"},
+        "azure-kubernetes-service": {"title": "Azure Kubernetes Service", "aliases": ["aks", "kubernetes services"], "filename": "10023-icon-service-Kubernetes-Services.svg"},
+        "azure-cosmos-db": {"title": "Azure Cosmos DB", "aliases": ["cosmos db"], "filename": "10121-icon-service-Azure-Cosmos-DB.svg"},
+        "azure-event-hubs": {"title": "Azure Event Hubs", "aliases": ["event hub", "event hubs"], "filename": "00039-icon-service-Event-Hubs.svg"},
+        "azure-iot-hub": {"title": "Azure IoT Hub", "aliases": ["iot hub"], "filename": "10182-icon-service-IoT-Hub.svg"},
+        "azure-data-factory": {"title": "Azure Data Factory", "aliases": ["data factory", "data factories"], "filename": "10126-icon-service-Data-Factories.svg"},
+        "azure-stream-analytics": {"title": "Azure Stream Analytics", "aliases": ["stream analytics", "stream analytics jobs"], "filename": "00042-icon-service-Stream-Analytics-Jobs.svg"},
+        "azure-databricks": {"title": "Azure Databricks", "aliases": ["databricks"], "filename": "10787-icon-service-Azure-Databricks.svg"},
+        "azure-synapse-analytics": {"title": "Azure Synapse Analytics", "aliases": ["synapse analytics", "synapse"], "filename": "00606-icon-service-Azure-Synapse-Analytics.svg"},
+        "azure-sql-database": {"title": "Azure SQL Database", "aliases": ["sql database", "azure sql"], "filename": "10130-icon-service-SQL-Database.svg"},
+        "azure-api-management": {"title": "Azure API Management", "aliases": ["api management", "apim"], "filename": "10042-icon-service-API-Management-Services.svg"},
+        "azure-logic-apps": {"title": "Azure Logic Apps", "aliases": ["logic apps", "logic app"], "filename": "02631-icon-service-Logic-Apps.svg"},
+        "azure-devops": {"title": "Azure DevOps", "aliases": ["devops", "azure pipelines"], "filename": "10261-icon-service-Azure-DevOps.svg"},
+        "azure-policy": {"title": "Azure Policy", "aliases": ["policy"], "filename": "10316-icon-service-Policy.svg"},
+        "azure-machine-learning": {"title": "Azure Machine Learning", "aliases": ["azure ml", "machine learning"], "filename": "038470510-icon-service-Azure-Machine-Learning.svg"},
+        "power-bi-embedded": {"title": "Power BI Embedded", "aliases": ["power bi"], "filename": "03332-icon-service-Power-BI-Embedded.svg"}
+      }
+    },
+    "aws-official": {
+      "label": "AWS Architecture Icons",
+      "version": "user-supplied-current",
+      "termsUrl": "https://aws.amazon.com/architecture/icons/",
+      "license": "Use the official AWS Architecture Icons package under AWS trademark and asset terms.",
+      "archiveType": "zip",
+      "destination": "assets/icons/aws-official",
+      "entries": {}
+    },
+    "google-cloud-official": {
+      "label": "Google Cloud product icons",
+      "version": "user-supplied-current",
+      "termsUrl": "https://cloud.google.com/icons",
+      "license": "Use the official Google Cloud icon library under Google brand and asset terms.",
+      "archiveType": "zip",
+      "destination": "assets/icons/google-cloud-official",
+      "entries": {}
+    }
+  }
+}

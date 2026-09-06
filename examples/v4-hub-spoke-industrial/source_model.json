@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "2.0",
+  "status": "confirmed",
+  "sources": [
+    {"id": "design-brief", "type": "manual", "location": "Hub-and-spoke industrial real-time analytics reference workload", "snapshot": "2026-08-27"},
+    {"id": "reference-set", "type": "image", "location": "Microsoft Azure IoT analytics hub architecture supplied by the user", "snapshot": "2026-08-27"},
+    {"id": "microsoft-icons", "type": "url", "location": "https://learn.microsoft.com/en-us/azure/architecture/icons/", "snapshot": "2026-08-27"}
+  ],
+  "facts": [
+    {"id": "fact-sources", "claim": "Connected vehicles, production equipment, and facility sensors emit operational telemetry.", "evidence": ["design-brief:sources"], "confidence": "confirmed"},
+    {"id": "fact-ingest", "claim": "IoT Hub, Event Hubs, and Stream Analytics form the streaming ingestion and preparation path.", "evidence": ["design-brief:ingest"], "confidence": "confirmed"},
+    {"id": "fact-hub", "claim": "Azure Synapse Analytics is modeled as the central analytical exchange for curated telemetry, historical context, and downstream insights.", "evidence": ["design-brief:hub"], "confidence": "confirmed"},
+    {"id": "fact-consume", "claim": "Dashboards, operational applications, and automation consume distinct analytical products from the hub.", "evidence": ["design-brief:consume"], "confidence": "confirmed"},
+    {"id": "fact-advanced", "claim": "Databricks, Azure Machine Learning, and Foundry Models enrich the analytical hub with features, scores, and operational knowledge.", "evidence": ["design-brief:advanced"], "confidence": "confirmed"},
+    {"id": "fact-platform", "claim": "Identity, secrets, monitoring, security posture, and policy apply across the workload.", "evidence": ["design-brief:platform"], "confidence": "confirmed"},
+    {"id": "fact-layout", "claim": "The supplied Microsoft reference anchors one high-degree analytical service between source and consumer towers, with enrichment below the hub.", "evidence": ["reference-set:hub-pattern"], "confidence": "confirmed"},
+    {"id": "fact-icons", "claim": "Azure services use embedded official Microsoft architecture icons next to the represented product name.", "evidence": ["microsoft-icons:usage"], "confidence": "confirmed"}
+  ],
+  "assumptions": [
+    "The diagram is a logical architecture rather than a regional or network deployment topology.",
+    "Azure Synapse Analytics is used as the analytical hub so the example can reuse a verified official icon already available in the repository.",
+    "External source glyphs are neutral illustrations rather than product logos."
+  ],
+  "exclusions": ["Regional failover", "Private networking", "SKU sizing", "Device protocol details", "Model algorithm selection"]
+}

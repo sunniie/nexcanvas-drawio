@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "2.0",
+  "checkedAt": "2026-09-06T14:48:45Z",
+  "projectRoot": ".",
+  "ok": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "issues": [],
+  "artifacts": {
+    "source": {
+      "path": "source_model.json",
+      "sha256": "8f320090903ae73f5a1f6b4d014a1743e97fd84fbce726e9e96f1a73468b2610",
+      "bytes": 2899
+    },
+    "lock": {
+      "path": "diagram_lock.json",
+      "sha256": "1fcdb9fcff89c2fdfc050476ccc4b9db918c802a6e1ff858a04e029e6400df87",
+      "bytes": 1296
+    },
+    "model": {
+      "path": "diagram_model.json",
+      "sha256": "76471dca3ee0d4db78be7d6578fb2a2f94bc8987ca4ea51ddac1de5ea7205958",
+      "bytes": 17909
+    },
+    "drawio": {
+      "path": "artifacts/diagram.drawio",
+      "sha256": "b1361984f7adebaa9f20dc7cf32e5ece288b9579c3f4d2e158f5bcb42e8676cd",
+      "bytes": 48755
+    },
+    "qa": {
+      "path": "reports/diagram_qa.json",
+      "sha256": "760be81f6535389aa11a411f7a0da19985006c2c8a50ee85558f39419ad813c1",
+      "bytes": 256
+    },
+    "visual": {
+      "path": "reports/visual_qa.json",
+      "sha256": "bdb72c115cabcdf92259d8ae4176d3e98be11763f44c399dd6d6e8b80b3d9165",
+      "bytes": 1485
+    },
+    "manifest": {
+      "path": "assets/asset_manifest.json",
+      "sha256": "203750bd73e4b81cd6e27c4ee1cd29e954c3ad7f45a12fb49a8e1c634c0c6c5b",
+      "bytes": 4998
+    }
+  }
+}

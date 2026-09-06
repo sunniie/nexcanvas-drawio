@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "2.0",
+  "title": "Enterprise RAG on Azure",
+  "viewIntent": "architecture",
+  "subtitle": "Reference architecture with separate indexing and serving paths",
+  "showTitle": false,
+  "route": {"family": "ai-ml", "profile": "rag"},
+  "audience": "AI platform engineers and solution architects",
+  "deliveryTarget": "engineering-doc",
+  "language": "en",
+  "theme": "microsoft-reference",
+  "visualArchetype": "microsoft-reference",
+  "direction": "LR",
+  "canvas": {"width": 1800, "height": 1050, "background": "#FFFFFF"},
+  "boundaries": [
+    {"id": "sources", "label": "Sources", "kind": "phase", "presentation": "phase-column", "order": 1},
+    {"id": "orchestrate", "label": "Orchestrate", "kind": "phase", "presentation": "phase-column", "order": 2},
+    {"id": "index", "label": "Index and retrieve", "kind": "phase", "presentation": "phase-column", "order": 3},
+    {"id": "generate", "label": "Generate safely", "kind": "phase", "presentation": "phase-column", "order": 4},
+    {"id": "consume", "label": "Consume", "kind": "phase", "presentation": "phase-column", "order": 5},
+    {"id": "platform", "label": "Platform", "kind": "foundation", "presentation": "foundation-band", "order": 6}
+  ],
+  "nodes": [
+    {"id": "content", "label": "Azure Storage", "caption": "Enterprise content", "kind": "datastore", "boundary": "sources", "presentation": "service-icon", "assetRef": "azure-storage-accounts", "importance": "primary", "evidence": ["fact-ingest", "fact-icons"], "layout": {"order": 1}},
+    {"id": "client", "label": "Azure App Service", "caption": "Client application", "kind": "service", "boundary": "sources", "presentation": "service-icon", "assetRef": "azure-app-service", "importance": "primary", "evidence": ["fact-query", "fact-icons"], "layout": {"order": 2}},
+    {"id": "ingest", "label": "Azure Functions", "caption": "Ingestion orchestration", "kind": "service", "boundary": "orchestrate", "presentation": "service-icon", "assetRef": "azure-functions", "importance": "primary", "evidence": ["fact-ingest", "fact-icons"], "layout": {"order": 1}},
+    {"id": "api", "label": "Azure App Service", "caption": "RAG orchestration API", "kind": "api", "boundary": "orchestrate", "presentation": "service-icon", "assetRef": "azure-app-service", "importance": "primary", "evidence": ["fact-query", "fact-icons"], "layout": {"order": 2}},
+    {"id": "embedding", "label": "Microsoft Foundry Models", "caption": "Text embeddings", "kind": "model", "boundary": "index", "presentation": "service-icon", "assetRef": "microsoft-foundry-models", "importance": "primary", "evidence": ["fact-ingest", "fact-icons"], "layout": {"order": 1}},
+    {"id": "search", "label": "Azure AI Search", "caption": "Vector + keyword index", "kind": "datastore", "boundary": "index", "presentation": "service-icon", "assetRef": "azure-ai-search", "importance": "primary", "evidence": ["fact-store", "fact-query", "fact-icons"], "layout": {"order": 2}},
+    {"id": "generation", "label": "Microsoft Foundry Models", "caption": "Grounded answer generation", "kind": "model", "boundary": "generate", "presentation": "service-icon", "assetRef": "microsoft-foundry-models", "importance": "primary", "evidence": ["fact-query", "fact-icons"], "layout": {"order": 1}},
+    {"id": "safety", "label": "Azure AI Content Safety", "caption": "Prompt and response guardrails", "kind": "service", "boundary": "generate", "presentation": "service-icon", "assetRef": "azure-content-safety", "importance": "primary", "evidence": ["fact-query", "fact-icons"], "layout": {"order": 2}},
+    {"id": "web", "label": "Azure App Service", "caption": "Chat experience", "kind": "service", "boundary": "consume", "presentation": "service-icon", "assetRef": "azure-app-service", "importance": "primary", "evidence": ["fact-query", "fact-icons"], "layout": {"order": 1}},
+    {"id": "identity", "label": "Managed identities", "caption": "Identity", "kind": "service", "boundary": "platform", "presentation": "service-icon", "assetRef": "azure-managed-identity", "importance": "support", "evidence": ["fact-platform", "fact-icons"], "layout": {"order": 1}},
+    {"id": "secrets", "label": "Azure Key Vault", "caption": "Secrets", "kind": "service", "boundary": "platform", "presentation": "service-icon", "assetRef": "azure-key-vault", "importance": "support", "evidence": ["fact-platform", "fact-icons"], "layout": {"order": 2}},
+    {"id": "monitor", "label": "Azure Monitor", "caption": "Observability", "kind": "service", "boundary": "platform", "presentation": "service-icon", "assetRef": "azure-monitor", "importance": "support", "evidence": ["fact-platform", "fact-icons"], "layout": {"order": 3}},
+    {"id": "defender", "label": "Microsoft Defender for Cloud", "caption": "Cloud security posture", "kind": "service", "boundary": "platform", "presentation": "service-icon", "assetRef": "microsoft-defender-for-cloud", "importance": "support", "evidence": ["fact-platform", "fact-icons"], "layout": {"order": 4}}
+  ],
+  "edges": [
+    {"id": "e1", "source": "content", "target": "ingest", "kind": "data", "lineClass": "control", "label": "Load documents", "labelMode": "none", "step": 1, "importance": "primary", "evidence": ["fact-ingest"], "layout": {"order": 1}},
+    {"id": "e2", "source": "ingest", "target": "embedding", "kind": "data", "lineClass": "control", "label": "Chunk and enrich", "labelMode": "none", "step": 2, "importance": "primary", "evidence": ["fact-ingest"], "layout": {"order": 2}},
+    {"id": "e3", "source": "embedding", "target": "search", "kind": "write", "lineClass": "data", "label": "Write vectors", "labelMode": "offset", "labelPlacement": {"segment": 0, "t": 0.5, "side": "right", "offset": 22, "width": 86, "height": 20}, "step": 3, "importance": "primary", "evidence": ["fact-ingest", "fact-store"], "layout": {"order": 3}},
+    {"id": "e4", "source": "client", "target": "api", "kind": "sync", "lineClass": "control", "label": "Ask a question", "labelMode": "none", "step": 4, "importance": "primary", "evidence": ["fact-query"], "layout": {"order": 4}},
+    {"id": "e5", "source": "api", "target": "search", "kind": "retrieval", "lineClass": "data", "label": "Hybrid search", "labelMode": "none", "step": 5, "importance": "primary", "evidence": ["fact-query", "fact-store"], "layout": {"order": 5}},
+    {"id": "e6", "source": "search", "target": "generation", "kind": "data", "lineClass": "control", "label": "Ground with context", "labelMode": "offset", "labelPlacement": {"segment": 1, "t": 0.55, "side": "left", "offset": 22, "width": 118, "height": 20}, "step": 6, "importance": "primary", "evidence": ["fact-query"], "layout": {"order": 6}},
+    {"id": "e7", "source": "generation", "target": "safety", "kind": "sync", "lineClass": "control", "label": "Evaluate response", "labelMode": "offset", "labelPlacement": {"segment": 0, "t": 0.5, "side": "right", "offset": 22, "width": 108, "height": 20}, "step": 7, "importance": "primary", "evidence": ["fact-query"], "layout": {"order": 7}},
+    {"id": "e8", "source": "safety", "target": "web", "kind": "response", "lineClass": "control", "label": "Return grounded answer", "labelMode": "offset", "labelPlacement": {"segment": 1, "t": 0.5, "side": "right", "offset": 22, "width": 132, "height": 20}, "step": 8, "importance": "primary", "evidence": ["fact-query"], "layout": {"order": 8}}
+  ],
+  "legend": [],
+  "sourceSnapshot": "source_model.json",
+  "assumptions": ["Networking and regional topology are outside this logical reference view."]
+}

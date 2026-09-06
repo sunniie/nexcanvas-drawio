@@ -1,388 +1,355 @@
+<div align="center">
+
 # NexCanvas Draw.io
 
-**A source-aware Draw.io skill for Codex that turns real system behavior into polished, editable technical diagrams.**
+### A portable AI agent skill and diagramming toolkit for polished, editable, reference-grade technical diagrams
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-22c55e.svg)](LICENSE)
-[![Draw.io](https://img.shields.io/badge/Draw.io-editable-f97316.svg)](https://www.drawio.com/)
-[![Codex Skill](https://img.shields.io/badge/Codex-skill-2563eb.svg)](https://developers.openai.com/codex/skills/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-2563EB.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB.svg)](https://www.python.org/)
+[![Format: Draw.io](https://img.shields.io/badge/format-editable%20Draw.io-F08705.svg)](https://www.drawio.com/)
+[![Agent Skill](https://img.shields.io/badge/standard-Agent%20Skills-111827.svg)](SKILL.md)
 
-NexCanvas Draw.io is designed for architecture diagrams, detailed request flows, network diagrams, ERDs, sequence diagrams, and other technical visuals. It adds a collaborative discovery workflow, content-driven layouts, semantic icon planning, connector geometry rules, and automated QA on top of native Draw.io XML generation.
+Turn repositories, technical briefs, screenshots, and architecture references
+into native Draw.io diagrams with reproducible contracts, verified assets,
+content-driven layout selection, and rendered visual QA.
 
-The repository contains one standalone Codex skill. Future NexCanvas repositories can use the same family naming, for example `nexcanvas-slides` or `nexcanvas-docs`, while remaining independently installable.
+</div>
 
-## Choose your diagram profile
+![Connected factory analytics and predictive maintenance reference architecture](examples/v3-dense-industrial-ai/artifacts/diagram.drawio.png)
 
-NexCanvas uses a two-stage picker. First choose **what level of information the diagram should contain**. Then choose **how that information should look**. Diagram type and visual style are independent, so every combination is supported.
+## Why NexCanvas exists
 
-### Step 1 — Pick the diagram type
+Most diagram automation stops when XML is valid. NexCanvas treats that as the
+beginning, not the finish line. It addresses four recurring failures in
+agent-generated architecture diagrams:
 
-<table>
-  <tr>
-    <th width="50%">Architecture Overview</th>
-    <th width="50%">Detailed Request Flow</th>
-  </tr>
-  <tr>
-    <td><a href="assets/examples/architecture-overview.png"><img src="assets/examples/architecture-overview.png" alt="Architecture Overview example"></a></td>
-    <td><a href="assets/examples/detailed-request-flow.png"><img src="assets/examples/detailed-request-flow.png" alt="Detailed Request Flow example"></a></td>
-  </tr>
-  <tr>
-    <td>System boundaries, capabilities, ownership, major dependencies, and the primary system story. Best for READMEs, slides, portfolios, onboarding, and high-level design reviews.</td>
-    <td>Concrete interactions, true event order, request and response lanes, state changes, authority, fallbacks, and failures. Best for implementation and debugging.</td>
-  </tr>
-  <tr>
-    <td><a href="examples/learning-website-architecture-overview.drawio">Open editable source</a></td>
-    <td><a href="examples/learning-website-python-practice-detailed-request.drawio">Open editable source</a></td>
-  </tr>
-</table>
+- unsupported architecture invented from an incomplete prompt;
+- every problem forced into the same columns or generic card grid;
+- logos that disappear after cloning or silently represent the wrong product;
+- connectors, labels, badges, icons, and boundaries that collide in the final render.
 
-### Step 2 — Pick the visual style
+The result is an editable `.drawio` artifact backed by evidence, semantic models,
+local assets, machine-readable QA reports, and an inspected preview.
 
-<table>
-  <tr>
-    <th width="50%">Color Visual</th>
-    <th width="50%">Compact Monochrome</th>
-  </tr>
-  <tr>
-    <td><a href="assets/examples/architecture-overview.png"><img src="assets/examples/architecture-overview.png" alt="Color Visual style example"></a></td>
-    <td><a href="assets/examples/compact-monochrome-system-flow.png"><img src="assets/examples/compact-monochrome-system-flow.png" alt="Compact Monochrome style example"></a></td>
-  </tr>
-  <tr>
-    <td>Restrained semantic color, verified technology logos, pale boundaries, task glyphs, and presentation-friendly technical cards.</td>
-    <td>Black-and-white hierarchy, compact nested cards, local lifecycle badges, concise relationship labels, and print-friendly geometry.</td>
-  </tr>
-  <tr>
-    <td><a href="examples/learning-website-architecture-overview.drawio">Open editable style sample</a></td>
-    <td><a href="examples/zmentorai-compact-monochrome-system-architecture.drawio">Open editable style sample</a></td>
-  </tr>
-</table>
+## Showcase
 
-The Compact Monochrome preview is the source-backed Z-MentorAI system architecture developed during real skill iteration. Its layout is a visual reference, not a fixed component template.
-
-### Supported combinations
-
-| Diagram profile | Best fit |
+| Compact phase architecture | Hub-and-spoke analytical architecture |
 |---|---|
-| **Architecture Overview × Color Visual** | Slide-ready system maps with strong visual scanning and technology identity |
-| **Architecture Overview × Compact Monochrome** | Dense architecture documentation, academic reports, and print-friendly system maps |
-| **Detailed Request Flow × Color Visual** | Implementation walkthroughs where event classes, responses, data, and errors benefit from semantic color |
-| **Detailed Request Flow × Compact Monochrome** | Precise engineering traces with compact stages, labeled relationships, and minimal visual noise |
+| [![Compact Azure RAG architecture](examples/v2-rag-reference/artifacts/diagram.drawio.png)](examples/v2-rag-reference/artifacts/diagram.drawio.png) | [![Hub-and-spoke industrial analytics architecture](examples/v4-hub-spoke-industrial/artifacts/diagram.drawio.png)](examples/v4-hub-spoke-industrial/artifacts/diagram.drawio.png) |
+| Sparse five-phase RAG flow with platform foundation | Central analytical hub, source and consumer towers, and a lower AI enrichment zone |
 
-You can also provide your own reference instead of choosing a bundled style. NexCanvas transfers its visual grammar without copying its topology or component count.
+The [dense 27-node reference](examples/v3-dense-industrial-ai),
+[compact RAG reference](examples/v2-rag-reference), and
+[hub-and-spoke reference](examples/v4-hub-spoke-industrial) are complete projects,
+not flattened screenshots. Each includes source/model/lock contracts, local SVG
+assets, editable Draw.io XML, a PNG with embedded diagram data, and QA reports.
 
-## What makes this skill different
+### Workflow reference
 
-- **Two-stage visual intake:** it asks for diagram type first, visual style second, then language and audience—while reusing anything already known.
-- **Content-driven composition:** sections, tracks, component counts, and step numbers are derived from the actual system rather than copied from a fixed template.
-- **Two workflow modes:** Architecture Overview for system boundaries and responsibilities; Detailed Request Flow for concrete interactions, state changes, responses, and failures.
-- **Independent visual styles:** use Color Visual, Compact Monochrome, or a user-supplied reference with either workflow mode.
-- **Source-aware modeling:** the skill inspects repositories, documentation, screenshots, and attachments before proposing the diagram structure.
-- **Useful iconography:** verified product logos are used for real services, while Draw.io-native semantic glyphs illustrate internal tasks such as validation, OCR, scoring, queues, and persistence.
-- **Strict connector rules:** arrows attach to component perimeters, use short orthogonal routes, enter on the intended side, and avoid text or unrelated cards.
-- **Meaningful edge labels:** action, payload, branch, and result annotations stay close to clear connector segments without masking crossings.
-- **Visual QA:** bundled checks cover overlaps, crossings, attachment geometry, density, support-zone dominance, response detours, badge consistency, and workflow-specific composition.
-- **Editable deliverables:** repository documentation can keep both the native `.drawio` file and an embedded-XML `.drawio.png` preview.
+[![Multi-agent orchestration workflow](examples/v5-multi-agent-workflow/artifacts/diagram.drawio.png)](examples/v5-multi-agent-workflow/artifacts/diagram.drawio.png)
 
-## Requirements
+The [multi-agent workflow reference](examples/v5-multi-agent-workflow) demonstrates
+the same Microsoft-inspired phase grammar for an executable process: coordinator
+delegation, parallel specialist groups, bounded retry, human escalation, terminal
+outcomes, and separate connector lanes. It is explicitly modeled as `workflow`, not
+as a generic component inventory.
 
-| Requirement | Purpose | Required? |
+## What the skill does
+
+| Capability | Behavior |
+|---|---|
+| Semantic intent | Infers architecture, workflow, sequence, data-flow, or lifecycle from the brief without forcing a type questionnaire |
+| Evidence contract | Records confirmed facts, assumptions, exclusions, and source snapshots before drawing; repository facts can be pinned to Git origin, revision, blob, file, and line range |
+| Technical routing | Selects from 9 diagram families and 48 profiles across software, cloud, data, security, delivery, product, and AI/ML |
+| Layout brainstorming | Scores phase columns, dense columns, rows, compact pipelines, hub-and-spoke, and hybrid compositions before geometry is locked |
+| Reference grammar | Supports provider-neutral and Microsoft/AWS/Google-style icon-led architecture diagrams |
+| Asset portability | Verifies and hashes SVG sources, stores them locally, and embeds them into the Draw.io artifact |
+| Native output | Produces inspectable, uncompressed mxGraph XML instead of pasting a bitmap onto a canvas |
+| Collision QA | Rejects node, icon, label, step-badge, connector-lane, and visible boundary-outline collisions |
+| Visual proof | Renders through Draw.io Desktop, requires human/agent image inspection, then seals hashes at postflight |
+
+## Agent-guided intake
+
+Describe the system or process and specify the diagram language. That is enough
+to start; you do not need to choose a diagram category, style, or canvas.
+
+For example: "Draw a multi-agent system with one coordinator and specialist agents.
+Use English." The agent derives the structure, compares layouts, builds an editable
+diagram, and inspects the rendered result. Unspecified conceptual roles are recorded
+as assumptions. When documenting an existing system, the agent inspects its sources.
+
+The agent asks only for missing language or a content ambiguity that would change
+the meaning of the diagram. Explicit visual references and output preferences remain
+active for later examples and revisions until changed. See the
+[intake contract](references/intake-and-discovery.md).
+
+### Five semantic views
+
+The five intents describe the question being answered, not the appearance of the diagram:
+
+| Intent | Answers |
+|---|---|
+| Architecture | What components exist, where are they, and what depends on what? |
+| Workflow | What work happens from trigger to outcome, including branches and approvals? |
+| Sequence | Who exchanges messages, in what order, for one bounded interaction? |
+| Data flow | Where does data originate, transform, persist, and get consumed? |
+| Lifecycle | Which states can one entity enter, and what triggers each transition? |
+
+The agent derives this intent from the brief, then selects a specialized route such as C4, deployment, RAG, agent orchestration, CI/CD, ETL, or state machine. The selected visual grammar remains independent, so any compatible view can still use the Microsoft/reference treatment and remains editable in Draw.io. See [semantic intents and repository evidence](references/semantic-intents-and-repository-evidence.md).
+
+## Where generated output goes
+
+The default project location is deliberately outside the installed skill:
+
+```text
+<your-current-repository>/
+└── nexcanvas-output/
+    └── <project-slug>/
+        ├── source_model.json
+        ├── diagram_lock.json
+        ├── diagram_model.json
+        ├── assets/
+        │   ├── asset_manifest.json
+        │   └── icons/
+        ├── artifacts/
+        │   ├── diagram.drawio
+        │   └── diagram.drawio.png
+        └── reports/
+            ├── runtime.json
+            ├── repository_evidence.json
+            ├── layout_brainstorm.json
+            ├── build.json
+            ├── diagram_qa.json
+            ├── render.json
+            ├── visual_qa.json
+            └── postflight.json
+```
+
+`repository_evidence.json` is emitted only for repository-backed diagrams. Other
+reports are produced as their corresponding build, render, and review stages run.
+
+The tracked [`nexcanvas-output/README.md`](nexcanvas-output/README.md) makes this
+location visible in a fresh clone, while generated contents stay ignored. An
+explicit project path can still be supplied.
+
+## Install as an Agent Skill
+
+NexCanvas follows the open Agent Skills directory convention: keep this entire
+repository together so `SKILL.md` can reach its scripts, references, schemas,
+configuration, and assets.
+
+| Host | Project-scoped installation | Invocation |
 |---|---|---|
-| [Codex](https://developers.openai.com/codex/) | Runs the skill | Yes |
-| Git | Installs or updates the repository | Yes |
-| Python 3.10+ | Runs the bundled QA script and tests | Recommended |
-| [Draw.io Desktop](https://github.com/jgraph/drawio-desktop/releases/latest) | Opens diagrams, provides offline shape libraries, and exports embedded previews | Strongly recommended |
+| OpenAI Codex | `.agents/skills/nexcanvas-drawio/` | Ask naturally or use `$nexcanvas-drawio` |
+| GitHub Copilot | `.github/skills/nexcanvas-drawio/` | Ask Copilot to use `nexcanvas-drawio` |
+| Claude Code | `.claude/skills/nexcanvas-drawio/` | Ask naturally or use `/nexcanvas-drawio` |
 
-The skill can still create native `.drawio` files without Draw.io Desktop. Desktop is recommended because it makes local editing, logo-library access, and deterministic PNG/SVG/PDF export much easier.
-
-## Install the Codex skill
-
-### Recommended: use `$skill-installer`
-
-Open Codex and send:
-
-```text
-$skill-installer Install the Draw.io skill from https://github.com/sunniie/nexcanvas-drawio and name it drawio.
-```
-
-Let the installer choose the configured Codex skill directory. Restart Codex only if the newly installed skill does not appear in the next session.
-
-### Manual global installation
-
-Current Codex installations discover personal skills under `~/.agents/skills`. The commands below refuse to overwrite an existing `drawio` skill.
-
-#### Windows PowerShell
-
-```powershell
-$skillTarget = Join-Path $HOME ".agents\skills\drawio"
-if (Test-Path -LiteralPath $skillTarget) {
-    throw "A skill already exists at $skillTarget"
-}
-New-Item -ItemType Directory -Force -Path (Split-Path $skillTarget) | Out-Null
-git clone https://github.com/sunniie/nexcanvas-drawio $skillTarget
-```
-
-#### macOS or Linux
+### OpenAI Codex
 
 ```bash
-skill_target="$HOME/.agents/skills/drawio"
-test ! -e "$skill_target" || { echo "A skill already exists at $skill_target"; exit 1; }
-mkdir -p "$(dirname "$skill_target")"
-git clone https://github.com/sunniie/nexcanvas-drawio "$skill_target"
+mkdir -p .agents/skills
+git clone https://github.com/sunniie/nexcanvas-drawio.git .agents/skills/nexcanvas-drawio
 ```
 
-Some Codex installations and installer configurations use `$CODEX_HOME/skills` (commonly `~/.codex/skills`). If that is your configured skill directory, clone the repository to `$CODEX_HOME/skills/drawio` instead.
+Codex discovers repository skills from `.agents/skills`; user-scoped skills can
+live under `$HOME/.agents/skills`. See the official
+[Codex skills documentation](https://developers.openai.com/codex/skills).
 
-### Repository-scoped installation
-
-To share the skill only with collaborators in one codebase, place it at:
-
-```text
-YOUR_PROJECT/.agents/skills/drawio
-```
-
-Commit that folder or add this repository as a Git submodule according to your team's dependency policy.
-
-### Verify discovery
-
-Start a fresh Codex session and try:
-
-```text
-Use $drawio to create an Architecture Overview for this repository. Inspect the source first and show me the proposed diagram brief before drawing.
-```
-
-Codex should identify the `drawio` skill and begin its intake or source-discovery flow.
-
-## Install Draw.io Desktop
-
-Download the newest stable release from the official [Draw.io Desktop releases page](https://github.com/jgraph/drawio-desktop/releases/latest). Avoid pinning installation instructions to a particular version because the desktop application is updated regularly.
-
-### Windows
-
-Choose the package that fits your environment:
-
-- **Installer `.exe`:** normal machine installation; commonly places the CLI at `C:\Program Files\draw.io\draw.io.exe`.
-- **MSI:** useful for managed or per-user deployment where administrator rights may be restricted.
-- **Portable `.exe`:** no installation or file association; useful on locked-down machines.
-
-The per-user executable may be located at:
-
-```text
-C:\Users\YOUR_NAME\AppData\Local\Programs\draw.io\draw.io.exe
-```
-
-### macOS
-
-Install the universal package and verify the CLI at:
-
-```text
-/Applications/draw.io.app/Contents/MacOS/draw.io
-```
-
-### Linux
-
-Use the release package appropriate for your distribution (`.deb`, `.rpm`, or AppImage). When installed on `PATH`, verify it with:
+### GitHub Copilot
 
 ```bash
-drawio --version
+mkdir -p .github/skills
+git clone https://github.com/sunniie/nexcanvas-drawio.git .github/skills/nexcanvas-drawio
 ```
 
-## Enable logo and shape libraries
+GitHub documents project skill locations including `.github/skills`,
+`.claude/skills`, and `.agents/skills`, plus personal Copilot skill folders. See
+[Adding agent skills to GitHub Copilot](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/add-skills).
 
-Draw.io Desktop includes built-in shape libraries that work offline. To make diagrams richer and more accurate:
-
-1. Open Draw.io Desktop.
-2. Select **More Shapes...** at the bottom of the left shape panel.
-3. Enable only the libraries relevant to your work, such as **General**, **Flowchart**, **UML**, **Network**, **AWS**, **Azure**, **Google Cloud**, **Kubernetes**, or **Cisco**.
-4. Use the shape search with both product names and semantic synonyms—for example `document`, `OCR`, `validation`, `queue`, `gateway`, or `database`.
-5. Keep official service logos for the service they actually represent. Use neutral Draw.io glyphs for internal tasks or concepts that do not have an official brand mark.
-
-Useful official resources:
-
-- [Search for shapes in Draw.io](https://www.drawio.com/docs/manual/shapes/shape-search/)
-- [Work with the shape panel](https://www.drawio.com/docs/manual/editor/panels/shapes-panel/)
-- [Public custom libraries](https://www.drawio.com/docs/manual/shapes/public-custom-libraries/)
-- [Draw.io icon libraries](https://icons.diagrams.net/)
-- [Official `drawio-libs` repository](https://github.com/jgraph/drawio-libs)
-
-### Import an extra local library
-
-Draw.io Desktop does not provide the web editor's extended external clip-art search while offline. For extra icons:
-
-1. Download a trusted Draw.io library file, normally `.xml` or `.drawio`, from an official or reviewed source.
-2. In Draw.io Desktop, choose **File → Open Library From → Device**.
-3. Select the downloaded library and keep it in the left shape panel for the current workspace.
-
-Do not substitute a nearby vendor logo when the exact product icon is unavailable. A clearly labeled generic symbol is more accurate than an invented brand association.
-
-## How to use the skill well
-
-You can simply ask for a diagram, but the best results come from supplying the audience, source, and desired output. The skill reuses known context and should not ask you to repeat information already available.
-
-### Architecture Overview
-
-Use this mode for a README, slide, portfolio, system map, ownership boundary, or high-level dependency view.
-
-```text
-Use $drawio to create an English Architecture Overview for new backend engineers.
-Inspect this repository as the source of truth. Show system boundaries, primary
-responsibilities, real dependencies, and verified service logos. Keep the main
-workflow dominant, use the Color Visual style, and deliver both .drawio and
-.drawio.png.
-```
-
-### Detailed Request Flow
-
-Use this mode for an endpoint, user interaction, state transition, debugging path, or implementation-level behavior.
-
-```text
-Use $drawio to create a Detailed Request Flow for the profile scan interaction.
-Separate independent HTTP requests into tracks, show request/response/error lanes,
-include status codes and fallbacks verified from source, and deliver editable source
-plus an embedded PNG preview. Use the Color Visual style.
-```
-
-### Compact Monochrome system architecture
-
-Use this style for dense engineering documentation, academic material, or print-friendly system maps.
-
-```text
-Use $drawio to create an Architecture Overview × Compact Monochrome diagram for
-this repository. Inspect the implementation first, use compact numbered stages only
-for real internal lifecycles, label only relationships that add information, keep
-connector shafts away from every label, and deliver .drawio plus .drawio.png.
-```
-
-### Let the skill help define scope
-
-```text
-Use $drawio for this system. I am not sure whether I need an Architecture Overview
-or Detailed Request Flow, or whether Color Visual or Compact Monochrome fits better.
-Show the type previews first and the style previews second. Ask for the missing
-language, audience, and scope, then propose a concise diagram brief before drawing.
-```
-
-### Other diagram types
-
-```text
-Use $drawio to create an ERD from the database migrations in this repository.
-Mark inferred relationships as assumptions, use English labels, and export an
-editable PNG with the native .drawio source.
-```
-
-## Recommended workflow
-
-1. **Discover:** inspect the supplied code, documents, screenshots, and known conversation context.
-2. **Choose type:** select Architecture Overview, Detailed Request Flow, both, or another appropriate diagram type.
-3. **Choose style:** select Color Visual, Compact Monochrome, or a supplied reference independently of type.
-4. **Confirm:** record the `type × style` profile and propose real boundaries, tracks, events, dependencies, icon plan, language, and output format.
-5. **Model:** build native Draw.io XML from the confirmed content model.
-6. **Validate:** run XML and visual heuristics with the matching QA profile.
-7. **Export:** create `.drawio.png`, SVG, or PDF with embedded diagram XML when needed.
-8. **Inspect:** review at 100% for hierarchy and at 200% for connector attachment, label clearance, and arrow direction.
-
-The number of zones, tracks, cards, and sequence badges must follow the subject. The examples are visual references, not fixed templates.
-
-## Output formats
-
-| Output | Best use | Editable in Draw.io? |
-|---|---|---|
-| `.drawio` | Canonical source | Yes |
-| `.drawio.png` | README preview and editable image artifact | Yes, when exported with embedded XML |
-| `.drawio.svg` | Scalable documentation asset | Yes, when exported with embedded XML |
-| `.drawio.pdf` | Review or print | Yes, when exported with embedded XML |
-| Browser URL | Quick collaborative editing | Yes, subject to browser URL-size limits |
-
-For repository documentation, keep both the native source and the embedded PNG preview.
-
-## Export from the command line
-
-After locating the Draw.io executable, export with embedded XML:
+### Claude Code
 
 ```bash
-drawio -x -f png -e -b 10 -o architecture.drawio.png architecture.drawio
+mkdir -p .claude/skills
+git clone https://github.com/sunniie/nexcanvas-drawio.git .claude/skills/nexcanvas-drawio
 ```
 
-Windows PowerShell example:
+Claude Code discovers project skills under `.claude/skills` and personal skills
+under `~/.claude/skills`. See
+[Extend Claude with skills](https://code.claude.com/docs/en/slash-commands).
 
-```powershell
-& "C:\Program Files\draw.io\draw.io.exe" `
-  -x -f png -e -b 10 `
-  -o architecture.drawio.png architecture.drawio
+### Example prompts
+
+```text
+Use NexCanvas Draw.io to investigate this repository and create a deployment
+architecture for engineering onboarding. Ask only for unresolved decisions.
 ```
 
-The important flag is `-e` / `--embed-diagram`. It keeps the exported PNG, SVG, or PDF editable when reopened in Draw.io.
+```text
+Recreate this Microsoft architecture reference as editable Draw.io. Preserve its
+visual grammar, but derive the topology from my system description.
+```
 
-## Run quality checks
+```text
+Repair this .drawio: eliminate overlapping connector lanes and keep all labels
+clear of icons, step badges, and container outlines. Render and verify it.
+```
 
-From the repository root:
+## Quick start from the command line
+
+Requirements:
+
+- Python 3.10 or newer for authoring and structural QA;
+- Draw.io Desktop for deterministic PNG/SVG/PDF export and complete visual QA;
+- network access only when an icon must be synced and is not already local.
+
+Inspect runtime capabilities:
 
 ```bash
-python scripts/drawio_qa.py examples/learning-website-architecture-overview.drawio --diagram-type overview
-python scripts/drawio_qa.py examples/learning-website-python-practice-detailed-request.drawio --diagram-type detailed
-python scripts/drawio_qa.py examples/zmentorai-compact-monochrome-system-architecture.drawio --diagram-type overview
-python -m unittest discover -s scripts -p "test_*.py"
+python scripts/doctor.py
 ```
 
-Before publishing a diagram, resolve every `ERROR` and all actionable `WARNING` results, then inspect the rendered image. Automated XML checks cannot determine whether the composition is attractive or whether every edge communicates the intended business meaning.
+Initialize from only a title, brief, and output language. The skill infers the semantic intent and a compatible default route:
+
+```bash
+python scripts/project.py init --name "Checkout request" --brief "Trace one checkout API request through payment and inventory" --language en
+```
+
+Or choose an explicit directory:
+
+```bash
+python scripts/project.py init docs/architecture --name "My architecture" --family software --profile c4-container
+```
+
+After completing the generated contracts, build and gate the artifact:
+
+```bash
+PROJECT=nexcanvas-output/checkout-request
+python scripts/layout_brainstorm.py "$PROJECT/diagram_model.json" --output "$PROJECT/reports/layout_brainstorm.json"
+python scripts/build_drawio.py "$PROJECT/diagram_model.json" -o "$PROJECT/artifacts/diagram.drawio" --project-root "$PROJECT" --proof "$PROJECT/reports/build.json"
+python scripts/diagram_qa.py "$PROJECT/diagram_model.json" --drawio "$PROJECT/artifacts/diagram.drawio" --source-model "$PROJECT/source_model.json" --project-root "$PROJECT" --output "$PROJECT/reports/diagram_qa.json" --fail-on-warning
+python scripts/render.py "$PROJECT/artifacts/diagram.drawio" -o "$PROJECT/artifacts/diagram.drawio.png" --report "$PROJECT/reports/render.json"
+```
+
+Inspect the PNG before recording approval:
+
+```bash
+python scripts/visual_qa.py "$PROJECT/artifacts/diagram.drawio.png" --expected-width 1600 --expected-height 900 --approve --reviewer "Your name" --notes "Inspected at target size and connector terminals at 200%" --output "$PROJECT/reports/visual_qa.json"
+python scripts/postflight.py "$PROJECT" --output "$PROJECT/reports/postflight.json"
+```
+
+### Repository-backed diagrams
+
+When the diagram must reflect a real codebase, capture the current Git identity before authoring facts:
+
+```bash
+python scripts/repo_evidence.py capture . --source-model "$PROJECT/source_model.json" --source-id repo-1
+```
+
+Add repo-relative file and line ranges to fact evidence, then verify the exact origin, full commit, optional blob hash, and range. Pass the repository root again to release QA and postflight so provenance is rechecked rather than trusted from an old report:
+
+```bash
+python scripts/repo_evidence.py verify "$PROJECT/source_model.json" --repo-root . --output "$PROJECT/reports/repository_evidence.json"
+python scripts/diagram_qa.py "$PROJECT/diagram_model.json" --drawio "$PROJECT/artifacts/diagram.drawio" --source-model "$PROJECT/source_model.json" --project-root "$PROJECT" --repo-root . --output "$PROJECT/reports/diagram_qa.json" --fail-on-warning
+python scripts/postflight.py "$PROJECT" --repo-root . --output "$PROJECT/reports/postflight.json"
+```
+
+This verifies the authored evidence. It does not claim to discover live infrastructure, infer unknown ownership, or prove runtime behavior.
+
+PowerShell users can replace the first line with
+`$Project = "nexcanvas-output/my-architecture"` and `$PROJECT` with `$Project`.
+
+## Reliable icons and logos
+
+Catalog assets are resolved before drawing:
+
+```bash
+python scripts/icon_catalog.py postgresql
+python scripts/icon_sync.py nexcanvas-output/my-architecture postgresql
+```
+
+Azure reference projects can sync exact assets from Microsoft's official
+Architecture Icons package:
+
+```bash
+python scripts/icon_sync.py nexcanvas-output/my-architecture azure-functions --provider microsoft-azure-official --accept-terms
+python scripts/icon_sync.py nexcanvas-output/my-architecture azure-ai-search --provider microsoft-azure-official --accept-terms
+```
+
+AWS and Google Cloud projects accept an official provider ZIP through
+`--source-archive`. The resolver checks SVG safety, records source/version/hash
+and license metadata, copies the asset into the project, and embeds it in the
+editable Draw.io XML. If no exact verified logo exists, the skill uses a neutral
+semantic glyph or reports `NeedsManual`; it does not improvise a brand mark.
+
+## Layout and visual grammar
+
+NexCanvas does not equate “architecture diagram” with one template. It chooses
+composition after the semantic model is stable:
+
+- **phase columns** for short left-to-right pipelines;
+- **dense phase columns** for parallel hot/cold paths and substantial lifecycle views;
+- **phase rows** when vertical progression shortens routes;
+- **compact pipeline** for a small number of strong stages;
+- **hub-and-spoke** for a real analytical, integration, or control center;
+- **hybrid grid** when a main flow needs subordinate feedback, governance, or topology.
+
+Provider-reference mode uses restrained neutral zones, official icon-led
+services, numbered handoffs, orthogonal routing, and a foundation band. See
+[reference image patterns](references/reference-image-patterns.md),
+[layout brainstorming](references/layout-brainstorming.md), and the
+[enterprise reference style](references/enterprise-reference-style.md).
+
+## Quality gates
+
+A project is complete only when:
+
+1. one dominant semantic intent is resolved and compatible with the specialized route;
+2. source facts are confirmed or explicitly marked as assumptions, and repository ranges are revision-verified when present;
+3. route/profile requirements and model references are valid;
+4. requested assets are exact, local, embedded, and renderable;
+5. connectors have explicit semantics, independent lanes, correct direction, and distinct service ports for independent fan-in/fan-out relationships;
+6. labels do not overlap nodes, icons, badges, connector strokes, or visible boundary outlines;
+7. incoming and outgoing edges cannot form an accidental visual relay through a service, and title/legend chrome matches the model;
+8. automated QA has zero errors and zero actionable warnings;
+9. the rendered image was traced end to end at delivery size and connector terminals were inspected enlarged;
+10. postflight confirms that source, model, lock, render, and approval hashes still match.
+
+When Draw.io Desktop is unavailable, the portable tier can still generate and
+structurally validate editable `.drawio`, but visual approval remains pending.
 
 ## Repository structure
 
 ```text
-.
-├── SKILL.md                         # Codex skill entry point
-├── agents/openai.yaml              # UI metadata
-├── references/
-│   ├── compact-monochrome-style.md  # Compact labeled system-flow grammar
-│   ├── intake-and-discovery.md      # Collaborative intake workflow
-│   ├── style-catalog.md              # Type-independent visual style picker
-│   ├── visual-contract.md           # Shared visual and geometry rules
-│   └── workflow-types.md            # Overview vs. Detailed Request guidance
-├── scripts/
-│   ├── drawio_qa.py                 # Diagram QA CLI
-│   └── test_drawio_qa.py            # Standard-library unit tests
-├── assets/examples/                 # Type and style preview images for intake and README
-└── examples/                        # Editable Draw.io type and style sources
+SKILL.md                          portable agent instructions
+agents/openai.yaml               optional Codex interface metadata
+workflows/                       generate, repair, and reference-conversion flows
+references/                      notation, intake, layout, asset, and QA contracts
+config/                          route, theme, archetype, and provider registries
+schemas/                         JSON contracts
+scripts/nexcanvas/               reusable implementation package
+scripts/*.py                     host-neutral command-line entry points
+tests/                           unit and reference-project tests
+examples/v2-rag-reference/       compact phase reference
+examples/v3-dense-industrial-ai/ dense industrial AI reference
+examples/v4-hub-spoke-industrial/ hub-and-spoke reference
+examples/v5-multi-agent-workflow/ multi-agent orchestration workflow
+nexcanvas-output/                documented default generated-output root
 ```
 
-## Troubleshooting
+## Development and validation
 
-### The skill is not discovered
+```bash
+python -m unittest discover -s tests -v
+python scripts/test_drawio_qa.py -v
+python scripts/doctor.py
+```
 
-- Confirm `SKILL.md` is directly inside the installed `drawio` folder.
-- Start a new Codex session after installation.
-- Check whether your installation uses `~/.agents/skills` or a configured `$CODEX_HOME/skills` directory.
-- Invoke it explicitly as `$drawio` in the first prompt.
-
-### Draw.io export is unavailable
-
-- Confirm Draw.io Desktop is installed.
-- Locate the platform-specific executable listed above.
-- If export is still unavailable, keep the native `.drawio` file or ask for browser URL output.
-
-### Logos are missing
-
-- Enable the relevant libraries through **More Shapes...**.
-- Search by vendor, product, and generic semantic terms.
-- Import a reviewed local library when the built-in set is insufficient.
-- Prefer a labeled generic glyph over an incorrect vendor logo.
-
-### The diagram is technically valid but still looks weak
-
-- Compare the export beside the selected visual reference at the same scale.
-- For a compact monochrome system flow, use nesting and shape semantics for hierarchy, label meaningful relationships, and reserve routing gutters before placing cards.
-- Reduce low-information cards and redistribute real components across unused space.
-- Add semantic task glyphs where text-only stages become visually repetitive.
-- Shorten response routes and ensure the primary path remains visually dominant.
-- Recheck contrast, label gutters, logo scale, and repeated badge consistency.
-
-## Contributing
-
-Issues and pull requests are welcome. When changing the QA script or visual rules:
-
-1. Add or update a standard-library unit test.
-2. Run the complete test suite.
-3. Validate every editable catalog example with its matching diagram profile.
-4. Export and visually inspect every affected preview before submitting the change.
+The implementation uses the Python standard library for its core contract,
+layout, build, and QA pipeline. This keeps the same skill usable by Codex,
+GitHub Copilot, Claude Code, and other hosts that implement Agent Skills.
 
 ## License
 
-Released under the [MIT License](LICENSE).
+Code and documentation are licensed under [MIT](LICENSE). Technology marks and
+provider icon packs remain subject to their owners' licenses and trademark
+policies; asset provenance is recorded in each project manifest.

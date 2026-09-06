@@ -1,0 +1,20 @@
+{
+  "output": "artifacts/diagram.drawio",
+  "route": "ai-ml/agent-orchestration",
+  "nodes": 16,
+  "edges": 15,
+  "embeddedAssets": [
+    "generic-agent",
+    "generic-external-tools",
+    "generic-gateway",
+    "generic-guardrail",
+    "generic-orchestrator",
+    "generic-response",
+    "generic-retry",
+    "generic-review",
+    "generic-state",
+    "generic-telemetry",
+    "generic-user"
+  ],
+  "modelHash": "2637584e01e1a7b284f600c9da0c9d40d5c4f0e4614161db9fb80149a4250012"
+}

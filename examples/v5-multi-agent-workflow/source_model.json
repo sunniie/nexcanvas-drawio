@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "2.0",
+  "status": "confirmed",
+  "sources": [
+    {
+      "id": "user-brief",
+      "type": "conversation",
+      "location": "Approved multi-agent system brief in this conversation",
+      "snapshot": "2026-09-06"
+    },
+    {
+      "id": "visual-reference",
+      "type": "visual-reference",
+      "location": "Microsoft Azure architecture diagrams supplied earlier by the user",
+      "snapshot": "2026-09-06"
+    }
+  ],
+  "facts": [
+    {
+      "id": "fact-scope",
+      "claim": "The system has one coordinating agent and several specialist agents.",
+      "evidence": [
+        "user-brief"
+      ],
+      "confidence": "confirmed"
+    },
+    {
+      "id": "fact-authority",
+      "claim": "The coordinator owns planning, delegation, merge, retry control, and final response authority.",
+      "evidence": [
+        "user-brief"
+      ],
+      "confidence": "confirmed"
+    },
+    {
+      "id": "fact-agents",
+      "claim": "Research and data/tool work can run in parallel; analysis synthesizes their results and review validates the answer.",
+      "evidence": [
+        "user-brief"
+      ],
+      "confidence": "confirmed"
+    },
+    {
+      "id": "fact-tools",
+      "claim": "Specialist tool access is mediated by a permissioned gateway for web, API, and database tools.",
+      "evidence": [
+        "user-brief"
+      ],
+      "confidence": "confirmed"
+    },
+    {
+      "id": "fact-state",
+      "claim": "Session/task state is separate from durable memory; durable memory stores approved results only.",
+      "evidence": [
+        "user-brief"
+      ],
+      "confidence": "confirmed"
+    },
+    {
+      "id": "fact-control",
+      "claim": "Failed review can trigger at most two retries; repeated failure or high risk escalates to a human.",
+      "evidence": [
+        "user-brief"
+      ],
+      "confidence": "confirmed"
+    },
+    {
+      "id": "fact-output",
+      "claim": "The output is an evidence-bearing response with telemetry and audit events.",
+      "evidence": [
+        "user-brief"
+      ],
+      "confidence": "confirmed"
+    },
+    {
+      "id": "fact-style",
+      "claim": "The visual grammar follows the supplied Microsoft Architecture Center examples: phase columns, nested groups, flat service icons, neutral orthogonal lines, green handoff badges, and a foundation band.",
+      "evidence": [
+        "visual-reference"
+      ],
+      "confidence": "confirmed"
+    }
+  ],
+  "assumptions": [
+    "The architecture is provider and framework neutral; generic icons are not vendor logos.",
+    "The diagram is a logical request lifecycle rather than a deployment topology.",
+    "Telemetry summarizes agent, tool, and review events without drawing a connector from every component."
+  ],
+  "exclusions": [
+    "Model provider",
+    "Agent framework",
+    "Network topology",
+    "Detailed retry implementation",
+    "RAG indexing"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nexcanvas.dev/schemas/asset-manifest.schema.json",
+  "title": "NexCanvas Asset Manifest",
+  "type": "object",
+  "required": ["schemaVersion", "catalogVersion", "assets"],
+  "properties": {
+    "schemaVersion": {"const": "2.0"},
+    "catalogVersion": {"type": "string"},
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "state", "provider"],
+        "properties": {
+          "key": {"type": "string", "minLength": 1},
+          "requested": {"type": "string"},
+          "state": {"enum": ["Requested", "Resolved", "Synced", "Embedded", "RenderVerified", "NeedsManual"]},
+          "provider": {"enum": ["user", "official-pack", "simple-icons", "drawio-native", "generic"]},
+          "version": {"type": "string"},
+          "sourceUrl": {"type": "string"},
+          "localPath": {"type": "string"},
+          "sha256": {"type": "string"},
+          "license": {"type": "string"},
+          "trademarkNotice": {"type": "string"},
+          "message": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

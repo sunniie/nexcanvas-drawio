@@ -1,122 +1,82 @@
-# Collaborative Intake and Discovery
+# Brief-first intake
 
-Use this reference before drawing a new workflow, architecture, integration, or system-flow artifact. The goal is to prevent unsupported autonomous layout decisions without making a well-specified user repeat themselves.
+Start with the user's brief and diagram language. Reuse the conversation, repository,
+documents and references before asking anything.
 
-## Gate 1: choose the diagram profile and language
+## Conversation
 
-First inventory what the conversation already answers. Ask only for unresolved high-impact choices.
+- If both brief and language are resolved, proceed immediately. Approval already given
+  remains valid; do not request another approval for routine layout decisions.
+- If language is missing, ask only which language the diagram should use. Do not infer
+  English merely because service names are English.
+- If the brief is missing, ask what system or process the user wants to communicate.
+  Combine this with the language question when both are missing.
+- For a conceptual design, propose reasonable roles and mark them as assumptions.
+  For a diagram of an existing system, inspect its sources; do not invent behavior.
+- Ask a focused content question only when a missing fact changes meaning or scope
+  and cannot be resolved from evidence. Continue independent investigation meanwhile.
+- Never present a diagram-type, information-depth, visual-style, canvas, or diagram-count
+  questionnaire. Do not show preset samples as a mandatory selection step.
+- Honor an explicit format, style, reference, orientation, or request for multiple views.
+  Otherwise produce one editable diagram plus an embedded PNG preview, with no title
+  or legend chrome unless it aids understanding.
+- Treat a visual reference or named visual standard as persistent conversation context.
+  Continue using its layout grammar, density, icon treatment, connector language and
+  whitespace in later examples and revisions until the user explicitly changes it.
+  Removing a style questionnaire must never reset an established visual authority.
 
-### Gate 1A: choose information depth
+Summarize the resolved brief briefly: what the diagram explains, main actors and
+responsibilities, key relationships, language, and material assumptions. This is a
+decision record, not a mandatory confirmation gate.
 
-If the workflow mode is not explicit, display both bundled type examples before asking:
+## Agent-owned design decisions
 
-- `../assets/examples/architecture-overview.png` — a high-level capability and dependency map for README, portfolio, presentation, and system communication.
-- `../assets/examples/detailed-request-flow.png` — an implementation-level interaction view with independent tracks, event order, authority, data access, fallbacks, and response behavior.
+Determine the question the diagram answers, infer one dominant semantic intent
+(`architecture`, `workflow`, `sequence`, `data-flow`, or `lifecycle`), then select
+the internal route and notation beneath it. Never present the five intents as a
+mandatory user menu. Read [semantic intents and repository evidence](semantic-intents-and-repository-evidence.md).
+Internal profiles and QA presets are implementation details, not user choices.
 
-Use a local image-view tool so the user sees the previews in the conversation. If that tool is unavailable, provide clickable file paths plus the descriptions above.
+Inventory entry points, ownership boundaries, active steps, passive resources, outputs,
+and failure/feedback behavior relevant to the brief. Distinguish verified products
+from generic concepts. Do not invent a target number of zones, nodes or steps.
 
-Ask for **Architecture Overview**, **Detailed Request Flow**, or both. Resolve this before treating any preview as a layout reference.
+Compare candidate compositions using the layout brainstorming reference. Choose:
+- a short chain for a simple ordered process;
+- parallel branches for independent work;
+- a hub for actual centralized coordination;
+- nested scopes for containment and ownership;
+- rows or columns according to reading order, density and connector clearance.
 
-### Gate 1B: choose visual style
+Record why the chosen layout fits the content and why the runner-up is weaker.
+Adapt canvas dimensions to readable content. Use official assets only for named
+products and native shapes for internal concepts. References guide visual grammar,
+never dictate topology.
 
-If visual style is not explicit and the user supplied no reference, display both bundled style examples:
+## Before delivery
 
-- `../assets/examples/architecture-overview.png` — **Color Visual**, using restrained semantic color, verified logos, pale zones, and technical cards.
-- `../assets/examples/compact-monochrome-system-flow.png` — **Compact Monochrome**, using black-and-white hierarchy, compact nested cards, numbered local stages, labeled relationships, and print-friendly geometry.
+Check every important connector as source -> target, meaning, and authority.
+Separate request/response and success/retry when both matter. Keep independent
+ports and lanes distinct; keep labels clear of shapes and unrelated lines.
 
-Ask for **Color Visual**, **Compact Monochrome**, or a supplied reference. Either style works with either workflow mode. The preview demonstrates visual grammar only; never inherit its subject, boundary count, component count, or topology.
+Run contract and geometry QA, render, inspect at delivery size and enlarged terminals,
+repair any defects, then record visual approval and run postflight. Never claim
+visual verification from XML or a successful export alone.
 
-Ask one compact round, normally no more than three questions:
+## Example conversations
 
-1. **Diagram type:** Architecture Overview, Detailed Request Flow, or both?
-2. **Visual style:** Color Visual, Compact Monochrome, or a supplied reference?
-3. **Language and use:** language plus README/presentation/portfolio, product discussion, or engineering/debugging? Ask for the repository, document, or source description only if none is available.
+Brief: "One coordinator and several specialist agents. English."
+Action: proceed; infer the agent-orchestration route, choose a composition after
+examining delegation and return paths, and mark unspecified roles as assumptions.
+Do not ask the user to choose a diagram category or palette.
 
-Ask output format and canvas together with question 3 when relevant. Default repository documentation output to editable `.drawio` plus `.drawio.png` with embedded XML.
+Brief: "Draw our checkout from this repository, in Vietnamese."
+Action: inspect actual checkout code, select relevant interactions and errors,
+then build one view. Ask only if the repository leaves a material scope ambiguity.
 
-Do not ask for a visual style when the user has already supplied a reference or named a preference. A reference determines visual grammar, not content topology: extract its palette, shape hierarchy, nesting, icon treatment, routing, and label placement without copying its number of groups or components.
+Brief: "Draw a system."
+Action: ask what system/process and which diagram language; there is no meaningful
+content to lay out yet.
 
-Do not ask Gate 1 again when the user has already named the type, style, language, audience, source, and output. If only one field is missing, ask only that field. Record the resolved pair as `Diagram profile: <type> × <style>`.
-
-## Investigate before proposing boxes
-
-Inspect available code, documents, diagrams, screenshots, and prior decisions. Separate confirmed facts from assumptions. Build a private inventory of:
-
-- actors and entry points;
-- real ownership, execution, trust, and network boundaries;
-- capabilities or request events;
-- state authorities, stores, queues, and external dependencies;
-- responses, downstream consumers, fallbacks, and errors;
-- official technologies versus internal/custom concepts.
-- relationships that require an action, payload, branch, or result label.
-
-Do not start with a target number of parts, columns, lanes, or badges.
-
-## Gate 2: confirm the content model
-
-Before writing XML, present a concise diagram brief in the chosen language:
-
-```text
-Purpose / audience:
-Source snapshot:
-Proposed structure:
-- zones or interaction tracks, with why each boundary exists
-- components inside each zone
-Primary flow:
-- capability relationship for Overview, or true events per track for Detailed
-- response/callback owner and direction for every externally visible interaction
-- connector labels for relationships whose meaning is not obvious from the endpoint names
-Dependencies and authority:
-Icon plan:
-- official logos: ...
-- neutral task glyphs: ...
-Output:
-Assumptions / exclusions:
-```
-
-Make the proposal content-specific. Examples are visual grammar only; their five capabilities, three tracks, and event counts are never reusable defaults.
-
-Pause for confirmation when changing any of these would materially change the artifact: scope boundary, workflow mode, interaction split, authority, included failure behavior, or language. If the user explicitly requests autonomous execution, show the brief as a decision record and continue.
-
-## Derive composition from content
-
-Choose the layout only after Gate 2:
-
-- Use the smallest number of meaningful zones that explains ownership or execution.
-- Size cards from information density and semantic importance.
-- Distribute peer components across the usable width; do not inflate sparse cards to fill a preset grid.
-- Create a new track only for a genuinely separate request, local action, background job, or state transition.
-- Number only real events after the interaction ledger is stable.
-- Reduce or expand the canvas when the content requires it; 1920x1080 is a documentation default, not a structural constraint.
-
-## Plan icons deliberately
-
-Use three icon tiers:
-
-1. **Official resource logo:** verified service, framework, platform, database, cloud product, or observability tool. Embed it in the source.
-2. **Neutral Draw.io semantic glyph:** task or internal concept such as user, browser, document, upload, OCR, shield/check, decision, review, transform, scoring, analytics, search, database, queue, notification, or output. Use a built-in General/Flowchart/Clipart/library shape or a small composed vector.
-3. **Text-led component:** abstract business rule or dense internal logic where a glyph would add noise.
-
-Never make a semantic glyph look like an official vendor mark. Keep glyph color aligned with the owning stage, and tag multi-shape compositions with `qa-illustrative` when needed by QA.
-
-## Gate 3: verify semantics before review-ready export
-
-After automated geometry QA, create a compact edge ledger for every primary, response, callback, retry, feedback, and authority-changing connector:
-
-```text
-source -> target | meaning | line class | authority/result owner
-```
-
-Trace the rendered arrowhead, not only the XML source/target fields. Reject any connector whose label describes the opposite direction. Represent request/response, delivery/acknowledgement, attempt/retry, and review/feedback as separate one-way edges when both directions matter.
-
-For every labeled edge, verify that the annotation states an action, payload, or result; sits beside a clear segment; stays at least 6 px from shapes; and does not use an opaque box to mask a crossing. A label is not a substitute for an unclear source or target.
-
-Only call an artifact review-ready after the mode-specific QA profile is clean, the semantic edge ledger is consistent, and the PNG has been inspected at 100% plus connector terminals at 200%. A preliminary content draft must be labeled as such.
-
-## Conversation behavior
-
-- Explain why a question changes the diagram rather than asking a generic questionnaire.
-- Prefer two short decision gates over a long form.
-- Do not hide major assumptions inside the finished artifact.
-- Treat user references as visual authority after content accuracy.
-- If the user changes direction after Gate 2, update the brief before drawing instead of patching an incompatible layout.
+Brief: "Make the attached diagram monochrome, keep the content, English."
+Action: preserve semantics and apply the explicit visual instruction without intake menus.

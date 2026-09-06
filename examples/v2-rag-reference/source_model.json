@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "2.0",
+  "status": "confirmed",
+  "sources": [
+    {"id": "design-brief", "type": "manual", "location": "Azure RAG reference architecture brief", "snapshot": "2026-08-27"},
+    {"id": "microsoft-icons", "type": "web", "location": "https://learn.microsoft.com/en-us/azure/architecture/icons/", "snapshot": "2026-08-27"}
+  ],
+  "facts": [
+    {"id": "fact-ingest", "claim": "Enterprise content is orchestrated, embedded, and written to a search index through a distinct ingestion path.", "evidence": ["design-brief:offline-indexing"], "confidence": "confirmed"},
+    {"id": "fact-query", "claim": "Client requests are orchestrated through hybrid retrieval, grounded generation, and response safety checks.", "evidence": ["design-brief:online-serving"], "confidence": "confirmed"},
+    {"id": "fact-store", "claim": "Azure AI Search holds the vector and keyword index used by the retrieval path.", "evidence": ["design-brief:search-platform"], "confidence": "confirmed"},
+    {"id": "fact-platform", "claim": "Identity, secrets, monitoring, and cloud security apply across the workload as foundation capabilities.", "evidence": ["design-brief:cross-cutting-controls"], "confidence": "confirmed"},
+    {"id": "fact-icons", "claim": "Azure service nodes use official Microsoft architecture icons and keep the product name adjacent to each icon.", "evidence": ["microsoft-icons:general-guidelines"], "confidence": "confirmed"}
+  ],
+  "assumptions": ["The diagram is a logical reference view; networking and regional topology are intentionally omitted."],
+  "exclusions": ["Deployment SKU selection", "Detailed prompt implementation", "Disaster-recovery topology"]
+}

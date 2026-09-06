@@ -1,0 +1,827 @@
+{
+  "schemaVersion": "2.0",
+  "title": "Multi-agent orchestration workflow",
+  "viewIntent": "workflow",
+  "showTitle": false,
+  "route": {
+    "family": "ai-ml",
+    "profile": "agent-orchestration"
+  },
+  "audience": "AI engineers and solution architects",
+  "deliveryTarget": "engineering-doc",
+  "language": "en",
+  "theme": "microsoft-reference",
+  "visualArchetype": "provider-neutral-reference",
+  "layoutStrategy": "hybrid-grid",
+  "direction": "LR",
+  "canvas": {
+    "width": 2000,
+    "height": 1200,
+    "background": "#FFFFFF"
+  },
+  "boundaries": [
+    {
+      "id": "request",
+      "label": "Request",
+      "kind": "phase",
+      "presentation": "phase-column",
+      "order": 1,
+      "weight": 0.9
+    },
+    {
+      "id": "coordinate",
+      "label": "Coordinate",
+      "kind": "phase",
+      "presentation": "phase-column",
+      "order": 2,
+      "weight": 1.15
+    },
+    {
+      "id": "specialists",
+      "label": "Specialist work",
+      "kind": "phase",
+      "presentation": "phase-column",
+      "order": 3,
+      "weight": 1.8
+    },
+    {
+      "id": "validate",
+      "label": "Validate and govern",
+      "kind": "phase",
+      "presentation": "phase-column",
+      "order": 4,
+      "weight": 1.25
+    },
+    {
+      "id": "respond",
+      "label": "Respond",
+      "kind": "phase",
+      "presentation": "phase-column",
+      "order": 5,
+      "weight": 0.9
+    },
+    {
+      "id": "parallel-work",
+      "label": "Parallel execution",
+      "kind": "group",
+      "presentation": "dashed-group",
+      "order": 1,
+      "parent": "specialists",
+      "layout": {
+        "x": 0.05,
+        "y": 0.09,
+        "width": 0.9,
+        "height": 0.38,
+        "flow": "row"
+      }
+    },
+    {
+      "id": "synthesis",
+      "label": "Synthesis",
+      "kind": "group",
+      "presentation": "solid-group",
+      "order": 2,
+      "parent": "specialists",
+      "layout": {
+        "x": 0.18,
+        "y": 0.58,
+        "width": 0.64,
+        "height": 0.28,
+        "flow": "row"
+      }
+    },
+    {
+      "id": "platform",
+      "label": "Tools, state, and observability",
+      "kind": "foundation",
+      "presentation": "foundation-band",
+      "order": 9
+    }
+  ],
+  "nodes": [
+    {
+      "id": "user",
+      "label": "User",
+      "caption": "Goal and constraints",
+      "kind": "actor",
+      "boundary": "request",
+      "presentation": "service-icon",
+      "assetRef": "generic-user",
+      "importance": "primary",
+      "evidence": [
+        "fact-scope"
+      ],
+      "layout": {
+        "order": 1,
+        "track": 0.23
+      }
+    },
+    {
+      "id": "guardrails",
+      "label": "Input policy and guardrails",
+      "caption": "Normalize, classify risk, and constrain scope",
+      "kind": "service",
+      "boundary": "request",
+      "presentation": "service-icon",
+      "assetRef": "generic-guardrail",
+      "importance": "primary",
+      "evidence": [
+        "fact-control"
+      ],
+      "layout": {
+        "order": 2,
+        "track": 0.68,
+        "width": 174
+      }
+    },
+    {
+      "id": "orchestrator",
+      "label": "Orchestrator and planner",
+      "caption": "Plan, delegate, merge, and own final authority",
+      "kind": "orchestrator",
+      "boundary": "coordinate",
+      "presentation": "service-icon",
+      "assetRef": "generic-orchestrator",
+      "importance": "primary",
+      "evidence": [
+        "fact-authority"
+      ],
+      "layout": {
+        "order": 1,
+        "track": 0.24,
+        "width": 180
+      }
+    },
+    {
+      "id": "task-state",
+      "label": "Session and task state",
+      "caption": "Plan, status, evidence pointers, and retry count",
+      "kind": "datastore",
+      "boundary": "coordinate",
+      "presentation": "service-icon",
+      "assetRef": "generic-state",
+      "importance": "primary",
+      "evidence": [
+        "fact-state"
+      ],
+      "layout": {
+        "order": 2,
+        "track": 0.7,
+        "width": 176
+      }
+    },
+    {
+      "id": "research-agent",
+      "label": "Research agent",
+      "caption": "Gather sources and citations",
+      "kind": "agent",
+      "boundary": "parallel-work",
+      "presentation": "service-icon",
+      "assetRef": "generic-agent",
+      "importance": "primary",
+      "evidence": [
+        "fact-agents"
+      ],
+      "layout": {
+        "order": 1
+      }
+    },
+    {
+      "id": "data-agent",
+      "label": "Data and tool agent",
+      "caption": "Query systems and prepare structured results",
+      "kind": "agent",
+      "boundary": "parallel-work",
+      "presentation": "service-icon",
+      "assetRef": "generic-agent",
+      "importance": "primary",
+      "evidence": [
+        "fact-agents"
+      ],
+      "layout": {
+        "order": 2,
+        "width": 170
+      }
+    },
+    {
+      "id": "analysis-agent",
+      "label": "Analysis agent",
+      "caption": "Synthesize evidence and resolve conflicts",
+      "kind": "agent",
+      "boundary": "synthesis",
+      "presentation": "service-icon",
+      "assetRef": "generic-agent",
+      "importance": "primary",
+      "evidence": [
+        "fact-agents"
+      ],
+      "layout": {
+        "order": 1,
+        "width": 174
+      }
+    },
+    {
+      "id": "review-agent",
+      "label": "Review and validation agent",
+      "caption": "Check evidence, policy, and completion criteria",
+      "kind": "agent",
+      "boundary": "validate",
+      "presentation": "service-icon",
+      "assetRef": "generic-review",
+      "importance": "primary",
+      "evidence": [
+        "fact-agents",
+        "fact-control"
+      ],
+      "layout": {
+        "order": 1,
+        "track": 0.18,
+        "width": 184
+      }
+    },
+    {
+      "id": "retry-policy",
+      "label": "Bounded retry",
+      "caption": "Revise plan or tasks; maximum two attempts",
+      "kind": "gateway",
+      "boundary": "validate",
+      "presentation": "service-icon",
+      "assetRef": "generic-retry",
+      "importance": "primary",
+      "evidence": [
+        "fact-control"
+      ],
+      "layout": {
+        "order": 2,
+        "track": 0.5,
+        "width": 174
+      }
+    },
+    {
+      "id": "human-approval",
+      "label": "Human approval",
+      "caption": "Required for high risk or exhausted retries",
+      "kind": "actor",
+      "boundary": "validate",
+      "presentation": "service-icon",
+      "assetRef": "generic-user",
+      "importance": "primary",
+      "evidence": [
+        "fact-control"
+      ],
+      "layout": {
+        "order": 3,
+        "track": 0.82,
+        "width": 174
+      }
+    },
+    {
+      "id": "final-response",
+      "label": "Evidence-bearing response",
+      "caption": "Answer, citations, decisions, and limitations",
+      "kind": "document",
+      "boundary": "respond",
+      "presentation": "service-icon",
+      "assetRef": "generic-response",
+      "importance": "primary",
+      "evidence": [
+        "fact-output"
+      ],
+      "layout": {
+        "order": 1,
+        "track": 0.28,
+        "width": 178
+      }
+    },
+    {
+      "id": "user-result",
+      "label": "User receives result",
+      "caption": "Approved response or escalation outcome",
+      "kind": "actor",
+      "boundary": "respond",
+      "presentation": "service-icon",
+      "assetRef": "generic-user",
+      "importance": "primary",
+      "evidence": [
+        "fact-output"
+      ],
+      "layout": {
+        "order": 2,
+        "track": 0.73
+      }
+    },
+    {
+      "id": "durable-memory",
+      "label": "Durable memory",
+      "caption": "Approved results only",
+      "kind": "datastore",
+      "boundary": "platform",
+      "presentation": "service-icon",
+      "assetRef": "generic-state",
+      "importance": "support",
+      "evidence": [
+        "fact-state"
+      ],
+      "layout": {
+        "order": 1
+      }
+    },
+    {
+      "id": "tool-gateway",
+      "label": "Tool gateway",
+      "caption": "Per-agent permissions; normalized observations",
+      "kind": "gateway",
+      "boundary": "platform",
+      "presentation": "service-icon",
+      "assetRef": "generic-gateway",
+      "importance": "support",
+      "evidence": [
+        "fact-tools"
+      ],
+      "layout": {
+        "order": 2
+      }
+    },
+    {
+      "id": "external-tools",
+      "label": "External tools",
+      "caption": "Web, APIs, and databases",
+      "kind": "api",
+      "boundary": "platform",
+      "presentation": "service-icon",
+      "assetRef": "generic-external-tools",
+      "importance": "support",
+      "evidence": [
+        "fact-tools"
+      ],
+      "layout": {
+        "order": 3
+      }
+    },
+    {
+      "id": "telemetry",
+      "label": "Telemetry and audit",
+      "caption": "Agent, tool, review, and outcome events",
+      "kind": "service",
+      "boundary": "platform",
+      "presentation": "service-icon",
+      "assetRef": "generic-telemetry",
+      "importance": "support",
+      "evidence": [
+        "fact-output"
+      ],
+      "layout": {
+        "order": 4
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "user",
+      "target": "guardrails",
+      "kind": "sync",
+      "lineClass": "control",
+      "label": "Submit goal",
+      "labelMode": "none",
+      "importance": "primary",
+      "evidence": [
+        "fact-scope"
+      ],
+      "layout": {
+        "order": 1,
+        "badgeT": 0.45
+      },
+      "step": "1"
+    },
+    {
+      "id": "e2",
+      "source": "guardrails",
+      "target": "orchestrator",
+      "kind": "sync",
+      "lineClass": "control",
+      "label": "Normalized request",
+      "labelMode": "none",
+      "importance": "primary",
+      "evidence": [
+        "fact-control",
+        "fact-authority"
+      ],
+      "layout": {
+        "order": 2,
+        "targetPort": [
+          0,
+          0.42
+        ],
+        "badgeT": 0.46
+      },
+      "step": "2"
+    },
+    {
+      "id": "e3",
+      "source": "orchestrator",
+      "target": "task-state",
+      "kind": "write",
+      "lineClass": "data",
+      "label": "Initialize state",
+      "labelMode": "none",
+      "importance": "primary",
+      "evidence": [
+        "fact-state"
+      ],
+      "layout": {
+        "order": 3,
+        "sourcePort": [
+          0.25,
+          1
+        ],
+        "targetPort": [
+          0.75,
+          0
+        ],
+        "badgeSegment": 1,
+        "badgeT": 0.52
+      },
+      "step": "3"
+    },
+    {
+      "id": "e4a",
+      "source": "orchestrator",
+      "target": "research-agent",
+      "kind": "sync",
+      "lineClass": "control",
+      "label": "Delegate research",
+      "labelMode": "none",
+      "importance": "primary",
+      "evidence": [
+        "fact-authority",
+        "fact-agents"
+      ],
+      "layout": {
+        "order": 4,
+        "sourcePort": [
+          1,
+          0.5028571429
+        ],
+        "targetPort": [
+          0,
+          0.5
+        ],
+        "badgeT": 0.48
+      },
+      "step": "4a"
+    },
+    {
+      "id": "e4b",
+      "source": "orchestrator",
+      "target": "data-agent",
+      "kind": "sync",
+      "lineClass": "control",
+      "label": "Delegate data and tools",
+      "labelMode": "none",
+      "importance": "primary",
+      "evidence": [
+        "fact-authority",
+        "fact-agents"
+      ],
+      "layout": {
+        "order": 5,
+        "sourcePort": [
+          0.25,
+          0
+        ],
+        "targetPort": [
+          0.5,
+          0
+        ],
+        "waypoints": [
+          [
+            476.52,
+            190
+          ],
+          [
+            1098.26,
+            190
+          ],
+          [
+            1098.26,
+            236.64
+          ]
+        ],
+        "badgeSegment": 1,
+        "badgeT": 0.72
+      },
+      "step": "4b"
+    },
+    {
+      "id": "e5a",
+      "source": "research-agent",
+      "target": "analysis-agent",
+      "kind": "data",
+      "lineClass": "data",
+      "label": "Evidence and citations",
+      "labelMode": "none",
+      "importance": "primary",
+      "evidence": [
+        "fact-agents"
+      ],
+      "layout": {
+        "order": 6,
+        "sourcePort": [
+          0.35,
+          1
+        ],
+        "targetPort": [
+          0.35,
+          0
+        ],
+        "midY": 530,
+        "badgeSegment": 1,
+        "badgeT": 0.35
+      },
+      "step": "5a"
+    },
+    {
+      "id": "e5b",
+      "source": "data-agent",
+      "target": "analysis-agent",
+      "kind": "data",
+      "lineClass": "data",
+      "label": "Structured results",
+      "labelMode": "none",
+      "importance": "primary",
+      "evidence": [
+        "fact-agents"
+      ],
+      "layout": {
+        "order": 7,
+        "sourcePort": [
+          0.65,
+          1
+        ],
+        "targetPort": [
+          0.65,
+          0
+        ],
+        "midY": 550,
+        "badgeSegment": 1,
+        "badgeT": 0.62
+      },
+      "step": "5b"
+    },
+    {
+      "id": "e6",
+      "source": "analysis-agent",
+      "target": "review-agent",
+      "kind": "sync",
+      "lineClass": "control",
+      "label": "Candidate answer",
+      "labelMode": "none",
+      "importance": "primary",
+      "evidence": [
+        "fact-agents"
+      ],
+      "layout": {
+        "order": 8,
+        "sourcePort": [
+          1,
+          0.5
+        ],
+        "targetPort": [
+          0,
+          0.3
+        ],
+        "midX": 1266,
+        "badgeT": 0.4
+      },
+      "step": "6"
+    },
+    {
+      "id": "e7a",
+      "source": "review-agent",
+      "target": "final-response",
+      "kind": "sync",
+      "lineClass": "control",
+      "label": "Approved",
+      "labelMode": "none",
+      "importance": "primary",
+      "evidence": [
+        "fact-control",
+        "fact-output"
+      ],
+      "layout": {
+        "order": 9,
+        "sourcePort": [
+          1,
+          0.28
+        ],
+        "targetPort": [
+          0,
+          0.38
+        ],
+        "midX": 1662,
+        "badgeT": 0.42
+      },
+      "step": "7a"
+    },
+    {
+      "id": "e7b",
+      "source": "review-agent",
+      "target": "retry-policy",
+      "kind": "failure",
+      "lineClass": "dependency",
+      "label": "Needs revision",
+      "labelMode": "none",
+      "importance": "primary",
+      "evidence": [
+        "fact-control"
+      ],
+      "layout": {
+        "order": 10,
+        "sourcePort": [
+          0.5,
+          1
+        ],
+        "targetPort": [
+          0.5,
+          0
+        ],
+        "badgeT": 0.45
+      },
+      "step": "7b"
+    },
+    {
+      "id": "e8a",
+      "source": "retry-policy",
+      "target": "orchestrator",
+      "kind": "feedback",
+      "lineClass": "dependency",
+      "label": "Replan within budget",
+      "labelMode": "none",
+      "importance": "primary",
+      "evidence": [
+        "fact-control",
+        "fact-authority"
+      ],
+      "layout": {
+        "order": 11,
+        "sourcePort": [
+          0,
+          0.5
+        ],
+        "targetPort": [
+          0,
+          0.25
+        ],
+        "waypoints": [
+          [
+            1340,
+            542
+          ],
+          [
+            1340,
+            900
+          ],
+          [
+            380,
+            900
+          ],
+          [
+            380,
+            288.32
+          ],
+          [
+            407.52,
+            288.32
+          ]
+        ],
+        "badgeSegment": 2,
+        "badgeT": 0.52
+      },
+      "step": "8a"
+    },
+    {
+      "id": "e7c",
+      "source": "review-agent",
+      "target": "human-approval",
+      "kind": "sync",
+      "lineClass": "control",
+      "label": "High risk or retry exhausted",
+      "labelMode": "none",
+      "importance": "primary",
+      "evidence": [
+        "fact-control"
+      ],
+      "layout": {
+        "order": 12,
+        "sourcePort": [
+          1,
+          0.55
+        ],
+        "targetPort": [
+          1,
+          0.35
+        ],
+        "waypoints": [
+          [
+            1590,
+            269.84
+          ],
+        [
+          1590,
+          802.96
+        ]
+        ],
+        "badgeSegment": 1,
+        "badgeT": 0.52
+      },
+      "step": "7c"
+    },
+    {
+      "id": "e8b",
+      "source": "human-approval",
+      "target": "final-response",
+      "kind": "sync",
+      "lineClass": "control",
+      "label": "Approved or redirected",
+      "labelMode": "none",
+      "importance": "primary",
+      "evidence": [
+        "fact-control",
+        "fact-output"
+      ],
+      "layout": {
+        "order": 13,
+        "sourcePort": [
+          1,
+          0.7
+        ],
+        "targetPort": [
+          0,
+          0.7
+        ],
+        "midX": 1664,
+        "badgeT": 0.45
+      },
+      "step": "8b"
+    },
+    {
+      "id": "e9",
+      "source": "final-response",
+      "target": "user-result",
+      "kind": "response",
+      "lineClass": "control",
+      "label": "Deliver result",
+      "labelMode": "none",
+      "importance": "primary",
+      "evidence": [
+        "fact-output"
+      ],
+      "layout": {
+        "order": 14,
+        "sourcePort": [
+          0.5,
+          1
+        ],
+        "targetPort": [
+          0.5,
+          0
+        ],
+        "badgeT": 0.46
+      },
+      "step": "9"
+    },
+    {
+      "id": "e-tool-external",
+      "source": "tool-gateway",
+      "target": "external-tools",
+      "kind": "sync",
+      "lineClass": "dependency",
+      "label": "Permissioned invocation",
+      "labelMode": "none",
+      "importance": "support",
+      "evidence": [
+        "fact-tools"
+      ],
+      "layout": {
+        "order": 22,
+        "sourcePort": [
+          1,
+          0.35
+        ],
+        "targetPort": [
+          0,
+          0.35
+        ],
+        "midX": 1070
+      }
+    }
+  ],
+  "legend": [],
+  "sourceSnapshot": "source_model.json",
+  "assumptions": [
+    "The architecture is provider and framework neutral; generic icons are not vendor logos.",
+    "The diagram is a logical request lifecycle rather than a deployment topology.",
+    "Telemetry summarizes agent, tool, and review events without drawing a connector from every component."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "output": "artifacts/diagram.drawio",
+  "route": "data/streaming",
+  "nodes": 18,
+  "edges": 14,
+  "embeddedAssets": [
+    "azure-app-service",
+    "azure-databricks",
+    "azure-event-hubs",
+    "azure-iot-hub",
+    "azure-key-vault",
+    "azure-logic-apps",
+    "azure-machine-learning",
+    "azure-managed-identity",
+    "azure-monitor",
+    "azure-policy",
+    "azure-stream-analytics",
+    "azure-synapse-analytics",
+    "connected-vehicles",
+    "facility-sensors",
+    "industrial-equipment",
+    "microsoft-defender-for-cloud",
+    "microsoft-foundry-models",
+    "power-bi-embedded"
+  ],
+  "modelHash": "31af05d0dc1b5163cc9070c63cbb0586365526fe85a052a3fe2d4d5f4fdbeebe"
+}

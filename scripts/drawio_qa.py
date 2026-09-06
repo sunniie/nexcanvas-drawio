@@ -58,6 +58,9 @@ class Box:
     h: float
     style: str
     tags: frozenset[str]
+    kind: str
+    edge_id: str
+    label_mode: str
 
     @property
     def is_container(self) -> bool:
@@ -92,8 +95,14 @@ class Edge:
     points: list[tuple[float, float]]
     style: str
     label: str
+    label_offset_x: float
     label_offset_y: float
     tags: frozenset[str]
+    label_mode: str
+    bus_id: str
+    lane_id: str
+    allow_crossing: bool
+    kind: str
 
 
 def clean_label(value: str | None) -> str:
@@ -112,6 +121,10 @@ def parse_float(value: str | None, default: float = 0.0) -> float:
         return float(value)
     except ValueError:
         return default
+
+
+def parse_bool(value: str | None) -> bool:
+    return str(value or "").strip().lower() in {"1", "true", "yes"}
 
 
 def parse_style(style: str) -> dict[str, str]:
@@ -179,6 +192,9 @@ def load_cells(path: Path) -> tuple[list[Box], list[Edge], float, float]:
                     h=parse_float(geom.attrib.get("height")),
                     style=style,
                     tags=parse_tags(cell.attrib.get("tags")),
+                    kind=cell.attrib.get("nc-kind", ""),
+                    edge_id=cell.attrib.get("nc-edge-id", ""),
+                    label_mode=cell.attrib.get("nc-label-mode", ""),
                 )
             )
 
@@ -209,8 +225,14 @@ def load_cells(path: Path) -> tuple[list[Box], list[Edge], float, float]:
                     points=points,
                     style=style,
                     label=clean_label(cell.attrib.get("value")),
+                    label_offset_x=parse_float(geom.attrib.get("x")) if geom is not None else 0.0,
                     label_offset_y=parse_float(geom.attrib.get("y")) if geom is not None else 0.0,
                     tags=parse_tags(cell.attrib.get("tags")),
+                    label_mode=cell.attrib.get("nc-label-mode", ""),
+                    bus_id=cell.attrib.get("nc-bus-id", ""),
+                    lane_id=cell.attrib.get("nc-lane-id", ""),
+                    allow_crossing=parse_bool(cell.attrib.get("nc-allow-crossing")),
+                    kind=cell.attrib.get("nc-kind", ""),
                 )
             )
 
@@ -281,13 +303,69 @@ def segment_intersects_rect(p1: tuple[float, float], p2: tuple[float, float], bo
     return any(segments_intersect(p1, p2, a, b) for a, b in rect_segments)
 
 
+def boundary_outline_intersects_rect(boundary: Box, label: Box, clearance: float = 3.0) -> bool:
+    """Return True when a label touches a visible container outline.
+
+    Container interiors are valid label space; their strokes are not. Elliptical
+    hub boundaries need a curve-aware check because a bounding-box overlap alone
+    cannot distinguish text inside the ring from text crossing its arc.
+    """
+    style = {key.lower(): value.lower() for key, value in parse_style(boundary.style).items()}
+    if style.get("strokecolor", "default") in {"none", "transparent"}:
+        return False
+
+    left = label.left - clearance
+    right = label.right + clearance
+    top = label.top - clearance
+    bottom = label.bottom + clearance
+    if "ellipse" in boundary.style.lower():
+        radius_x = boundary.w / 2.0
+        radius_y = boundary.h / 2.0
+        if radius_x <= 0 or radius_y <= 0:
+            return False
+        for index in range(720):
+            angle = 2.0 * math.pi * index / 720.0
+            x = boundary.center[0] + radius_x * math.cos(angle)
+            y = boundary.center[1] + radius_y * math.sin(angle)
+            if left <= x <= right and top <= y <= bottom:
+                return True
+        return False
+
+    perimeter = [
+        ((boundary.left, boundary.top), (boundary.right, boundary.top)),
+        ((boundary.right, boundary.top), (boundary.right, boundary.bottom)),
+        ((boundary.right, boundary.bottom), (boundary.left, boundary.bottom)),
+        ((boundary.left, boundary.bottom), (boundary.left, boundary.top)),
+    ]
+    return any(segment_intersects_rect(start, end, label, padding=clearance) for start, end in perimeter)
+
+
 def edge_polyline(edge: Edge, boxes_by_id: dict[str, Box]) -> list[tuple[float, float]]:
     points: list[tuple[float, float]] = []
+    style = parse_style(edge.style)
     if edge.source and edge.source in boxes_by_id:
-        points.append(boxes_by_id[edge.source].center)
+        source = boxes_by_id[edge.source]
+        if "exitX" in style or "exitY" in style:
+            points.append(
+                (
+                    source.left + source.w * parse_float(style.get("exitX"), 0.5),
+                    source.top + source.h * parse_float(style.get("exitY"), 0.5),
+                )
+            )
+        else:
+            points.append(source.center)
     points.extend(edge.points)
     if edge.target and edge.target in boxes_by_id:
-        points.append(boxes_by_id[edge.target].center)
+        target = boxes_by_id[edge.target]
+        if "entryX" in style or "entryY" in style:
+            points.append(
+                (
+                    target.left + target.w * parse_float(style.get("entryX"), 0.5),
+                    target.top + target.h * parse_float(style.get("entryY"), 0.5),
+                )
+            )
+        else:
+            points.append(target.center)
     return points
 
 
@@ -398,6 +476,96 @@ def pairwise(points: list[tuple[float, float]]) -> Iterable[tuple[tuple[float, f
         yield points[index], points[index + 1]
 
 
+def flow_label_edge_id(box: Box) -> str:
+    if box.kind == "flow-label" and box.edge_id:
+        return box.edge_id
+    for tag in box.tags:
+        if tag.startswith("qa-flow-label:"):
+            return tag.split(":", 1)[1].strip()
+    return ""
+
+
+def is_flow_label(box: Box) -> bool:
+    return box.kind == "flow-label" or bool(flow_label_edge_id(box))
+
+
+def collinear_overlap_length(
+    a1: tuple[float, float],
+    a2: tuple[float, float],
+    b1: tuple[float, float],
+    b2: tuple[float, float],
+) -> float:
+    eps = 1e-6
+    if abs(a1[1] - a2[1]) <= eps and abs(b1[1] - b2[1]) <= eps and abs(a1[1] - b1[1]) <= eps:
+        return max(0.0, min(max(a1[0], a2[0]), max(b1[0], b2[0])) - max(min(a1[0], a2[0]), min(b1[0], b2[0])))
+    if abs(a1[0] - a2[0]) <= eps and abs(b1[0] - b2[0]) <= eps and abs(a1[0] - b1[0]) <= eps:
+        return max(0.0, min(max(a1[1], a2[1]), max(b1[1], b2[1])) - max(min(a1[1], a2[1]), min(b1[1], b2[1])))
+    return 0.0
+
+
+def near_parallel_overlap(
+    a1: tuple[float, float],
+    a2: tuple[float, float],
+    b1: tuple[float, float],
+    b2: tuple[float, float],
+    max_gap: float = 12.0,
+) -> tuple[float, float] | None:
+    """Return (shared span, lane gap) for orthogonal segments that are visually too close."""
+    eps = 1e-6
+    a_horizontal = abs(a1[1] - a2[1]) <= eps
+    b_horizontal = abs(b1[1] - b2[1]) <= eps
+    if a_horizontal and b_horizontal:
+        gap = abs(a1[1] - b1[1])
+        if eps < gap < max_gap:
+            overlap = max(
+                0.0,
+                min(max(a1[0], a2[0]), max(b1[0], b2[0]))
+                - max(min(a1[0], a2[0]), min(b1[0], b2[0])),
+            )
+            if overlap > 0:
+                return overlap, gap
+
+    a_vertical = abs(a1[0] - a2[0]) <= eps
+    b_vertical = abs(b1[0] - b2[0]) <= eps
+    if a_vertical and b_vertical:
+        gap = abs(a1[0] - b1[0])
+        if eps < gap < max_gap:
+            overlap = max(
+                0.0,
+                min(max(a1[1], a2[1]), max(b1[1], b2[1]))
+                - max(min(a1[1], a2[1]), min(b1[1], b2[1])),
+            )
+            if overlap > 0:
+                return overlap, gap
+    return None
+
+
+def orthogonal_intersection_point(
+    a1: tuple[float, float],
+    a2: tuple[float, float],
+    b1: tuple[float, float],
+    b2: tuple[float, float],
+) -> tuple[float, float] | None:
+    eps = 1e-6
+    a_horizontal = abs(a1[1] - a2[1]) <= eps
+    a_vertical = abs(a1[0] - a2[0]) <= eps
+    b_horizontal = abs(b1[1] - b2[1]) <= eps
+    b_vertical = abs(b1[0] - b2[0]) <= eps
+    if a_horizontal and b_vertical:
+        point = (b1[0], a1[1])
+    elif a_vertical and b_horizontal:
+        point = (a1[0], b1[1])
+    else:
+        return None
+    if on_segment(a1, point, a2) and on_segment(b1, point, b2):
+        return point
+    return None
+
+
+def near_any(point: tuple[float, float], candidates: Iterable[tuple[float, float]], distance: float) -> bool:
+    return any(abs(point[0] - other[0]) + abs(point[1] - other[1]) <= distance for other in candidates)
+
+
 def maybe_plain_icon_box(box: Box) -> bool:
     if box.is_container or is_step_badge(box) or "qa-icon-exempt" in box.tags:
         return False
@@ -420,14 +588,14 @@ def interval_union_length(intervals: list[tuple[float, float]]) -> float:
     return sum(end - start for start, end in merged)
 
 
-def run_checks(path: Path, padding: float, diagram_type: str = "general") -> tuple[list[str], list[str]]:
+def run_checks(path: Path, padding: float, qa_profile: str = "baseline") -> tuple[list[str], list[str]]:
     boxes, edges, page_width, page_height = load_cells(path)
     boxes_by_id = {box.cell_id: box for box in boxes}
     errors: list[str] = []
     warnings: list[str] = []
 
-    if diagram_type not in {"general", "overview", "detailed"}:
-        raise ValueError(f"Unsupported diagram type: {diagram_type}")
+    if qa_profile not in {"baseline", "composition", "interaction"}:
+        raise ValueError(f"Unsupported geometry QA profile: {qa_profile}")
 
     if boxes and (page_width <= 0 or page_height <= 0):
         left = min(box.left for box in boxes)
@@ -435,7 +603,7 @@ def run_checks(path: Path, padding: float, diagram_type: str = "general") -> tup
         page_width = max(box.right for box in boxes) - left
         page_height = max(box.bottom for box in boxes) - top
 
-    if diagram_type in {"overview", "detailed"} and page_width > 0 and page_height > 0:
+    if qa_profile in {"composition", "interaction"} and page_width > 0 and page_height > 0:
         page_area = page_width * page_height
         support_boxes = [box for box in boxes if "qa-support" in box.tags]
         support_ratio = sum(box.w * box.h for box in support_boxes) / page_area
@@ -472,11 +640,11 @@ def run_checks(path: Path, padding: float, diagram_type: str = "general") -> tup
             parent_id = parent_box.parent_id if parent_box else None
         return False
 
-    if diagram_type == "detailed" and page_width > 0:
+    if qa_profile == "interaction" and page_width > 0:
         for rail in (box for box in boxes if "qa-title-rail" in box.tags):
             if rail.w / page_width > 0.12:
                 warnings.append(
-                    f"Title rail {rail.cell_id} occupies {rail.w / page_width:.1%} of canvas width; keep a Detailed Request layer rail at or below 12%."
+                    f"Title rail {rail.cell_id} occupies {rail.w / page_width:.1%} of canvas width; keep an interaction-view rail at or below 12%."
                 )
 
     for index, box in enumerate(boxes):
@@ -484,7 +652,7 @@ def run_checks(path: Path, padding: float, diagram_type: str = "general") -> tup
             continue
         if box.w <= 0 or box.h <= 0:
             warnings.append(f"Box {box.cell_id} '{box.label}' has non-positive size.")
-        if maybe_plain_icon_box(box):
+        if maybe_plain_icon_box(box) and "qa-illustrative" not in box.tags:
             warnings.append(f"Box {box.cell_id} '{box.label}' looks like a real service/component but does not use an image/mxgraph icon style.")
         if (
             not box.is_container
@@ -499,7 +667,7 @@ def run_checks(path: Path, padding: float, diagram_type: str = "general") -> tup
         has_children = any(other.parent_id == box.cell_id for other in boxes)
         style_lower = box.style.lower()
         if (
-            diagram_type in {"overview", "detailed"}
+            qa_profile in {"composition", "interaction"}
             and not box.is_container
             and not has_children
             and box.w * box.h >= 40000
@@ -514,6 +682,17 @@ def run_checks(path: Path, padding: float, diagram_type: str = "general") -> tup
             )
         for other in boxes[index + 1 :]:
             if "qa-background" in other.tags:
+                continue
+            badge_label_pair = (is_step_badge(box) and is_flow_label(other)) or (is_step_badge(other) and is_flow_label(box))
+            if badge_label_pair:
+                if boxes_overlap(box, other, 4.0):
+                    errors.append(
+                        f"Label-badge collision: {box.cell_id} '{box.label}' intersects {other.cell_id} '{other.label}'."
+                    )
+                continue
+            if is_step_badge(box) or is_step_badge(other):
+                continue
+            if (box.is_container and is_flow_label(other)) or (other.is_container and is_flow_label(box)):
                 continue
             shared_parent = boxes_by_id.get(box.parent_id or "") if box.parent_id == other.parent_id else None
             if shared_parent and "qa-illustrative" in shared_parent.tags:
@@ -592,11 +771,28 @@ def run_checks(path: Path, padding: float, diagram_type: str = "general") -> tup
 
     standalone_flow_labels: dict[str, list[Box]] = {}
     for box in boxes:
-        for tag in box.tags:
-            if tag.startswith("qa-flow-label:"):
-                edge_id = tag.split(":", 1)[1].strip()
-                if edge_id:
-                    standalone_flow_labels.setdefault(edge_id, []).append(box)
+        edge_id = flow_label_edge_id(box)
+        if edge_id:
+            standalone_flow_labels.setdefault(edge_id, []).append(box)
+        if not is_flow_label(box):
+            continue
+        mode = box.label_mode or ("callout" if "qa-label-callout" in box.tags else "offset")
+        style = {key.lower(): value.lower() for key, value in parse_style(box.style).items()}
+        fill = style.get("fillcolor", "none")
+        if not box.label:
+            errors.append(f"Flow label {box.cell_id} is empty.")
+        if mode == "callout" and fill in {"", "none", "default"}:
+            errors.append(f"Callout label {box.cell_id} must use an opaque fill so it intentionally masks its own rail.")
+        if mode in {"offset", "note"} and fill not in {"", "none", "default"}:
+            errors.append(f"{mode.title()} label {box.cell_id} must stay transparent; use labelMode=callout for an intentional line break.")
+
+        for boundary in boxes:
+            if "qa-background" in boundary.tags or not boundary.is_container:
+                continue
+            if boundary_outline_intersects_rect(boundary, box):
+                errors.append(
+                    f"Boundary-label collision: label {box.cell_id} '{box.label}' crosses the visible outline of {boundary.cell_id}."
+                )
 
     for edge in edges:
         polyline = edge_polyline(edge, boxes_by_id)
@@ -616,15 +812,17 @@ def run_checks(path: Path, padding: float, diagram_type: str = "general") -> tup
         style = parse_style(edge.style)
         style_ci = {key.lower(): value.lower() for key, value in style.items()}
         associated_labels = [box for box in standalone_flow_labels.get(edge.cell_id, []) if box.label]
+        if len(associated_labels) > 1:
+            errors.append(f"Labeled flow: edge {edge.cell_id} has multiple associated label cells; keep exactly one label pocket.")
         if "qa-labeled-flow" in edge.tags and not edge.label and not associated_labels:
             errors.append(
                 f"Labeled flow: edge {edge.cell_id} is tagged qa-labeled-flow but has no inline label or non-empty qa-flow-label:{edge.cell_id} text vertex."
             )
-        if edge.label and diagram_type in {"overview", "detailed"}:
+        if edge.label and qa_profile in {"composition", "interaction"}:
             background = style_ci.get("labelbackgroundcolor", "none")
             if background not in {"", "none", "default"}:
                 warnings.append(
-                    f"Edge {edge.cell_id} label '{edge.label}' uses opaque background {background}; keep relationship labels transparent and fix the route instead of masking it."
+                    f"Edge {edge.cell_id} label '{edge.label}' uses an inline opaque background {background}; use a standalone labelMode=callout cell so the masked line and collision box are explicit."
                 )
             if "qa-labeled-flow" in edge.tags:
                 if abs(edge.label_offset_y) < 14.0:
@@ -665,9 +863,10 @@ def run_checks(path: Path, padding: float, diagram_type: str = "general") -> tup
         if edge.source and edge.source in boxes_by_id and edge.target and edge.target in boxes_by_id:
             direct_length = manhattan_length([boxes_by_id[edge.source].center, boxes_by_id[edge.target].center])
         route_length = manhattan_length(polyline)
-        if bends > 4:
+        documented_rail = "qa-rail-flow" in edge.tags or "qa-explicit-route" in edge.tags
+        if bends > 4 and not documented_rail:
             warnings.append(f"Edge {edge.cell_id} uses {bends} bends; simplify the route or document why the detour is meaningful.")
-        if direct_length > 0 and route_length / direct_length > 1.75:
+        if direct_length > 0 and route_length / direct_length > 1.75 and not documented_rail:
             warnings.append(
                 f"Edge {edge.cell_id} route is {route_length / direct_length:.2f}x the direct Manhattan distance; use the nearest clear lane."
             )
@@ -710,9 +909,31 @@ def run_checks(path: Path, padding: float, diagram_type: str = "general") -> tup
                     )
 
         exempt = {edge.source, edge.target}
+        reported_foreign_badges: set[str] = set()
+        own_callouts = [box for box in associated_labels if box.label_mode == "callout" or "qa-label-callout" in box.tags]
+        for callout in own_callouts:
+            if not any(segment_intersects_rect(p1, p2, callout, padding=0.0) for p1, p2 in pairwise(polyline)):
+                warnings.append(
+                    f"Callout label {callout.cell_id} does not intersect its own edge {edge.cell_id}; use offset mode or center the callout on the intended segment."
+                )
         for p1, p2 in pairwise(polyline):
             for box in boxes:
                 if "qa-background" in box.tags:
+                    continue
+                if is_step_badge(box):
+                    associated_edge = box.edge_id
+                    if associated_edge and associated_edge != edge.cell_id:
+                        associated_edge = associated_edge if associated_edge.startswith("edge-") else f"edge-{associated_edge}"
+                    if associated_edge == edge.cell_id:
+                        continue
+                    if box.cell_id not in reported_foreign_badges and segment_intersects_rect(p1, p2, box, padding=2.0):
+                        errors.append(
+                            f"Foreign connector through badge: edge {edge.cell_id} crosses {box.cell_id} '{box.label}', "
+                            f"which belongs to {associated_edge or 'another flow'}."
+                        )
+                        reported_foreign_badges.add(box.cell_id)
+                    continue
+                if "qa-illustrative" in box.tags:
                     continue
                 if box.cell_id in exempt:
                     continue
@@ -720,8 +941,92 @@ def run_checks(path: Path, padding: float, diagram_type: str = "general") -> tup
                     continue
                 if (edge.source and is_ancestor(edge.source, box)) or (edge.target and is_ancestor(edge.target, box)):
                     continue
+                if is_flow_label(box) and flow_label_edge_id(box) == edge.cell_id and (
+                    box.label_mode == "callout" or "qa-label-callout" in box.tags
+                ):
+                    continue
                 if segment_intersects_rect(p1, p2, box, padding=2.0):
-                    errors.append(f"Line crossing: edge {edge.cell_id} segment crosses box {box.cell_id} '{box.label}'.")
+                    if is_flow_label(box):
+                        errors.append(f"Line-label collision: edge {edge.cell_id} crosses label {box.cell_id} '{box.label}'.")
+                    else:
+                        errors.append(f"Line crossing: edge {edge.cell_id} segment crosses box {box.cell_id} '{box.label}'.")
+
+    routed_edges = [edge for edge in edges if edge.kind != "lifeline"]
+    polyline_by_edge = {edge.cell_id: edge_polyline(edge, boxes_by_id) for edge in routed_edges}
+
+    attachments_by_node: dict[str, list[tuple[Edge, str, tuple[float, float]]]] = {}
+    for edge in routed_edges:
+        polyline = polyline_by_edge[edge.cell_id]
+        if len(polyline) < 2:
+            continue
+        if edge.source:
+            attachments_by_node.setdefault(edge.source, []).append((edge, "source", polyline[0]))
+        if edge.target:
+            attachments_by_node.setdefault(edge.target, []).append((edge, "target", polyline[-1]))
+
+    for node_id, attachments in attachments_by_node.items():
+        for index, (edge, role, point) in enumerate(attachments):
+            for other, other_role, other_point in attachments[index + 1 :]:
+                if edge.cell_id == other.cell_id:
+                    continue
+                if edge.bus_id and edge.bus_id == other.bus_id:
+                    continue
+                if abs(point[0] - other_point[0]) + abs(point[1] - other_point[1]) > 4.0:
+                    continue
+                pattern = "relay" if role != other_role else ("fan-out" if role == "source" else "fan-in")
+                errors.append(
+                    f"Ambiguous connector port: {edge.cell_id} ({role}) and {other.cell_id} ({other_role}) "
+                    f"form a same-port {pattern} on {node_id} at ({point[0]:.1f}, {point[1]:.1f}); "
+                    "use distinct perimeter ports, or the same busId only for a real semantic bus."
+                )
+
+    for index, edge in enumerate(routed_edges):
+        first = polyline_by_edge[edge.cell_id]
+        if len(first) < 2:
+            continue
+        for other in routed_edges[index + 1 :]:
+            second = polyline_by_edge[other.cell_id]
+            if len(second) < 2:
+                continue
+            if edge.allow_crossing or other.allow_crossing:
+                continue
+            if edge.bus_id and edge.bus_id == other.bus_id:
+                continue
+            shared_nodes = {edge.source, edge.target}.intersection({other.source, other.target}) - {None}
+            endpoints = (first[0], first[-1], second[0], second[-1])
+            conflict: str | None = None
+            for a1, a2 in pairwise(first):
+                if conflict:
+                    break
+                for b1, b2 in pairwise(second):
+                    overlap = collinear_overlap_length(a1, a2, b1, b2)
+                    if overlap > 8.0:
+                        if shared_nodes and overlap <= 64.0:
+                            continue
+                        conflict = f"share {overlap:.1f}px of one connector lane"
+                        break
+                    proximity = near_parallel_overlap(a1, a2, b1, b2)
+                    if proximity is not None:
+                        parallel_span, lane_gap = proximity
+                        if parallel_span >= 24.0:
+                            conflict = (
+                                f"run {parallel_span:.1f}px in near-parallel lanes only {lane_gap:.1f}px apart"
+                            )
+                            break
+                    point = orthogonal_intersection_point(a1, a2, b1, b2)
+                    if point is None:
+                        continue
+                    if shared_nodes and near_any(point, endpoints, 64.0):
+                        continue
+                    conflict = f"cross at ({point[0]:.1f}, {point[1]:.1f})"
+                    break
+            if conflict:
+                lane_detail = ""
+                if edge.lane_id or other.lane_id:
+                    lane_detail = f" (lanes {edge.lane_id or 'unset'} / {other.lane_id or 'unset'})"
+                errors.append(
+                    f"Connector collision: {edge.cell_id} and {other.cell_id} {conflict}{lane_detail}; assign independent lanes or the same busId only for a real semantic bus."
+                )
 
     return errors, warnings
 
@@ -731,10 +1036,10 @@ def main() -> int:
     parser.add_argument("drawio_file", type=Path)
     parser.add_argument("--padding", type=float, default=6.0)
     parser.add_argument(
-        "--diagram-type",
-        choices=("general", "overview", "detailed"),
-        default="general",
-        help="Enable workflow composition checks for an overview or detailed request diagram.",
+        "--qa-profile",
+        choices=("baseline", "composition", "interaction"),
+        default="baseline",
+        help="Select geometry checks without asking the user for a diagram type.",
     )
     parser.add_argument("--warn-only", action="store_true")
     args = parser.parse_args()
@@ -743,7 +1048,7 @@ def main() -> int:
         errors, warnings = run_checks(
             args.drawio_file,
             padding=args.padding,
-            diagram_type=args.diagram_type,
+            qa_profile=args.qa_profile,
         )
     except ET.ParseError as exc:
         print(f"ERROR: invalid XML: {exc}", file=sys.stderr)

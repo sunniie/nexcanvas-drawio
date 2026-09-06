@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "2.0",
+  "families": {
+    "enterprise": {
+      "description": "Enterprise viewpoints across business, application, data, and technology concerns.",
+      "profiles": {
+        "capability-map": {"notation": "archimate-lite", "layout": "matrix", "geometryQa": "composition"},
+        "value-stream": {"notation": "value-stream", "layout": "layered", "geometryQa": "composition"},
+        "enterprise-landscape": {"notation": "archimate-lite", "layout": "nested", "geometryQa": "composition"},
+        "stakeholder-map": {"notation": "stakeholder", "layout": "radial", "geometryQa": "composition"}
+      }
+    },
+    "software": {
+      "description": "Static software structure, responsibility, ownership, and dependency views.",
+      "profiles": {
+        "c4-context": {"notation": "c4", "layout": "radial", "geometryQa": "composition"},
+        "c4-container": {"notation": "c4", "layout": "nested", "geometryQa": "composition"},
+        "c4-component": {"notation": "c4", "layout": "nested", "geometryQa": "composition"},
+        "dependency": {"notation": "boxes-and-lines", "layout": "layered", "geometryQa": "composition"},
+        "uml-class": {"notation": "uml", "layout": "grid", "geometryQa": "baseline"}
+      }
+    },
+    "runtime-cloud": {
+      "description": "Runtime placement, infrastructure, network, cloud, and integration topology.",
+      "profiles": {
+        "deployment": {"notation": "deployment", "layout": "nested", "geometryQa": "composition"},
+        "cloud-reference": {"notation": "cloud", "layout": "nested", "geometryQa": "composition"},
+        "network-topology": {"notation": "network", "layout": "layered", "geometryQa": "composition"},
+        "kubernetes": {"notation": "kubernetes", "layout": "nested", "geometryQa": "composition"},
+        "integration": {"notation": "integration", "layout": "layered", "geometryQa": "composition"}
+      }
+    },
+    "behavior": {
+      "description": "Time, process, interaction, event, decision, and state views.",
+      "profiles": {
+        "sequence": {"notation": "uml-sequence", "layout": "sequence", "geometryQa": "interaction"},
+        "request-trace": {"notation": "interaction-trace", "layout": "sequence", "geometryQa": "interaction"},
+        "event-choreography": {"notation": "event", "layout": "layered", "geometryQa": "interaction"},
+        "bpmn": {"notation": "bpmn", "layout": "swimlane", "geometryQa": "interaction"},
+        "state-machine": {"notation": "uml-state", "layout": "layered", "geometryQa": "interaction"},
+        "algorithm-flow": {"notation": "flowchart", "layout": "layered", "geometryQa": "interaction"}
+      }
+    },
+    "data": {
+      "description": "Data structure, movement, transformation, lineage, and quality views.",
+      "profiles": {
+        "erd": {"notation": "erd", "layout": "erd", "geometryQa": "baseline"},
+        "etl-elt": {"notation": "data-flow", "layout": "layered", "geometryQa": "composition"},
+        "batch-pipeline": {"notation": "data-flow", "layout": "layered", "geometryQa": "composition"},
+        "streaming": {"notation": "event-stream", "layout": "layered", "geometryQa": "composition"},
+        "lineage": {"notation": "openlineage-lite", "layout": "layered", "geometryQa": "composition"},
+        "lakehouse-medallion": {"notation": "data-quality-layers", "layout": "swimlane", "geometryQa": "composition"}
+      }
+    },
+    "delivery-ops": {
+      "description": "Software delivery, operations, telemetry, and incident response views.",
+      "profiles": {
+        "ci-cd": {"notation": "delivery-pipeline", "layout": "layered", "geometryQa": "composition"},
+        "devsecops": {"notation": "delivery-pipeline", "layout": "layered", "geometryQa": "composition"},
+        "observability": {"notation": "telemetry", "layout": "nested", "geometryQa": "composition"},
+        "incident-response": {"notation": "process", "layout": "swimlane", "geometryQa": "interaction"}
+      }
+    },
+    "security": {
+      "description": "Trust, identity, policy, threat, and data-protection views.",
+      "profiles": {
+        "trust-boundary": {"notation": "trust-boundary", "layout": "nested", "geometryQa": "composition"},
+        "zero-trust": {"notation": "zero-trust", "layout": "layered", "geometryQa": "composition"},
+        "auth-flow": {"notation": "security-sequence", "layout": "sequence", "geometryQa": "interaction"},
+        "threat-model": {"notation": "threat-model", "layout": "radial", "geometryQa": "composition"},
+        "data-classification": {"notation": "classification", "layout": "matrix", "geometryQa": "composition"}
+      }
+    },
+    "ai-ml": {
+      "description": "Predictive AI, generative AI, agentic systems, evaluation, and governance views.",
+      "profiles": {
+        "ai-solution-overview": {"notation": "ai-architecture", "layout": "nested", "geometryQa": "composition"},
+        "ml-lifecycle": {"notation": "ml-lifecycle", "layout": "radial", "geometryQa": "composition"},
+        "mlops": {"notation": "mlops", "layout": "layered", "geometryQa": "composition"},
+        "rag": {"notation": "rag", "layout": "rag", "geometryQa": "composition"},
+        "agentic-rag": {"notation": "agentic-rag", "layout": "rag", "geometryQa": "interaction"},
+        "agent-orchestration": {"notation": "agent-orchestration", "layout": "layered", "geometryQa": "interaction"},
+        "inference-trace": {"notation": "ai-trace", "layout": "sequence", "geometryQa": "interaction"},
+        "eval-observability": {"notation": "ai-evaluation", "layout": "layered", "geometryQa": "composition"},
+        "ai-governance": {"notation": "ai-governance", "layout": "matrix", "geometryQa": "composition"}
+      }
+    },
+    "product-ui": {
+      "description": "Product navigation, user interaction, interface, and service experience views.",
+      "profiles": {
+        "user-flow": {"notation": "user-flow", "layout": "layered", "geometryQa": "interaction"},
+        "sitemap": {"notation": "information-architecture", "layout": "tree", "geometryQa": "composition"},
+        "wireframe": {"notation": "wireframe", "layout": "grid", "geometryQa": "baseline"},
+        "service-blueprint": {"notation": "service-blueprint", "layout": "swimlane", "geometryQa": "interaction"}
+      }
+    }
+  }
+}

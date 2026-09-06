@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "1.0",
+  "metrics": {
+    "nodes": 18,
+    "edges": 14,
+    "boundaries": 6,
+    "phases": 0,
+    "nestedBoundaries": 0,
+    "containmentRatio": 0.0,
+    "maxNodesPerPhase": 0,
+    "crossBoundaryEdges": 10,
+    "crossBoundaryRatio": 0.714,
+    "feedbackEdges": 0,
+    "aspectRatio": 1.533,
+    "topologyTerms": [],
+    "branchNodes": 3,
+    "cycleDetected": true,
+    "longestPath": null,
+    "maxDegree": 7,
+    "hubScore": 0.412
+  },
+  "candidates": [
+    {
+      "strategy": "hub-and-spoke",
+      "score": 5.0,
+      "reasons": [
+        "+5.0: one node has high exchange centrality"
+      ]
+    },
+    {
+      "strategy": "dense-phase-columns",
+      "score": 4.0,
+      "reasons": [
+        "+4.0: sixteen or more nodes"
+      ]
+    },
+    {
+      "strategy": "hybrid-grid",
+      "score": 3.0,
+      "reasons": [
+        "+3.0: graph cycle detected"
+      ]
+    },
+    {
+      "strategy": "phase-columns",
+      "score": 0.0,
+      "reasons": []
+    },
+    {
+      "strategy": "phase-rows",
+      "score": 0.0,
+      "reasons": []
+    },
+    {
+      "strategy": "nested-topology",
+      "score": 0.0,
+      "reasons": []
+    },
+    {
+      "strategy": "compact-pipeline",
+      "score": -2.0,
+      "reasons": [
+        "-2.0: node count exceeds sparse pipeline range"
+      ]
+    }
+  ],
+  "automaticRecommendation": "hub-and-spoke",
+  "selectedStrategy": "hub-and-spoke",
+  "selectionSource": "explicit-model",
+  "geometryPlan": {
+    "orientation": "landscape",
+    "phaseWeights": {},
+    "phaseTreatment": "filled-or-scope-based",
+    "foundationBand": true,
+    "reservedRails": [],
+    "stepPolicy": "badge primary handoffs; suffix parallel substeps; leave context edges unnumbered"
+  },
+  "manualReviewRisks": []
+}

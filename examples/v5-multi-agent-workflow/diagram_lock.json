@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "2.0",
+  "status": "confirmed",
+  "viewIntent": "workflow",
+  "route": {
+    "family": "ai-ml",
+    "profile": "agent-orchestration"
+  },
+  "theme": "microsoft-reference",
+  "visualArchetype": "provider-neutral-reference",
+  "canvas": {
+    "width": 2000,
+    "height": 1200
+  },
+  "sourceHash": "6ba13d75e08c91bd66a10f79525d376e81f5d5c189b58e65ed2f3898e2f668f3",
+  "decisions": {
+    "audience": "AI engineers and solution architects",
+    "deliveryTarget": "engineering-doc",
+    "notation": "agent-orchestration",
+    "layout": "reference",
+    "layoutStrategy": "hybrid-grid",
+    "orientation": "landscape",
+    "runnerUp": "dense-phase-columns",
+    "selectionReason": "The request has a left-to-right lifecycle plus parallel agent work, nested synthesis, validation branches, and one bounded feedback loop. A Microsoft-style phase composition with an explicit lower return rail preserves the lifecycle while handling the cycle more clearly than a strict dense pipeline.",
+    "visualArchetype": "provider-neutral-reference",
+    "referenceAuthority": "Microsoft Architecture Center diagrams supplied by the user",
+    "assetPolicy": "embedded generic vector icons; no vendor logos because the architecture is provider-neutral"
+  },
+  "layoutStrategy": "hybrid-grid"
+}

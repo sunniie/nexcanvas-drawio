@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "2.0",
+  "status": "confirmed",
+  "sources": [
+    {"id": "design-brief", "type": "manual", "location": "Dense Azure industrial analytics and predictive-maintenance stress test", "snapshot": "2026-08-27"},
+    {"id": "reference-set", "type": "visual-reference", "location": "Seven Microsoft Azure architecture diagrams supplied by the user", "snapshot": "2026-08-27"},
+    {"id": "microsoft-icons", "type": "web", "location": "https://learn.microsoft.com/en-us/azure/architecture/icons/", "snapshot": "2026-08-27"},
+    {"id": "microsoft-diagrams", "type": "web", "location": "https://learn.microsoft.com/en-us/azure/well-architected/architect-role/design-diagrams", "snapshot": "2026-08-27"}
+  ],
+  "facts": [
+    {"id": "fact-sources", "claim": "The reference workload combines streaming equipment telemetry, operational records, and unstructured maintenance content.", "evidence": ["design-brief:sources"], "confidence": "confirmed"},
+    {"id": "fact-ingest", "claim": "Streaming and scheduled ingestion remain separate before converging in the analytical platform.", "evidence": ["design-brief:ingestion"], "confidence": "confirmed"},
+    {"id": "fact-stores", "claim": "A lake, operational store, and SQL warehouse support different latency and serving needs.", "evidence": ["design-brief:stores"], "confidence": "confirmed"},
+    {"id": "fact-process", "claim": "The architecture includes stream processing, batch engineering, model training, and maintenance knowledge enrichment.", "evidence": ["design-brief:processing"], "confidence": "confirmed"},
+    {"id": "fact-serve", "claim": "Real-time inference and analytical serving are separated into explicit nested groups.", "evidence": ["design-brief:serving"], "confidence": "confirmed"},
+    {"id": "fact-consume", "claim": "Operations applications, BI dashboards, and alert automation consume different products of the platform.", "evidence": ["design-brief:consumption"], "confidence": "confirmed"},
+    {"id": "fact-platform", "claim": "Identity, secrets, observability, security posture, delivery, and policy apply across the workload.", "evidence": ["design-brief:foundation"], "confidence": "confirmed"},
+    {"id": "fact-layout", "claim": "The reference set uses weighted phase columns, nested execution groups, numbered handoffs, connector gutters, bypass rails, and a horizontal foundation band for dense lifecycle views.", "evidence": ["reference-set:patterns-1-7"], "confidence": "confirmed"},
+    {"id": "fact-icons", "claim": "Azure service nodes use official Microsoft architecture icons with the represented product name adjacent to the icon.", "evidence": ["microsoft-icons:icon-usage", "microsoft-diagrams:icon-guidance"], "confidence": "confirmed"}
+  ],
+  "assumptions": [
+    "The diagram is a logical reference architecture rather than a subscription, region, or network deployment topology.",
+    "Connected equipment, operational systems, and maintenance documents are generic external source categories, not Azure products.",
+    "The example intentionally includes both predictive ML and maintenance knowledge search to stress nested and parallel flows."
+  ],
+  "exclusions": ["SKU selection", "Regional failover", "Private networking", "Detailed feature schemas", "Model algorithm selection"]
+}

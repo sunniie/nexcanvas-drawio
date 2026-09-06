@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "2.0",
+  "title": "Industrial real-time analytics hub on Azure",
+  "viewIntent": "architecture",
+  "subtitle": "Telemetry converges on an analytical hub, then fans out to insights, operations, and AI enrichment",
+  "showTitle": false,
+  "route": {"family": "data", "profile": "streaming"},
+  "audience": "Data, IoT, and cloud solution architects",
+  "deliveryTarget": "engineering-doc",
+  "language": "en",
+  "theme": "microsoft-reference",
+  "visualArchetype": "microsoft-reference",
+  "layoutStrategy": "hub-and-spoke",
+  "direction": "LR",
+  "canvas": {"width": 2300, "height": 1500, "background": "#FFFFFF"},
+  "boundaries": [
+    {"id": "sources", "label": "Operational sources", "kind": "group", "presentation": "solid-group", "order": 1, "tags": ["qa-primary"], "layout": {"role": "source"}},
+    {"id": "ingest", "label": "Stream ingestion", "kind": "group", "presentation": "dashed-group", "order": 2, "tags": ["qa-primary"], "layout": {"role": "ingest"}},
+    {"id": "hub", "label": "Analytical hub", "kind": "group", "presentation": "hub-ring", "order": 3, "tags": ["qa-primary"], "layout": {"role": "hub"}},
+    {"id": "insights", "label": "Insights and actions", "kind": "group", "presentation": "dashed-group", "order": 4, "tags": ["qa-primary"], "layout": {"role": "consumer"}},
+    {"id": "advanced", "label": "Advanced analytics and AI", "kind": "group", "presentation": "solid-group", "order": 5, "tags": ["qa-primary"], "layout": {"role": "satellite", "flow": "row"}},
+    {"id": "platform", "label": "Platform", "kind": "foundation", "presentation": "foundation-band", "order": 9, "tags": ["qa-support"]}
+  ],
+  "nodes": [
+    {"id": "vehicles", "label": "Connected vehicles", "caption": "Fleet and mobile assets", "kind": "component", "boundary": "sources", "presentation": "service-tile", "assetRef": "connected-vehicles", "importance": "primary", "evidence": ["fact-sources"], "layout": {"order": 1}},
+    {"id": "factory", "label": "Production equipment", "caption": "Lines, PLCs, and machines", "kind": "component", "boundary": "sources", "presentation": "service-tile", "assetRef": "industrial-equipment", "importance": "primary", "evidence": ["fact-sources"], "layout": {"order": 2}},
+    {"id": "facilities", "label": "Facility sensors", "caption": "Energy, safety, and environment", "kind": "component", "boundary": "sources", "presentation": "service-tile", "assetRef": "facility-sensors", "importance": "primary", "evidence": ["fact-sources"], "layout": {"order": 3}},
+
+    {"id": "iot", "label": "Azure IoT Hub", "caption": "Device connectivity and routing", "kind": "service", "boundary": "ingest", "presentation": "service-icon", "assetRef": "azure-iot-hub", "importance": "primary", "evidence": ["fact-ingest", "fact-icons"], "layout": {"order": 1}},
+    {"id": "events", "label": "Azure Event Hubs", "caption": "High-throughput event stream", "kind": "queue", "boundary": "ingest", "presentation": "service-icon", "assetRef": "azure-event-hubs", "importance": "primary", "evidence": ["fact-ingest", "fact-icons"], "layout": {"order": 2}},
+    {"id": "stream", "label": "Azure Stream Analytics", "caption": "Windowing and anomaly features", "kind": "service", "boundary": "ingest", "presentation": "service-icon", "assetRef": "azure-stream-analytics", "importance": "primary", "evidence": ["fact-ingest", "fact-icons"], "layout": {"order": 3}},
+
+    {"id": "synapse", "label": "Azure Synapse Analytics", "caption": "Curated analytical exchange", "kind": "datastore", "boundary": "hub", "presentation": "service-tile", "assetRef": "azure-synapse-analytics", "importance": "primary", "evidence": ["fact-hub", "fact-icons"], "layout": {"order": 1, "width": 210, "height": 126}},
+
+    {"id": "powerbi", "label": "Power BI Embedded", "caption": "Near-real-time dashboards", "kind": "service", "boundary": "insights", "presentation": "service-icon", "assetRef": "power-bi-embedded", "importance": "primary", "evidence": ["fact-consume", "fact-icons"], "layout": {"order": 1}},
+    {"id": "app", "label": "Azure App Service", "caption": "Operational decision application", "kind": "service", "boundary": "insights", "presentation": "service-icon", "assetRef": "azure-app-service", "importance": "primary", "evidence": ["fact-consume", "fact-icons"], "layout": {"order": 2}},
+    {"id": "logic", "label": "Azure Logic Apps", "caption": "Alerts and response workflows", "kind": "service", "boundary": "insights", "presentation": "service-icon", "assetRef": "azure-logic-apps", "importance": "primary", "evidence": ["fact-consume", "fact-icons"], "layout": {"order": 3}},
+
+    {"id": "databricks", "label": "Azure Databricks", "caption": "Historical feature engineering", "kind": "service", "boundary": "advanced", "presentation": "service-icon", "assetRef": "azure-databricks", "importance": "secondary", "evidence": ["fact-advanced", "fact-icons"], "layout": {"order": 1}},
+    {"id": "ml", "label": "Azure Machine Learning", "caption": "Train, evaluate, and score", "kind": "model", "boundary": "advanced", "presentation": "service-icon", "assetRef": "azure-machine-learning", "importance": "secondary", "evidence": ["fact-advanced", "fact-icons"], "layout": {"order": 2}},
+    {"id": "foundry", "label": "Microsoft Foundry Models", "caption": "Operational knowledge enrichment", "kind": "model", "boundary": "advanced", "presentation": "service-icon", "assetRef": "microsoft-foundry-models", "importance": "secondary", "evidence": ["fact-advanced", "fact-icons"], "layout": {"order": 3}},
+
+    {"id": "identity", "label": "Managed identities", "caption": "Identity", "kind": "service", "boundary": "platform", "presentation": "service-icon", "assetRef": "azure-managed-identity", "importance": "support", "evidence": ["fact-platform", "fact-icons"], "layout": {"order": 1}},
+    {"id": "vault", "label": "Azure Key Vault", "caption": "Secrets", "kind": "service", "boundary": "platform", "presentation": "service-icon", "assetRef": "azure-key-vault", "importance": "support", "evidence": ["fact-platform", "fact-icons"], "layout": {"order": 2}},
+    {"id": "monitor", "label": "Azure Monitor", "caption": "Metrics, logs, and alerts", "kind": "service", "boundary": "platform", "presentation": "service-icon", "assetRef": "azure-monitor", "importance": "support", "evidence": ["fact-platform", "fact-icons"], "layout": {"order": 3}},
+    {"id": "defender", "label": "Microsoft Defender for Cloud", "caption": "Security posture", "kind": "service", "boundary": "platform", "presentation": "service-icon", "assetRef": "microsoft-defender-for-cloud", "importance": "support", "evidence": ["fact-platform", "fact-icons"], "layout": {"order": 4}},
+    {"id": "policy", "label": "Azure Policy", "caption": "Governance", "kind": "service", "boundary": "platform", "presentation": "service-icon", "assetRef": "azure-policy", "importance": "support", "evidence": ["fact-platform", "fact-icons"], "layout": {"order": 5}}
+  ],
+  "edges": [
+    {"id": "e1a", "source": "vehicles", "target": "iot", "kind": "event", "lineClass": "control", "label": "Vehicle telemetry", "labelMode": "none", "step": "1a", "importance": "primary", "evidence": ["fact-sources", "fact-ingest"], "layout": {"order": 1, "badgeT": 0.38}},
+    {"id": "e1b", "source": "factory", "target": "events", "kind": "event", "lineClass": "control", "label": "Machine events", "labelMode": "none", "step": "1b", "importance": "primary", "evidence": ["fact-sources", "fact-ingest"], "layout": {"order": 2, "badgeT": 0.38}},
+    {"id": "e1c", "source": "facilities", "target": "events", "kind": "event", "lineClass": "dependency", "label": "Facility telemetry", "labelMode": "none", "laneId": "facility-events", "evidence": ["fact-sources", "fact-ingest"], "layout": {"order": 3, "sourcePort": [1.0, 0.5], "targetPort": [0.0, 0.75], "waypoints": [[460, 934.3], [460, 617.9], [518.7, 617.9]]}},
+    {"id": "e2a", "source": "iot", "target": "events", "kind": "event", "lineClass": "control", "label": "Route events", "labelMode": "none", "step": "2a", "importance": "primary", "evidence": ["fact-ingest"], "layout": {"order": 4, "badgeT": 0.50}},
+    {"id": "e2b", "source": "events", "target": "stream", "kind": "data", "lineClass": "control", "label": "Prepare stream", "labelMode": "none", "step": "2b", "importance": "primary", "evidence": ["fact-ingest"], "layout": {"order": 5, "badgeT": 0.50}},
+    {"id": "e3", "source": "stream", "target": "synapse", "kind": "write", "lineClass": "data", "label": "Curated\ntelemetry", "labelMode": "offset", "labelPlacement": {"segment": 1, "t": 0.48, "side": "left", "width": 70, "height": 32}, "laneId": "curated-hub", "step": "3", "importance": "primary", "evidence": ["fact-hub"], "layout": {"order": 6, "badgeSegment": 0, "badgeT": 0.45}},
+
+    {"id": "e4a", "source": "synapse", "target": "powerbi", "kind": "read", "lineClass": "control", "label": "Dashboard models", "labelMode": "offset", "labelPlacement": {"segment": 2, "t": 0.52, "side": "left", "width": 108, "height": 24}, "laneId": "hub-dashboard", "step": "4a", "importance": "primary", "evidence": ["fact-consume"], "layout": {"order": 7, "sourcePort": [1.0, 0.20], "targetPort": [0.0, 0.5], "waypoints": [[1296, 536.2], [1490, 536.2], [1490, 307.6], [1801, 307.6]], "badgeSegment": 1, "badgeT": 0.30}},
+    {"id": "e4b", "source": "synapse", "target": "app", "kind": "read", "lineClass": "control", "label": "Operational insights", "labelMode": "offset", "labelPlacement": {"segment": 2, "t": 0.58, "side": "right", "width": 116, "height": 24}, "laneId": "hub-application", "step": "4b", "importance": "primary", "evidence": ["fact-consume"], "layout": {"order": 8, "sourcePort": [1.0, 0.50], "targetPort": [0.0, 0.5], "waypoints": [[1296, 574.0], [1540, 574.0], [1540, 620.9], [1801, 620.9]], "badgeSegment": 1, "badgeT": 0.28}},
+    {"id": "e4c", "source": "synapse", "target": "logic", "kind": "event", "lineClass": "control", "label": "Alert signals", "labelMode": "offset", "labelPlacement": {"segment": 3, "t": 0.56, "side": "right", "width": 92, "height": 24}, "laneId": "hub-automation", "step": "4c", "importance": "primary", "evidence": ["fact-consume"], "layout": {"order": 9, "sourcePort": [1.0, 0.90], "targetPort": [0.0, 0.5], "waypoints": [[1296, 624.4], [1296, 680], [1590, 680], [1590, 934.3], [1801, 934.3]], "badgeSegment": 2, "badgeT": 0.28}},
+
+    {"id": "e5a", "source": "synapse", "target": "databricks", "kind": "read", "lineClass": "dependency", "label": "Historical telemetry", "labelMode": "note", "labelPlacement": {"segment": 1, "t": 0.15, "side": "below", "offset": 10, "width": 112, "height": 24}, "laneId": "hub-features", "step": "5a", "importance": "primary", "evidence": ["fact-advanced"], "layout": {"order": 10, "sourcePort": [0.25, 1.0], "targetPort": [0.5, 0.0], "waypoints": [[1108.4, 820], [922.7, 820], [922.7, 1005]], "badgeSegment": 1, "badgeT": 0.75}},
+    {"id": "e5b", "source": "databricks", "target": "ml", "kind": "data", "lineClass": "control", "label": "Feature sets", "labelMode": "none", "step": "5b", "importance": "primary", "evidence": ["fact-advanced"], "layout": {"order": 11, "badgeT": 0.50}},
+    {"id": "e5c", "source": "ml", "target": "synapse", "kind": "feedback", "lineClass": "data", "label": "Model scores", "labelMode": "callout", "labelPlacement": {"segment": 1, "t": 0.82, "side": "center", "width": 92, "height": 24}, "laneId": "model-feedback", "step": "5c", "importance": "primary", "evidence": ["fact-advanced", "fact-hub"], "layout": {"order": 12, "rail": 875, "sourcePort": [1.0, 0.2], "targetPort": [0.5, 1.0], "waypoints": [[1340, 1082.5], [1340, 875], [1160.9, 875], [1160.9, 678]], "badgeSegment": 3, "badgeT": 0.50}},
+    {"id": "e5d", "source": "ml", "target": "foundry", "kind": "data", "lineClass": "control", "label": "Model and context", "labelMode": "none", "laneId": "model-knowledge", "evidence": ["fact-advanced"], "layout": {"order": 13}},
+    {"id": "e5e", "source": "foundry", "target": "synapse", "kind": "feedback", "lineClass": "dependency", "label": "Enriched knowledge", "labelMode": "callout", "labelPlacement": {"segment": 1, "t": 0.50, "side": "center", "width": 118, "height": 24}, "laneId": "knowledge-feedback", "evidence": ["fact-advanced", "fact-hub"], "layout": {"order": 14, "rail": 820, "sourcePort": [0.5, 0.0], "targetPort": [0.75, 1.0], "waypoints": [[1486.5, 820], [1213.4, 820], [1213.4, 678]]}}
+  ],
+  "legend": [],
+  "sourceSnapshot": "source_model.json",
+  "assumptions": [
+    "This example validates the hub-and-spoke composition rather than a phase-column lifecycle.",
+    "Azure Synapse Analytics is the logical exchange point; production implementations may use Azure Data Explorer or Microsoft Fabric Real-Time Intelligence instead."
+  ]
+}

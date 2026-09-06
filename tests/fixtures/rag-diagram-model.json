@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "2.0",
+  "title": "Evidence-grounded RAG architecture",
+  "subtitle": "Offline indexing and online serving are separated",
+  "route": {"family": "ai-ml", "profile": "rag"},
+  "audience": "AI platform engineers",
+  "deliveryTarget": "engineering-doc",
+  "language": "en",
+  "theme": "technical-editorial",
+  "direction": "LR",
+  "canvas": {"width": 1600, "height": 900},
+  "boundaries": [
+    {"id": "offline", "label": "OFFLINE · INDEXING", "kind": "lane", "order": 1},
+    {"id": "online", "label": "ONLINE · SERVING", "kind": "lane", "order": 2}
+  ],
+  "nodes": [
+    {"id": "docs", "label": "Source documents", "kind": "document", "boundary": "offline", "importance": "secondary", "evidence": ["fact-ingest"], "layout": {"order": 1}},
+    {"id": "chunk", "label": "Chunk + enrich", "kind": "component", "boundary": "offline", "importance": "primary", "description": "Structure-aware chunking", "evidence": ["fact-ingest"], "layout": {"order": 2}},
+    {"id": "embed", "label": "Embedding model", "kind": "model", "boundary": "offline", "importance": "primary", "technology": "text embeddings", "evidence": ["fact-ingest"], "layout": {"order": 3}},
+    {"id": "index", "label": "Vector index", "kind": "database", "boundary": "offline", "importance": "primary", "technology": "vector search", "evidence": ["fact-ingest"], "layout": {"order": 4}},
+    {"id": "user", "label": "User", "kind": "actor", "boundary": "online", "importance": "secondary", "evidence": ["fact-query"], "layout": {"order": 1}},
+    {"id": "retrieve", "label": "Retrieve + rerank", "kind": "service", "boundary": "online", "importance": "primary", "description": "Hybrid retrieval", "evidence": ["fact-query"], "layout": {"order": 2}},
+    {"id": "llm", "label": "Answer generator", "kind": "model", "boundary": "online", "importance": "primary", "technology": "LLM", "description": "Grounded generation", "evidence": ["fact-query"], "layout": {"order": 3}}
+  ],
+  "edges": [
+    {"id": "e1", "source": "docs", "target": "chunk", "kind": "data", "label": "extract", "payload": "documents", "evidence": ["fact-ingest"], "layout": {"order": 1}},
+    {"id": "e2", "source": "chunk", "target": "embed", "kind": "data", "label": "embed", "payload": "chunks", "evidence": ["fact-ingest"], "layout": {"order": 2}},
+    {"id": "e3", "source": "embed", "target": "index", "kind": "write", "label": "index", "payload": "vectors + metadata", "evidence": ["fact-ingest"], "layout": {"order": 3}},
+    {"id": "e4", "source": "user", "target": "retrieve", "kind": "sync", "label": "query", "protocol": "HTTPS", "evidence": ["fact-query"], "layout": {"order": 4}},
+    {"id": "e5", "source": "retrieve", "target": "index", "kind": "retrieval", "label": "vector search", "protocol": "query API", "evidence": ["fact-query"], "layout": {"order": 5}},
+    {"id": "e6", "source": "retrieve", "target": "llm", "kind": "data", "label": "ground", "payload": "ranked context", "evidence": ["fact-query"], "layout": {"order": 6}},
+    {"id": "e7", "source": "llm", "target": "user", "kind": "response", "label": "answer + citations", "protocol": "HTTPS", "evidence": ["fact-query"], "layout": {"order": 7}}
+  ],
+  "legend": [
+    {"kind": "data", "label": "Data or retrieval"},
+    {"kind": "sync", "label": "Synchronous interaction"}
+  ],
+  "sourceSnapshot": "rag-source-model.json",
+  "assumptions": []
+}

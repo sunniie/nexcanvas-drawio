@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "2.0",
+  "status": "confirmed",
+  "sources": [
+    {
+      "id": "spec-1",
+      "type": "document",
+      "location": "tests/fixtures/rag-system-spec.md",
+      "snapshot": "fixture-v1"
+    }
+  ],
+  "facts": [
+    {
+      "id": "fact-ingest",
+      "claim": "Documents are chunked and embedded before indexing.",
+      "evidence": ["spec-1:indexing"],
+      "confidence": "confirmed"
+    },
+    {
+      "id": "fact-query",
+      "claim": "Queries retrieve context before answer generation.",
+      "evidence": ["spec-1:serving"],
+      "confidence": "confirmed"
+    }
+  ],
+  "assumptions": [],
+  "exclusions": []
+}

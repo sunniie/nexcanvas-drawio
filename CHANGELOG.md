@@ -4,12 +4,34 @@ All notable changes to NexCanvas are documented in this file. Releases follow
 [Semantic Versioning](https://semver.org/), while persisted schemas are versioned
 independently.
 
-## [0.2.0](https://github.com/sunniie/nexcanvas-drawio/compare/nexcanvas-drawio-v0.1.0...nexcanvas-drawio-v0.2.0) (2026-09-09)
+## [0.2.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.1.0...v0.2.0) - 2026-09-09
 
+### Added
 
-### Features
+- Installable `src/nexcanvas` Python package and `nexcanvas` console command.
+- Unified doctor, init, analyze, plan, build, render, QA, postflight, contract,
+  intent, and asset command groups.
+- Working-directory-independent runtime data resolution for editable and wheel
+  installs.
+- Cross-platform editable-install and packaged-install smoke coverage.
 
-* **cli:** add installable package and unified command ([#7](https://github.com/sunniie/nexcanvas-drawio/issues/7)) ([af87389](https://github.com/sunniie/nexcanvas-drawio/commit/af873897b955e89b7b6d5dbcfa2f136b35c58ca6))
+### Changed
+
+- Agent instructions and documentation now use the unified CLI.
+- GitHub releases now build a wheel and source distribution in addition to the
+  portable skill bundle.
+- The v0.1 task-specific scripts remain as compatibility wrappers and are
+  deprecated for new automation.
+
+### Compatibility
+
+- Persisted schema version remains `2.0`; existing projects require no migration.
+- Draw.io output remains native, uncompressed, and editable.
+
+### Known limitations
+
+- Full pipeline orchestration and resumable stage state remain planned for Phase 3.
+- Draw.io Desktop is still required for rendering and completed visual approval.
 
 ## [0.1.0] - 2026-09-09
 

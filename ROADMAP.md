@@ -7,7 +7,7 @@ request branches and is marked complete only after its exit gates pass.
 ## Status
 
 - [x] Phase 0 - scope and architecture decisions
-- [ ] Phase 1 - open-source foundation (in progress until GitHub exit gates pass)
+- [x] Phase 1 - open-source foundation
 - [ ] Phase 2 - installable package and unified CLI
 - [ ] Phase 3 - deterministic pipeline state and orchestration
 - [ ] Phase 4 - canonical semantic model V3
@@ -64,12 +64,17 @@ Objective: make the project safe to change, test, release, and contribute to.
 - [x] Define the initial `v0.1.0` technical-preview release.
 - [x] Document required repository rules for `main`.
 
-Exit evidence required on GitHub:
+Exit evidence:
 
-- The `CI / Quality gate` status is green.
-- `main` requires pull requests and the quality gate, and blocks force pushes.
-- Private vulnerability reporting is enabled.
-- GitHub Release `v0.1.0` contains a source bundle and SHA-256 checksum.
+- [x] [Pull request #1](https://github.com/sunniie/nexcanvas-drawio/pull/1)
+  was squash-merged after its cross-platform quality gate passed.
+- [x] The [post-merge CI run](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34307965262)
+  passed on Linux, Windows, and macOS.
+- [x] `main` requires pull requests and the `Quality gate`, enforces linear
+  history and resolved conversations, and blocks force pushes and deletion.
+- [x] Automatic head-branch deletion and private vulnerability reporting are enabled.
+- [x] GitHub Release [`v0.1.0`](https://github.com/sunniie/nexcanvas-drawio/releases/tag/v0.1.0)
+  is the checksummed technical-preview baseline.
 
 ## Phase 2 - installable package and unified CLI
 

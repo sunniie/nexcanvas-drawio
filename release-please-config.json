@@ -1,0 +1,19 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bootstrap-sha": "0d8969144092932e7f9da0756e867cc1c5eba7b0",
+  "release-type": "simple",
+  "include-v-in-tag": true,
+  "bump-minor-pre-major": true,
+  "packages": {
+    ".": {
+      "package-name": "nexcanvas-drawio",
+      "version-file": "version.txt",
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "scripts/nexcanvas/__init__.py"
+        }
+      ]
+    }
+  }
+}

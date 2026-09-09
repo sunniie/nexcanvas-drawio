@@ -8,6 +8,8 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB.svg)](https://www.python.org/)
 [![Format: Draw.io](https://img.shields.io/badge/format-editable%20Draw.io-F08705.svg)](https://www.drawio.com/)
 [![Agent Skill](https://img.shields.io/badge/standard-Agent%20Skills-111827.svg)](SKILL.md)
+[![CI](https://github.com/sunniie/nexcanvas-drawio/actions/workflows/ci.yml/badge.svg)](https://github.com/sunniie/nexcanvas-drawio/actions/workflows/ci.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/sunniie/nexcanvas-drawio?display_name=tag)](https://github.com/sunniie/nexcanvas-drawio/releases)
 
 Turn repositories, technical briefs, screenshots, and architecture references
 into native Draw.io diagrams with reproducible contracts, verified assets,
@@ -347,6 +349,20 @@ python scripts/doctor.py
 The implementation uses the Python standard library for its core contract,
 layout, build, and QA pipeline. This keeps the same skill usable by Codex,
 GitHub Copilot, Claude Code, and other hosts that implement Agent Skills.
+
+## Project governance
+
+NexCanvas is developed on a protected, always-releasable `main` branch. Changes
+are proposed through short-lived branches and pull requests, and releases follow
+Semantic Versioning with separate versioning for persisted JSON schemas.
+
+- [Roadmap and phase gates](ROADMAP.md)
+- [Project scope](docs/project-scope.md)
+- [Public contracts](docs/public-contracts.md)
+- [Versioning and releases](docs/versioning.md)
+- [Contributing](CONTRIBUTING.md)
+- [Support](SUPPORT.md)
+- [Security policy](SECURITY.md)
 
 ## License
 

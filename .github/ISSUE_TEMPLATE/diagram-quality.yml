@@ -1,0 +1,42 @@
+name: Diagram quality report
+description: Report an unclear, misleading, or visually broken generated diagram.
+title: "[Diagram quality]: "
+labels: ["diagram-quality"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: NexCanvas version or commit
+    validations:
+      required: true
+  - type: dropdown
+    id: intent
+    attributes:
+      label: Semantic view
+      options: [Architecture, Workflow, Sequence, Data flow, Lifecycle, Unsure]
+    validations:
+      required: true
+  - type: textarea
+    id: brief
+    attributes:
+      label: Sanitized brief and relevant constraints
+    validations:
+      required: true
+  - type: textarea
+    id: defect
+    attributes:
+      label: What is hard to read or semantically misleading?
+      description: Identify endpoints, labels, lanes, icons, boundaries, or reading order.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Visual and QA evidence
+      description: Attach a cropped preview and sanitized reports when possible.
+  - type: checkboxes
+    id: editable
+    attributes:
+      label: Artifact
+      options:
+        - label: I can provide a sanitized editable Draw.io artifact or minimal model fixture.

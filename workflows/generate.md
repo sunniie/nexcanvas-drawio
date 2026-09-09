@@ -56,13 +56,7 @@ Examples:
 
 Before locking, select a visual archetype. Use `microsoft-reference`, `aws-reference`, or `google-cloud-reference` when the requested output is a provider-specific component/reference architecture. Use `provider-neutral-reference` for the same phase-and-foundation grammar without provider branding. Read [../references/enterprise-reference-style.md](../references/enterprise-reference-style.md).
 
-Before choosing geometry, read [../references/reference-image-patterns.md](../references/reference-image-patterns.md) and run the brainstorm contract in [../references/layout-brainstorming.md](../references/layout-brainstorming.md):
-
-```bash
-nexcanvas plan <project-dir>/diagram_model.json --output <project-dir>/reports/layout_brainstorm.json
-```
-
-Compare the winner with the runner-up. Confirm whether the story is sparse or dense, whether containment or a central hub dominates, whether feedback requires a hybrid grid, and whether landscape or portrait shortens the primary paths. Set `layoutStrategy` explicitly after this review.
+Before choosing geometry, read [../references/reference-image-patterns.md](../references/reference-image-patterns.md) and use the brainstorm contract in [../references/layout-brainstorming.md](../references/layout-brainstorming.md). Compare the likely winner with the runner-up while authoring the model. Confirm whether the story is sparse or dense, whether containment or a central hub dominates, whether feedback requires a hybrid grid, and whether landscape or portrait shortens the primary paths. Set `layoutStrategy` explicitly after this review. The orchestrated generate run persists the scored comparison to `reports/layout_brainstorm.json`.
 
 Lock the selected intent, route, notation, layout adapter, `layoutStrategy`, visual archetype, theme, audience, delivery target, canvas, and asset policy. Set `sourceHash` to the canonical JSON hash used by `nexcanvas.common.sha256_json`. Update the hash whenever the source model changes.
 
@@ -85,13 +79,13 @@ Follow [../references/asset-policy.md](../references/asset-policy.md). Search an
 
 Provider reference diagrams must resolve service nodes from the provider-owned icon pack and must not silently fall back to Simple Icons.
 
-## 8. Build and run QA
+## 8. Run the deterministic pipeline
 
-Build native `.drawio` with `nexcanvas build`, then run `nexcanvas qa diagram --fail-on-warning`. For repository-backed sources, pass `--repo-root <repo-root>`; omission is a blocking error. Fix the model or layout logic rather than hiding findings with exemption tags. Exemptions are allowed only when the visual was reviewed and the heuristic is provably wrong.
+Run `nexcanvas generate <project-dir>`. For repository-backed sources, pass `--repo-root <repo-root>`; omission is a blocking error. The command writes `project_state.json`, reuses unchanged passing stages, and invalidates a changed stage plus everything downstream. It runs layout planning, native `.drawio` build, strict diagram QA, and rendering before stopping with exit code `3` at the visual-review boundary. Fix the model or layout logic rather than hiding findings with exemption tags. Exemptions are allowed only when the visual was reviewed and the heuristic is provably wrong.
 
 ## 9. Render and inspect
 
-Render with `nexcanvas render`. Inspect at full resolution and at the actual delivery size. Check:
+Inspect the preview emitted by `nexcanvas generate` at full resolution and at the actual delivery size. Check:
 
 - title and labels are readable;
 - no clipping or accidental overlap;
@@ -107,8 +101,14 @@ Render with `nexcanvas render`. Inspect at full resolution and at the actual del
 - title, subtitle, and legend chrome appears only when enabled by the model;
 - dense areas and empty areas feel intentional.
 
-Iterate until clean. Then record visual approval with `visual_qa.py` and run `postflight.py`.
+Iterate until clean. After actually inspecting the current artifact, resume with:
+
+```bash
+nexcanvas generate <project-dir> --approve-visual --reviewer "<reviewer>" --notes "<specific observations>"
+```
+
+Pass `--repo-root <repo-root>` again for repository-backed work. The pipeline binds approval to the current artifact hash and runs postflight only after approval passes. Do not use the approval flags as a substitute for viewing the image.
 
 ## 10. Deliver
 
-Deliver the editable `.drawio`, preview, and reports. State the semantic intent, route, evidence snapshot, assumptions, and whether repository, runtime, and visual QA completed. Repository-backed postflight must also receive `--repo-root <repo-root>`. Never describe portable-tier output as visually verified.
+Deliver the editable `.drawio`, preview, `project_state.json`, and reports. State the semantic intent, route, evidence snapshot, assumptions, and whether repository, runtime, visual QA, and orchestrated postflight completed. Never describe portable-tier output as visually verified.

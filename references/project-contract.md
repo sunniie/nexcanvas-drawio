@@ -10,6 +10,7 @@ nexcanvas-output/<project-slug>/
 |-- source_model.json
 |-- diagram_lock.json
 |-- diagram_model.json
+|-- project_state.json
 |-- assets/
 |   |-- asset_manifest.json
 |   `-- icons/
@@ -59,7 +60,12 @@ Native generic glyphs may remain `Resolved`; file-backed marks must reach `Rende
 Project readiness:
 
 ```text
-draft source/lock → confirmed source/lock → built → QA pass → rendered → visual approval → postflight pass
+pending → plan → build → diagram QA → render → awaiting visual review → postflight → complete
 ```
 
-Any source/model/visual artifact change invalidates downstream hashes and requires rerunning the dependent stages.
+`project_state.json` records each stage's canonical input, dependency, and output
+hashes. Any source/model/visual artifact change marks the affected stage stale
+and invalidates downstream stages. A failed stage is retryable without deleting
+the project, while a matching passing stage is reused. `complete` is valid only
+when visual approval and postflight both match the current files. See
+[deterministic pipeline state](../docs/pipeline-state.md).

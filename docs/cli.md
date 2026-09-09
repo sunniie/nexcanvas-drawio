@@ -1,8 +1,9 @@
 # Unified command-line interface
 
-The `nexcanvas` command is the supported automation surface for the Phase 2
-technical preview. It replaces the collection of task-specific scripts without
-changing persisted schema version `2.0` or the editable Draw.io delivery format.
+The `nexcanvas` command is the supported automation surface for the technical
+preview. Phase 3 adds a resumable orchestrator without changing persisted source,
+lock, diagram, or asset schema version `2.0`, or the editable Draw.io delivery
+format.
 
 ## Installation
 
@@ -47,8 +48,9 @@ python <skill-root>/scripts/nexcanvas_cli.py <command> [...]
 | `qa diagram` | Run contract, semantic, asset, connector, and geometry gates |
 | `qa visual` | Record render checks and explicit human visual approval |
 | `postflight` | Verify final hashes, provenance, and delivery gates |
+| `generate` | Run or resume the hash-bound plan-to-postflight pipeline |
 | `intent` | Infer a semantic view intent as an agent routing hint |
-| `contract` | Validate one persisted v2 contract |
+| `contract` | Validate a persisted v2 content contract or v1 pipeline-state contract |
 | `asset search` | Search the pinned technology icon catalog |
 | `asset sync` | Resolve a verified catalog, provider, or user-owned SVG asset |
 
@@ -65,19 +67,51 @@ compact JSON object on standard error.
 | `0` | Command completed and its requested gate passed |
 | `1` | A validation, QA, postflight, or search result did not pass |
 | `2` | Invalid usage/input, unavailable required runtime, or manual asset resolution required |
+| `3` | Generation reached the external visual-review gate and is not complete yet |
 
 Callers must inspect both the exit code and persisted report rather than parsing
-display wording.
+display wording. `generate` also emits `outcome`, `complete`, `currentStage`, and
+an ordered `events` array whose actions are `ran`, `reused`, `invalidated`, or
+`failed`.
+
+## Orchestrated generation
+
+After the agent has confirmed the source and lock, authored the diagram model,
+and resolved required assets, run:
+
+```bash
+nexcanvas generate <project-dir> [--repo-root <repo-root>]
+```
+
+The first passing run normally exits `3` after writing the preview and a pending
+visual report. Inspect that exact artifact, then resume:
+
+```bash
+nexcanvas generate <project-dir> [--repo-root <repo-root>] \
+  --approve-visual \
+  --reviewer "<reviewer>" \
+  --notes "<specific observations from the rendered image>"
+```
+
+Approval requires both reviewer and notes. The second run reuses matching stages,
+binds approval to the current preview hash, and executes postflight. `--restart`
+invalidates all stage records without deleting source or generated files.
+`--allow-warnings` relaxes the default release behavior and must not be used to
+silently hide an actionable warning.
+
+State is persisted at `<project-dir>/project_state.json`. See
+[deterministic pipeline state](pipeline-state.md) for invalidation and recovery
+semantics.
 
 ## Compatibility
 
 The `python scripts/*.py` interfaces published in `v0.1.x` remain as thin
-source-checkout wrappers for the `v0.2.x` line. New automation must use the
-unified CLI. The wrappers are not installed into wheels and may be removed only
-after the documented deprecation window.
+source-checkout wrappers during the technical preview. New automation must use
+the unified CLI. The wrappers are not installed into wheels and may be removed
+only after the documented deprecation window.
 
-The importable modules under `src/nexcanvas` are implementation details; Phase 2
-does not yet publish a stable Python API.
+The importable modules under `src/nexcanvas` are implementation details; the
+technical preview does not yet publish a stable Python API.
 
 ## Known limits
 
@@ -85,5 +119,6 @@ does not yet publish a stable Python API.
   completed visual approval.
 - Package installation does not install an Agent Skills host integration; hosts
   still discover `SKILL.md` through their own supported skill directory.
-- Phase 2 does not orchestrate the complete pipeline automatically. Executable
-  stage state and safe resume belong to Phase 3.
+- Semantic authoring and visual judgment remain agent/human responsibilities;
+  `generate` orchestrates deterministic stages but does not invent architecture
+  facts or automatically approve aesthetics.

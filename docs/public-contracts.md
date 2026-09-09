@@ -10,7 +10,8 @@ affected.
 The following are public contracts:
 
 - documented command names, options, exit codes, and machine-readable output;
-- `source_model.json`, semantic/diagram model, and `diagram_lock.json` schemas;
+- `source_model.json`, semantic/diagram model, `diagram_lock.json`, and
+  `project_state.json` schemas;
 - asset-manifest and QA-report schemas;
 - the standard generated-project directory layout;
 - stable semantic IDs once Semantic Model V3 is introduced;

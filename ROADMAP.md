@@ -118,6 +118,15 @@ Target release: `v0.2.0`.
 
 Objective: make workflow gates executable rather than prompt-dependent.
 
+Recorded scope and contract impact:
+
+- [`ADR 0006`](docs/adr/0006-hash-bound-pipeline-state.md) defines the ordered
+  stage graph, hash reconciliation, downstream invalidation, safe resume, and the
+  non-bypassable visual-review boundary.
+- `project_state.json`, `nexcanvas generate`, and exit code `3` are new public
+  preview contracts. Existing schema `2.0` project inputs remain valid and gain
+  state on their first orchestrated run; no source-model migration is required.
+
 - [ ] Add hash-bound `project_state.json` stage records.
 - [ ] Invalidate downstream stages when inputs change.
 - [ ] Support safe resume after failures.

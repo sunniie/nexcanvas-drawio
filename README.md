@@ -110,6 +110,7 @@ The default project location is deliberately outside the installed skill:
         ├── source_model.json
         ├── diagram_lock.json
         ├── diagram_model.json
+        ├── project_state.json
         ├── assets/
         │   ├── asset_manifest.json
         │   └── icons/
@@ -236,22 +237,27 @@ Or choose an explicit directory:
 nexcanvas init docs/architecture --name "My architecture" --family software --profile c4-container
 ```
 
-After completing the generated contracts, build and gate the artifact:
+After completing the generated contracts and resolving assets, run the
+hash-bound pipeline. It plans, builds, runs diagram QA, renders, and then stops
+at the explicit visual-review boundary:
 
 ```bash
 PROJECT=nexcanvas-output/checkout-request
-nexcanvas plan "$PROJECT/diagram_model.json" --output "$PROJECT/reports/layout_brainstorm.json"
-nexcanvas build "$PROJECT/diagram_model.json" -o "$PROJECT/artifacts/diagram.drawio" --project-root "$PROJECT" --proof "$PROJECT/reports/build.json"
-nexcanvas qa diagram "$PROJECT/diagram_model.json" --drawio "$PROJECT/artifacts/diagram.drawio" --source-model "$PROJECT/source_model.json" --project-root "$PROJECT" --output "$PROJECT/reports/diagram_qa.json" --fail-on-warning
-nexcanvas render "$PROJECT/artifacts/diagram.drawio" -o "$PROJECT/artifacts/diagram.drawio.png" --report "$PROJECT/reports/render.json"
+nexcanvas generate "$PROJECT"
 ```
 
-Inspect the PNG before recording approval:
+Exit code `3` means the current preview is ready for external review—not that
+generation failed. Inspect the PNG at target size and connector terminals at
+enlarged scale, fix the model if needed, and only then approve that exact render:
 
 ```bash
-nexcanvas qa visual "$PROJECT/artifacts/diagram.drawio.png" --expected-width 1600 --expected-height 900 --approve --reviewer "Your name" --notes "Inspected at target size and connector terminals at 200%" --output "$PROJECT/reports/visual_qa.json"
-nexcanvas postflight "$PROJECT" --output "$PROJECT/reports/postflight.json"
+nexcanvas generate "$PROJECT" --approve-visual --reviewer "Your name" --notes "Inspected at target size and traced connector terminals at 200%"
 ```
+
+The second run reuses every unchanged passing stage, records the approval, and
+runs postflight. Later runs do the same: changed inputs or outputs invalidate the
+affected stage and everything downstream; unchanged stages are reused. See
+[deterministic pipeline state](docs/pipeline-state.md).
 
 ### Repository-backed diagrams
 
@@ -265,8 +271,8 @@ Add repo-relative file and line ranges to fact evidence, then verify the exact o
 
 ```bash
 nexcanvas analyze verify "$PROJECT/source_model.json" --repo-root . --output "$PROJECT/reports/repository_evidence.json"
-nexcanvas qa diagram "$PROJECT/diagram_model.json" --drawio "$PROJECT/artifacts/diagram.drawio" --source-model "$PROJECT/source_model.json" --project-root "$PROJECT" --repo-root . --output "$PROJECT/reports/diagram_qa.json" --fail-on-warning
-nexcanvas postflight "$PROJECT" --repo-root . --output "$PROJECT/reports/postflight.json"
+nexcanvas generate "$PROJECT" --repo-root .
+nexcanvas generate "$PROJECT" --repo-root . --approve-visual --reviewer "Your name" --notes "Inspected at target size and traced connector terminals at 200%"
 ```
 
 This verifies the authored evidence. It does not claim to discover live infrastructure, infer unknown ownership, or prove runtime behavior.

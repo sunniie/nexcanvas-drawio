@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nexcanvas.dev/schemas/project-state.schema.json",
+  "title": "NexCanvas Project Pipeline State",
+  "type": "object",
+  "required": ["schemaVersion", "pipelineVersion", "projectRoot", "status", "stages"],
+  "properties": {
+    "schemaVersion": {"const": "1.0"},
+    "pipelineVersion": {"type": "string", "minLength": 1},
+    "projectRoot": {"const": "."},
+    "status": {"enum": ["pending", "running", "awaiting-review", "failed", "complete"]},
+    "currentStage": {"type": ["string", "null"]},
+    "updatedAt": {"type": "string", "minLength": 1},
+    "completedAt": {"type": "string", "minLength": 1},
+    "stages": {
+      "type": "object",
+      "required": ["plan", "build", "diagram-qa", "render", "visual-qa", "postflight"],
+      "additionalProperties": false,
+      "properties": {
+        "plan": {"$ref": "#/$defs/stage"},
+        "build": {"$ref": "#/$defs/stage"},
+        "diagram-qa": {"$ref": "#/$defs/stage"},
+        "render": {"$ref": "#/$defs/stage"},
+        "visual-qa": {"$ref": "#/$defs/stage"},
+        "postflight": {"$ref": "#/$defs/stage"}
+      }
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "stage": {
+      "type": "object",
+      "required": ["status", "attempts"],
+      "properties": {
+        "status": {"enum": ["pending", "running", "awaiting-review", "failed", "stale", "complete"]},
+        "attempts": {"type": "integer", "minimum": 0},
+        "inputHash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "outputHash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "inputs": {"type": "object", "additionalProperties": {"type": "string"}},
+        "dependencies": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+        "outputs": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["sha256", "bytes"],
+            "properties": {
+              "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+              "bytes": {"type": "integer", "minimum": 0}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

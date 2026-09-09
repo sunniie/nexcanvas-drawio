@@ -6,7 +6,7 @@ Use this workflow when the user supplies `.drawio` or asks to correct, modernize
 
 Work on the supplied file or a clearly named copy according to the request. Do not flatten the diagram into an image. Preserve pages, editable cell labels, IDs when external references may depend on them, and any user assets not proven obsolete.
 
-Run the legacy geometry audit first:
+Run a diagnostic geometry audit first:
 
 ```bash
 nexcanvas qa diagram <diagram_model.json> --drawio <input.drawio> --project-root <project-dir>
@@ -40,4 +40,8 @@ If the existing topology is fundamentally unsuitable, rebuild from the semantic 
 
 ## Verify
 
-Run the complete v2 build/QA/render/visual/postflight cycle. Compare before and after at the same scale. Report what was repaired, what was intentionally preserved, and which behavioral claims were or were not revalidated.
+Run the repaired project through `nexcanvas generate`, inspect the pending preview,
+then resume with explicit visual approval so postflight can complete. Compare
+before and after at the same scale. Report what was repaired, what was
+intentionally preserved, and which behavioral claims were or were not
+revalidated.

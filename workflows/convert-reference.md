@@ -31,4 +31,6 @@ When the input is a sequence or flowchart source language, preserve IDs/order as
 
 Render the reconstructed result at the same aspect ratio. Compare hierarchy, spacing, semantics, marks, and connector direction. Exact pixel copying is not the goal unless explicitly requested; editability and communication quality remain required.
 
-Complete the same QA and postflight gates as a new diagram. State which elements were copied, inferred, corrected, or omitted.
+Complete the same hash-bound `nexcanvas generate` and explicit visual-review
+gates as a new diagram. State which elements were copied, inferred, corrected,
+or omitted.

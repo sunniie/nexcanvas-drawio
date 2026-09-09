@@ -9,7 +9,7 @@ request branches and is marked complete only after its exit gates pass.
 - [x] Phase 0 - scope and architecture decisions
 - [x] Phase 1 - open-source foundation
 - [x] Phase 2 - installable package and unified CLI
-- [ ] Phase 3 - deterministic pipeline state and orchestration
+- [x] Phase 3 - deterministic pipeline state and orchestration
 - [ ] Phase 4 - canonical semantic model V3
 - [ ] Phase 5 - repository analysis and incremental semantic sync
 - [ ] Phase 6 - cross-agent conformance
@@ -127,11 +127,45 @@ Recorded scope and contract impact:
   preview contracts. Existing schema `2.0` project inputs remain valid and gain
   state on their first orchestrated run; no source-model migration is required.
 
-- [ ] Add hash-bound `project_state.json` stage records.
-- [ ] Invalidate downstream stages when inputs change.
-- [ ] Support safe resume after failures.
-- [ ] Prevent completion while render or visual QA remains pending.
-- [ ] Provide one orchestrated generate command with machine-readable output.
+- [x] Add hash-bound `project_state.json` stage records.
+- [x] Invalidate downstream stages when inputs change.
+- [x] Support safe resume after failures.
+- [x] Prevent completion while render or visual QA remains pending.
+- [x] Provide one orchestrated generate command with machine-readable output.
+
+Implementation evidence:
+
+- [`docs/pipeline-state.md`](docs/pipeline-state.md) documents stage inputs,
+  output reconciliation, invalidation, exit codes, visual review, and recovery.
+- [`tests/test_pipeline.py`](tests/test_pipeline.py) covers pending review,
+  approval, full reuse, model drift, output tampering, failed-stage resume, false
+  completion rejection, and the CLI JSON result.
+- Packaged-install smoke validates that the wheel exposes `generate` and creates
+  a valid state contract outside the repository.
+
+Exit evidence:
+
+- [Pull request #10](https://github.com/sunniie/nexcanvas-drawio/pull/10)
+  introduced the pipeline after the Linux, Windows, and macOS
+  [Quality gate](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34328465148)
+  passed.
+- The post-merge feature [main CI run](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34328573800)
+  and final release [main CI run](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34328961700)
+  both passed.
+- [Release pull request #11](https://github.com/sunniie/nexcanvas-drawio/pull/11)
+  passed its complete cross-platform package matrix before merge.
+- GitHub Release [`v0.3.0`](https://github.com/sunniie/nexcanvas-drawio/releases/tag/v0.3.0)
+  publishes the portable skill bundle, wheel, source distribution, and verified
+  SHA-256 checksums with feature, fix, compatibility, and known-limit notes.
+- The released wheel was installed in an isolated environment outside the
+  repository; `doctor`, `init`, and `contract project-state` passed, and the
+  release tag matched the final main commit.
+- A real Draw.io run completed `generate → awaiting-review → inspected PNG →
+  approval/postflight → full reuse`; the temporary smoke project was removed.
+
+Existing v2 content contracts remain unchanged. The new pipeline state uses its
+independent public preview schema `1.0`; existing projects gain it on first
+orchestrated use without a source-model migration.
 
 Target release: `v0.3.0`.
 

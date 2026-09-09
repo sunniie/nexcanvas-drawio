@@ -1,0 +1,5 @@
+# Protect project governance and establish a default reviewer.
+* @sunniie
+/.github/ @sunniie
+/docs/adr/ @sunniie
+/schemas/ @sunniie

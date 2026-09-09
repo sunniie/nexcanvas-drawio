@@ -1,0 +1,38 @@
+name: Feature proposal
+description: Propose a focused capability, profile, analyzer, provider, or integration.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe the unmet user need without prescribing implementation first.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: contract
+    attributes:
+      label: Expected contract impact
+      options:
+        - None or unknown
+        - Backward-compatible extension
+        - Persisted schema change
+        - CLI or integration change
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Examples or authoritative references
+      description: Link safe examples; do not upload confidential architecture.

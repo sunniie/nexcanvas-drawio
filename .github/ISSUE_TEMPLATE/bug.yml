@@ -1,0 +1,61 @@
+name: Bug report
+description: Report reproducible incorrect behavior in the skill, scripts, or contracts.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for providing a minimal, non-sensitive reproduction.
+  - type: input
+    id: version
+    attributes:
+      label: NexCanvas version or commit
+      placeholder: v0.1.0 or full commit SHA
+    validations:
+      required: true
+  - type: dropdown
+    id: host
+    attributes:
+      label: Agent host
+      options:
+        - OpenAI Codex
+        - GitHub Copilot
+        - Claude Code
+        - Direct CLI
+        - Other Agent Skills host
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, Draw.io availability, and relevant restrictions.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Provide the smallest safe input and exact commands or prompt.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and reports
+      description: Include errors and sanitized QA reports; do not paste credentials.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials, private source, and confidential diagram content.
+          required: true

@@ -1,3 +1,4 @@
-"""NexCanvas Draw.io v2 deterministic authoring toolkit."""
+"""NexCanvas Draw.io deterministic authoring toolkit."""
 
-__version__ = "2.0.0"
+# x-release-please-version
+__version__ = "0.1.0"

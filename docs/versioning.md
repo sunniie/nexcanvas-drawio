@@ -36,6 +36,13 @@ Pre-releases use `alpha`, `beta`, and `rc`, for example `0.5.0-alpha.1`.
 5. Attach a repository bundle and `SHA256SUMS.txt`.
 6. Verify tag, release notes, assets, and checksums from GitHub.
 
+For fully automatic validation of Release Please pull requests, configure the
+repository secret `RELEASE_PLEASE_TOKEN` with a narrowly scoped fine-grained token
+or GitHub App token that can write contents, pull requests, and issues. Pull requests
+created with the fallback `GITHUB_TOKEN` may not trigger another workflow run. In
+that case, a maintainer must run the `CI` workflow manually against the release
+branch before merge; the required quality gate is never bypassed.
+
 The initial `v0.1.0` release is a technical-preview baseline. `version.txt`, the
 Python `__version__`, the release manifest, tag, and GitHub Release must agree.
 

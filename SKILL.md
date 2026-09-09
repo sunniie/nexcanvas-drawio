@@ -65,12 +65,12 @@ editable artifact, previews, and QA reports.
 2. Infer one dominant `viewIntent`: architecture, workflow, sequence, data-flow, or lifecycle. Do not ask the user to choose when the brief is clear.
 3. Investigate only the source evidence required by that intent. For repository-backed facts, pin Git origin/revision and exact file/line ranges; separate confirmed facts, assumptions, and exclusions in `source_model.json`.
 4. Select one of the 48 profiles in `config/route-registry.json` as the specialized notation beneath the intent.
-5. Build `diagram_model.json`, then run layout brainstorming. Compare alternatives before locking orientation and composition.
+5. Build `diagram_model.json` and compare plausible layout alternatives before locking orientation and composition; the orchestrator persists the scored brainstorm report.
 6. Confirm intent, audience, delivery target, route, notation, layout strategy, theme, canvas, source hash, and asset policy in `diagram_lock.json`.
 7. Resolve exact official logos from verified catalogs or provider-owned packs. Use neutral native glyphs for internal concepts. Never substitute a neighboring product logo.
-8. Build native, uncompressed mxGraph XML. Do not paste a screenshot onto a Draw.io canvas.
-9. Run contract, intent, profile, repository-evidence, geometry, connector, asset, render, and visual QA.
-10. Inspect the rendered image at target size and connector terminals at enlarged scale. Iterate from the model/layout input, then run postflight.
+8. Run `nexcanvas generate <project-dir>` to plan, build native uncompressed mxGraph XML, run strict diagram QA, and render. Do not paste a screenshot onto a Draw.io canvas.
+9. Treat exit code `3` as an external visual-review gate. Inspect the rendered image at target size and connector terminals at enlarged scale; never approve from XML or command output alone.
+10. Iterate from model/layout inputs. When the current render is actually approved, rerun `generate` with `--approve-visual`, reviewer, and specific notes. Completion requires the orchestrated postflight stage.
 
 ## Visual rules that cannot be waived silently
 
@@ -108,21 +108,22 @@ An explicit project directory remains supported:
 nexcanvas init <project-dir> --name "<title>" --brief "<user brief>" --language <language>
 ```
 
-Build and gate after completing the contracts:
+Build, gate, and safely resume after completing the contracts:
 
 ```bash
-nexcanvas plan <project-dir>/diagram_model.json --output <project-dir>/reports/layout_brainstorm.json
-nexcanvas build <project-dir>/diagram_model.json -o <project-dir>/artifacts/diagram.drawio --project-root <project-dir> --proof <project-dir>/reports/build.json
-nexcanvas qa diagram <project-dir>/diagram_model.json --drawio <project-dir>/artifacts/diagram.drawio --source-model <project-dir>/source_model.json --project-root <project-dir> --output <project-dir>/reports/diagram_qa.json --fail-on-warning
-nexcanvas render <project-dir>/artifacts/diagram.drawio -o <project-dir>/artifacts/diagram.drawio.png --report <project-dir>/reports/render.json
+nexcanvas generate <project-dir>
 ```
 
 Only after actually viewing the preview:
 
 ```bash
-nexcanvas qa visual <project-dir>/artifacts/diagram.drawio.png --expected-width <width> --expected-height <height> --approve --reviewer "<reviewer>" --notes "<specific observations>" --output <project-dir>/reports/visual_qa.json
-nexcanvas postflight <project-dir> --output <project-dir>/reports/postflight.json
+nexcanvas generate <project-dir> --approve-visual --reviewer "<reviewer>" --notes "<specific observations>"
 ```
+
+For repository-backed evidence, pass `--repo-root <repo-root>` on every
+`generate` invocation. Read `project_state.json` or the JSON command result to
+distinguish reused, rerun, failed, and awaiting-review stages. Do not bypass the
+orchestrator with stale reports when claiming completion.
 
 If Draw.io Desktop is unavailable, produce and structurally validate the editable
 `.drawio`, leave visual approval pending, and state the limitation explicitly.

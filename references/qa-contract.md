@@ -51,7 +51,7 @@ The Draw.io CLI export must exist, be non-empty, preserve editable diagram data,
 
 ## Gate 6: visual review
 
-View the actual PNG/SVG at original resolution and target display size. Check clipping, line/text collisions, hierarchy, balance, direction, marks, and legibility. For every icon-led node, verify that the icon, title, and caption occupy distinct vertical bands with visible clearance; a title or caption touching the icon is a release blocker. Trace every primary connector end to end, then inspect connector terminals, fan-in/fan-out port separation, callout breaks, lane separation, and badge exclusion zones again at 200%. Record concrete notes. `visual_qa.py --approve` is an attestation, not an automated aesthetic score.
+View the actual PNG/SVG at original resolution and target display size. Check clipping, line/text collisions, hierarchy, balance, direction, marks, and legibility. For every icon-led node, verify that the icon, title, and caption occupy distinct vertical bands with visible clearance; a title or caption touching the icon is a release blocker. Trace every primary connector end to end, then inspect connector terminals, fan-in/fan-out port separation, callout breaks, lane separation, and badge exclusion zones again at 200%. Record concrete notes. `nexcanvas generate --approve-visual` is an attestation, not an automated aesthetic score.
 
 When no image-view capability exists, leave `pending-review`. Do not self-approve from XML.
 
@@ -60,3 +60,8 @@ When no image-view capability exists, leave `pending-review`. Do not self-approv
 Postflight requires confirmed source/lock, matching hashes, passing QA, approved visual artifact, no unresolved assets, and unchanged outputs. It emits artifact hashes for delivery.
 
 Completion means postflight `ok: true`, not merely “the file opens.”
+
+The supported automation path is `nexcanvas generate`. Its state machine must
+remain `awaiting-review` while Gate 6 is pending and may set project status to
+`complete` only after Gate 7 passes against the current hashes. See
+[deterministic pipeline state](../docs/pipeline-state.md).

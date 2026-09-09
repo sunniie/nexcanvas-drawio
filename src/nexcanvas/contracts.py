@@ -15,6 +15,8 @@ from .registry import SUPPORTED_LAYOUTS, resolve_route, resolve_theme
 ID_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_.:-]*$")
 DELIVERY_TARGETS = {"readme", "engineering-doc", "slide", "poster", "print", "interactive"}
 ASSET_STATES = {"Requested", "Resolved", "Synced", "Embedded", "RenderVerified", "NeedsManual"}
+PIPELINE_STAGES = {"plan", "build", "diagram-qa", "render", "visual-qa", "postflight"}
+PIPELINE_STAGE_STATES = {"pending", "running", "awaiting-review", "failed", "stale", "complete"}
 LABEL_MODES = {"none", "offset", "callout", "note"}
 LABEL_SIDES = {"auto", "above", "below", "left", "right", "center"}
 
@@ -358,6 +360,49 @@ def validate_manifest(manifest: dict[str, Any], project_root: Path | None = None
     return issues
 
 
+def validate_project_state(state: dict[str, Any]) -> list[Issue]:
+    issues: list[Issue] = []
+    if state.get("schemaVersion") != "1.0":
+        issues.append(Issue("error", "schema-version", "project_state schemaVersion must be 1.0.", "schemaVersion"))
+    if state.get("projectRoot") != ".":
+        issues.append(Issue("error", "project-root", "project_state projectRoot must be '.'.", "projectRoot"))
+    if state.get("status") not in {"pending", "running", "awaiting-review", "failed", "complete"}:
+        issues.append(Issue("error", "pipeline-status", f"Unsupported pipeline status: {state.get('status')!r}.", "status"))
+    _required_string(state.get("pipelineVersion"), "pipelineVersion", issues)
+    stages = state.get("stages")
+    if not isinstance(stages, dict):
+        return issues + [Issue("error", "pipeline-stages", "project_state.stages must be an object.", "stages")]
+    missing = PIPELINE_STAGES - set(stages)
+    extra = set(stages) - PIPELINE_STAGES
+    for name in sorted(missing):
+        issues.append(Issue("error", "pipeline-stage-missing", f"Required pipeline stage is missing: {name}.", f"stages.{name}"))
+    for name in sorted(extra):
+        issues.append(Issue("error", "pipeline-stage-extra", f"Unknown pipeline stage: {name}.", f"stages.{name}"))
+    hash_re = re.compile(r"^[0-9a-f]{64}$")
+    for name in sorted(PIPELINE_STAGES & set(stages)):
+        record = stages[name]
+        if not isinstance(record, dict):
+            issues.append(Issue("error", "pipeline-stage-type", "Pipeline stage must be an object.", f"stages.{name}"))
+            continue
+        if record.get("status") not in PIPELINE_STAGE_STATES:
+            issues.append(Issue("error", "pipeline-stage-status", f"Unsupported stage status: {record.get('status')!r}.", f"stages.{name}.status"))
+        attempts = record.get("attempts")
+        if not isinstance(attempts, int) or isinstance(attempts, bool) or attempts < 0:
+            issues.append(Issue("error", "pipeline-attempts", "Stage attempts must be an integer >= 0.", f"stages.{name}.attempts"))
+        for field in ("inputHash", "outputHash"):
+            value = record.get(field)
+            if value is not None and (not isinstance(value, str) or not hash_re.fullmatch(value)):
+                issues.append(Issue("error", "pipeline-hash", f"{field} must be a lowercase SHA-256 hash.", f"stages.{name}.{field}"))
+        if record.get("status") == "complete" and not all(record.get(field) for field in ("inputHash", "outputHash", "outputs")):
+            issues.append(Issue("error", "pipeline-complete-record", "A complete stage requires inputHash, outputHash, and outputs.", f"stages.{name}"))
+    if state.get("status") == "complete" and any(
+        not isinstance(stages.get(name), dict) or stages[name].get("status") != "complete"
+        for name in PIPELINE_STAGES
+    ):
+        issues.append(Issue("error", "pipeline-false-complete", "A complete project requires every pipeline stage to be complete.", "status"))
+    return issues
+
+
 def validate_file(path: Path, kind: str, root: Path | None = None, project_root: Path | None = None) -> list[Issue]:
     value = load_json(path)
     if not isinstance(value, dict):
@@ -370,4 +415,6 @@ def validate_file(path: Path, kind: str, root: Path | None = None, project_root:
         return validate_lock(value, root)
     if kind == "asset-manifest":
         return validate_manifest(value, project_root)
+    if kind == "project-state":
+        return validate_project_state(value)
     raise ValueError(f"Unknown contract kind: {kind}")

@@ -14,6 +14,7 @@ from .contracts import validate_file
 from .geometry import run_checks as run_geometry_checks
 from .intents import DEFAULT_ROUTES, VIEW_INTENTS, classify_brief
 from .planning import brainstorm_layout
+from .pipeline import run_generate
 from .postflight import run_postflight
 from .project import init_project
 from .quality import run_quality, summarize
@@ -149,6 +150,25 @@ def _postflight(args: argparse.Namespace) -> int:
     )
     _emit(report, args.output)
     return 0 if report["ok"] else 1
+
+
+def _generate(args: argparse.Namespace) -> int:
+    result = run_generate(
+        args.project_root,
+        repo_root=args.repo_root,
+        render_format=args.render_format,
+        scale=args.scale,
+        expected_width=args.expected_width,
+        expected_height=args.expected_height,
+        approve_visual=args.approve_visual,
+        reviewer=args.reviewer,
+        notes=args.notes,
+        padding=args.padding,
+        fail_on_warning=not args.allow_warnings,
+        restart=args.restart,
+    )
+    _emit(result)
+    return int(result["exitCode"])
 
 
 def _intent(args: argparse.Namespace) -> int:
@@ -300,13 +320,28 @@ def build_parser() -> argparse.ArgumentParser:
     postflight.add_argument("--output", type=Path)
     _set_handler(postflight, _postflight)
 
+    generate = commands.add_parser("generate", help="Run or safely resume the hash-bound delivery pipeline.")
+    generate.add_argument("project_root", type=Path)
+    generate.add_argument("--repo-root", type=Path)
+    generate.add_argument("--render-format", choices=["png", "svg", "pdf"], default="png")
+    generate.add_argument("--scale", type=float, default=1.0)
+    generate.add_argument("--expected-width", type=int)
+    generate.add_argument("--expected-height", type=int)
+    generate.add_argument("--approve-visual", action="store_true")
+    generate.add_argument("--reviewer", default="")
+    generate.add_argument("--notes", default="")
+    generate.add_argument("--padding", type=float, default=10.0)
+    generate.add_argument("--allow-warnings", action="store_true")
+    generate.add_argument("--restart", action="store_true")
+    _set_handler(generate, _generate)
+
     intent = commands.add_parser("intent", help="Infer semantic view intent from a brief.")
     intent.add_argument("brief")
     _set_handler(intent, _intent)
 
     contract = commands.add_parser("contract", help="Validate one persisted NexCanvas contract.")
     contract.add_argument(
-        "kind", choices=["source-model", "diagram-lock", "diagram-model", "asset-manifest"]
+        "kind", choices=["source-model", "diagram-lock", "diagram-model", "asset-manifest", "project-state"]
     )
     contract.add_argument("path", type=Path)
     contract.add_argument("--project-root", type=Path)

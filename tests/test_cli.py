@@ -17,13 +17,13 @@ from nexcanvas.cli import build_parser, main
 
 
 class UnifiedCliTests(unittest.TestCase):
-    def test_required_phase_two_commands_are_registered(self) -> None:
+    def test_required_public_commands_are_registered(self) -> None:
         parser = build_parser()
         subparsers = next(
             action for action in parser._actions if isinstance(action, argparse._SubParsersAction)
         )
         self.assertTrue(
-            {"doctor", "init", "analyze", "plan", "build", "render", "qa", "postflight"}.issubset(
+            {"doctor", "init", "analyze", "plan", "build", "render", "qa", "postflight", "generate"}.issubset(
                 subparsers.choices
             )
         )

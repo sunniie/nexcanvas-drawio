@@ -11,6 +11,7 @@ from nexcanvas.intents import DEFAULT_ROUTES, VIEW_INTENTS, classify_brief, comp
 from nexcanvas.registry import resolve_route, resolve_theme
 from nexcanvas.archetypes import resolve_archetype
 from nexcanvas.runtime import inspect_runtime
+from nexcanvas.pipeline import initialize_project_state
 
 
 def init_project(args: argparse.Namespace) -> dict[str, object]:
@@ -18,7 +19,7 @@ def init_project(args: argparse.Namespace) -> dict[str, object]:
     explicit_root = getattr(args, "project_root", None)
     output_root = getattr(args, "output_root", Path("nexcanvas-output"))
     project_root = (explicit_root if explicit_root is not None else output_root / slug).resolve()
-    protected = ["source_model.json", "diagram_lock.json", "diagram_model.json"]
+    protected = ["source_model.json", "diagram_lock.json", "diagram_model.json", "project_state.json"]
     existing = [name for name in protected if (project_root / name).exists()]
     if existing and not args.force:
         raise FileExistsError(f"Project already contains NexCanvas contracts: {', '.join(existing)}. Use --force to replace only these generated contracts.")
@@ -98,6 +99,7 @@ def init_project(args: argparse.Namespace) -> dict[str, object]:
     write_json(project_root / "diagram_lock.json", lock)
     write_json(manifest_file(project_root), load_manifest(project_root))
     write_json(project_root / "reports" / "runtime.json", inspect_runtime())
+    initialize_project_state(project_root, replace=True)
     return {
         "projectRoot": str(project_root),
         "slug": slug,

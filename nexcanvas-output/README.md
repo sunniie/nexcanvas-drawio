@@ -9,6 +9,7 @@ nexcanvas-output/
     ├── source_model.json
     ├── diagram_lock.json
     ├── diagram_model.json
+    ├── project_state.json
     ├── assets/
     ├── artifacts/
     │   ├── diagram.drawio

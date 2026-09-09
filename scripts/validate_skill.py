@@ -12,7 +12,10 @@ from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
 SEMVER_RE = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?$")
-VERSION_RE = re.compile(r'^__version__\s*=\s*["\']([^"\']+)["\']\s*$', re.MULTILINE)
+VERSION_RE = re.compile(
+    r'^__version__\s*=\s*["\']([^"\']+)["\'](?:\s*#.*)?$',
+    re.MULTILINE,
+)
 LINK_RE = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
 
 

@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.nexcanvas.repository import inspect_repository, verify_repository_evidence
+from nexcanvas.repository import inspect_repository, verify_repository_evidence
 
 
 def git(root: Path, *args: str) -> str:

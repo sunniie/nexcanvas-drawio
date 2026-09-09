@@ -6,8 +6,8 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from scripts.nexcanvas.builder import build_drawio
-from scripts.nexcanvas.quality import run_quality
+from nexcanvas.builder import build_drawio
+from nexcanvas.quality import run_quality
 
 
 FIXTURES = Path(__file__).parent / "fixtures"

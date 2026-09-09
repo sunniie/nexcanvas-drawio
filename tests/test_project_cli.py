@@ -9,9 +9,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "src"))
 
-from project import init_project
+from nexcanvas.project import init_project
 
 
 def init_args(*, project_root: Path | None, output_root: Path, name: str = "My Architecture", brief: str = "", family: str | None = "software", profile: str | None = "c4-context") -> argparse.Namespace:

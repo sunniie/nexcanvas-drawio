@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.nexcanvas.assets import load_manifest, search_catalog, svg_data_uri, sync_catalog_asset, sync_provider_asset, sync_user_asset
+from nexcanvas.assets import load_manifest, search_catalog, svg_data_uri, sync_catalog_asset, sync_provider_asset, sync_user_asset
 
 
 class AssetTests(unittest.TestCase):

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from scripts.nexcanvas.intents import classify_brief
+from nexcanvas.intents import classify_brief
 
 
 class IntentTests(unittest.TestCase):

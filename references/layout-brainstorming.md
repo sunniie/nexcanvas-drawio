@@ -57,7 +57,7 @@ For `hub-and-spoke`, assign each top-level boundary `layout.role` as `source`, `
 ## Command
 
 ```bash
-python <skill-root>/scripts/layout_brainstorm.py <project-dir>/diagram_model.json --output <project-dir>/reports/layout_brainstorm.json
+nexcanvas plan <project-dir>/diagram_model.json --output <project-dir>/reports/layout_brainstorm.json
 ```
 
 Review the report before building. If the selected candidate is wrong, set `layoutStrategy` explicitly and document the reason in `diagram_lock.json`.

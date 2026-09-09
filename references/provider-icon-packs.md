@@ -7,9 +7,9 @@ NexCanvas stores the exact icons used by a diagram inside that diagram project a
 The Microsoft Azure mapping is pinned in `config/provider-icon-packs.json` to Architecture Icons V24. Review Microsoft's terms, then sync only the services used by the project:
 
 ```bash
-python <skill-root>/scripts/icon_sync.py <project-dir> azure-functions --provider microsoft-azure-official --accept-terms
-python <skill-root>/scripts/icon_sync.py <project-dir> azure-ai-search --provider microsoft-azure-official --accept-terms
-python <skill-root>/scripts/icon_sync.py <project-dir> microsoft-foundry-models --provider microsoft-azure-official --accept-terms
+nexcanvas asset sync <project-dir> azure-functions --provider microsoft-azure-official --accept-terms
+nexcanvas asset sync <project-dir> azure-ai-search --provider microsoft-azure-official --accept-terms
+nexcanvas asset sync <project-dir> microsoft-foundry-models --provider microsoft-azure-official --accept-terms
 ```
 
 The resolver downloads the official ZIP, finds the exact mapped SVG filename, validates the SVG, copies it into `assets/icons/microsoft-azure-official/`, records its hash and terms URL, and embeds it during build.
@@ -17,7 +17,7 @@ The resolver downloads the official ZIP, finds the exact mapped SVG filename, va
 For deterministic or air-gapped use, download the official ZIP once and pass it explicitly:
 
 ```bash
-python <skill-root>/scripts/icon_sync.py <project-dir> azure-functions --provider microsoft-azure-official --source-archive <Azure-icons.zip> --accept-terms
+nexcanvas asset sync <project-dir> azure-functions --provider microsoft-azure-official --source-archive <Azure-icons.zip> --accept-terms
 ```
 
 ## AWS and Google Cloud
@@ -25,8 +25,8 @@ python <skill-root>/scripts/icon_sync.py <project-dir> azure-functions --provide
 Download the current official icon ZIP from the provider page, then use filename discovery against the local archive:
 
 ```bash
-python <skill-root>/scripts/icon_sync.py <project-dir> "AWS Lambda" --provider aws-official --source-archive <AWS-icons.zip> --accept-terms
-python <skill-root>/scripts/icon_sync.py <project-dir> "Cloud Run" --provider google-cloud-official --source-archive <Google-Cloud-icons.zip> --accept-terms
+nexcanvas asset sync <project-dir> "AWS Lambda" --provider aws-official --source-archive <AWS-icons.zip> --accept-terms
+nexcanvas asset sync <project-dir> "Cloud Run" --provider google-cloud-official --source-archive <Google-Cloud-icons.zip> --accept-terms
 ```
 
 Provider-owned packages change structure over time, so AWS and Google Cloud use archive discovery instead of pretending a stale embedded filename catalog is current. If multiple similar filenames exist, inspect the resolved manifest entry before build.

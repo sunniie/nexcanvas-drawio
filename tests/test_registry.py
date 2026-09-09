@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import unittest
 
-from scripts.nexcanvas.registry import SUPPORTED_LAYOUTS, all_profiles, resolve_route, resolve_theme
-from scripts.nexcanvas.archetypes import resolve_archetype, resolve_provider_pack
-from scripts.nexcanvas.intents import VIEW_INTENTS, compatible_view_intents, default_view_intent
+from nexcanvas.registry import SUPPORTED_LAYOUTS, all_profiles, resolve_route, resolve_theme
+from nexcanvas.archetypes import resolve_archetype, resolve_provider_pack
+from nexcanvas.intents import VIEW_INTENTS, compatible_view_intents, default_view_intent
 
 
 class RegistryTests(unittest.TestCase):

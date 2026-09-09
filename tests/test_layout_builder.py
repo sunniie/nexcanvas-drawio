@@ -7,9 +7,9 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from scripts.nexcanvas.builder import build_drawio, build_tree
-from scripts.nexcanvas.layout import Rect, _grid_positions, layout_model, node_size
-from scripts.nexcanvas.registry import all_profiles
+from nexcanvas.builder import build_drawio, build_tree
+from nexcanvas.layout import Rect, _grid_positions, layout_model, node_size
+from nexcanvas.registry import all_profiles
 
 
 FIXTURES = Path(__file__).parent / "fixtures"

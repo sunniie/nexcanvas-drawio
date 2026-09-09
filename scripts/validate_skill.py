@@ -59,6 +59,9 @@ def validate() -> list[str]:
         "SUPPORT.md",
         "CODE_OF_CONDUCT.md",
         "agents/openai.yaml",
+        "pyproject.toml",
+        "src/nexcanvas/cli.py",
+        "src/nexcanvas/__main__.py",
         "version.txt",
         "release-please-config.json",
         ".release-please-manifest.json",
@@ -76,7 +79,7 @@ def validate() -> list[str]:
             issues.append("SKILL.md: description must identify the skill's useful scope")
 
     version_path = ROOT / "version.txt"
-    init_path = ROOT / "scripts/nexcanvas/__init__.py"
+    init_path = ROOT / "src/nexcanvas/__init__.py"
     manifest_path = ROOT / ".release-please-manifest.json"
     if version_path.is_file() and init_path.is_file() and manifest_path.is_file():
         product_version = version_path.read_text(encoding="utf-8").strip()
@@ -91,7 +94,7 @@ def validate() -> list[str]:
             issues.append(f".release-please-manifest.json: invalid manifest ({exc})")
         versions = {
             "version.txt": product_version,
-            "scripts/nexcanvas/__init__.py": python_version,
+            "src/nexcanvas/__init__.py": python_version,
             ".release-please-manifest.json": release_version,
         }
         if len(set(versions.values())) != 1:
@@ -108,6 +111,10 @@ def validate() -> list[str]:
         path = ROOT / relative
         if path.is_file():
             issues.extend(_local_link_issues(path))
+
+    legacy_core = [path for path in (ROOT / "scripts" / "nexcanvas").glob("*.py") if path.name != "__init__.py"]
+    if legacy_core:
+        issues.append(f"legacy implementation modules remain under scripts/nexcanvas: {legacy_core}")
 
     return issues
 

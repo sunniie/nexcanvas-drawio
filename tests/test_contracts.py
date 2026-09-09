@@ -5,7 +5,7 @@ import copy
 import unittest
 from pathlib import Path
 
-from scripts.nexcanvas.contracts import validate_diagram_model, validate_source_model
+from nexcanvas.contracts import validate_diagram_model, validate_source_model
 
 
 FIXTURES = Path(__file__).parent / "fixtures"

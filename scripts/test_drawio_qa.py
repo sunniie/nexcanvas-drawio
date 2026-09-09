@@ -3,7 +3,7 @@ import textwrap
 import unittest
 from pathlib import Path
 
-from drawio_qa import run_checks
+from nexcanvas.geometry import run_checks
 
 
 class DrawioQaProfileTests(unittest.TestCase):

@@ -5,5 +5,8 @@ Thumbs.db
 *.tmp
 *.bak
 ~$*
+build/
+dist/
+*.egg-info/
 /nexcanvas-output/*
 !/nexcanvas-output/README.md

@@ -16,13 +16,13 @@ Never substitute a related brand, redraw a logo from memory, scrape arbitrary im
 Search:
 
 ```bash
-python <skill-root>/scripts/icon_catalog.py "<technology or alias>"
+nexcanvas asset search "<technology or alias>"
 ```
 
 Review the returned title, provider, slug, aliases, and intended product. Sync only after confirming it matches the modeled resource:
 
 ```bash
-python <skill-root>/scripts/icon_sync.py <project-dir> <catalog-key>
+nexcanvas asset sync <project-dir> <catalog-key>
 ```
 
 Simple Icons entries are pinned by version and downloaded from the configured immutable package URL. The manifest stores source URL, local path, SHA-256, license, and trademark notice.
@@ -32,7 +32,7 @@ For Azure, AWS, and Google Cloud services, use the official provider workflow in
 For a user-provided SVG:
 
 ```bash
-python <skill-root>/scripts/icon_sync.py <project-dir> <key> --user-svg <path> --title "<product>"
+nexcanvas asset sync <project-dir> <key> --user-svg <path> --title "<product>"
 ```
 
 The validator rejects script/foreignObject content, event handler attributes, remote SVG references, invalid XML, and oversized files.

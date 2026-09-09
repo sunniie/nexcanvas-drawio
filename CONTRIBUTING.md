@@ -21,19 +21,21 @@ claiming rendered visual verification.
 From the repository root, run:
 
 ```bash
+python -m pip install -e .
 python -m unittest discover -s tests -v
 python scripts/test_drawio_qa.py -v
 python scripts/validate_skill.py
-python scripts/doctor.py
+nexcanvas doctor
+python scripts/package_smoke.py
 ```
 
 Validate tracked reference projects:
 
 ```bash
-python scripts/postflight.py examples/v2-rag-reference
-python scripts/postflight.py examples/v3-dense-industrial-ai
-python scripts/postflight.py examples/v4-hub-spoke-industrial
-python scripts/postflight.py examples/v5-multi-agent-workflow
+nexcanvas postflight examples/v2-rag-reference
+nexcanvas postflight examples/v3-dense-industrial-ai
+nexcanvas postflight examples/v4-hub-spoke-industrial
+nexcanvas postflight examples/v5-multi-agent-workflow
 ```
 
 ## Branch and commit conventions

@@ -17,8 +17,9 @@ The following are public contracts:
 - extension manifests and plugin interfaces once published;
 - the delivery definition for editable, rendered, and verified artifacts.
 
-Python modules under `scripts/nexcanvas` are implementation details until the
-installable package and supported Python API are explicitly published.
+The `nexcanvas` command and its documented subcommands are public preview
+contracts. Python modules under `src/nexcanvas` remain implementation details
+until a supported Python API is explicitly published.
 
 ## Compatibility classes
 

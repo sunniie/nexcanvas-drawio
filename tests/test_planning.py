@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from scripts.nexcanvas.planning import brainstorm_layout
+from nexcanvas.planning import brainstorm_layout
 
 
 def model(nodes: int, phases: int, *, direction: str = "LR", nested: int = 0) -> dict:

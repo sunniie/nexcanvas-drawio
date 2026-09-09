@@ -8,7 +8,7 @@ request branches and is marked complete only after its exit gates pass.
 
 - [x] Phase 0 - scope and architecture decisions
 - [x] Phase 1 - open-source foundation
-- [ ] Phase 2 - installable package and unified CLI
+- [x] Phase 2 - installable package and unified CLI
 - [ ] Phase 3 - deterministic pipeline state and orchestration
 - [ ] Phase 4 - canonical semantic model V3
 - [ ] Phase 5 - repository analysis and incremental semantic sync
@@ -96,8 +96,21 @@ Implementation evidence:
 - The CI matrix performs editable installation, the full regression suite, and
   packaged-install smoke testing on Linux, Windows, and macOS.
 
-Release evidence is recorded here only after the Phase 2 pull request, final CI,
-and `v0.2.0` release gates pass.
+Exit evidence:
+
+- [Pull request #7](https://github.com/sunniie/nexcanvas-drawio/pull/7)
+  introduced the installable package and unified CLI after the cross-platform
+  [Quality gate](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34324481526)
+  passed.
+- [Release pull request #8](https://github.com/sunniie/nexcanvas-drawio/pull/8)
+  passed its final [Linux, Windows, and macOS package matrix](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34324936404).
+- The post-merge [main CI run](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34325077514)
+  passed without bypassing the required gate.
+- GitHub Release [`v0.2.0`](https://github.com/sunniie/nexcanvas-drawio/releases/tag/v0.2.0)
+  publishes the portable skill bundle, wheel, source distribution, and verified
+  SHA-256 checksums.
+- Persisted schema version remains `2.0`; existing generated projects require no
+  migration.
 
 Target release: `v0.2.0`.
 

@@ -204,39 +204,53 @@ Requirements:
 - Draw.io Desktop for deterministic PNG/SVG/PDF export and complete visual QA;
 - network access only when an icon must be synced and is not already local.
 
+Install an editable checkout for development:
+
+```bash
+git clone https://github.com/sunniie/nexcanvas-drawio.git
+cd nexcanvas-drawio
+python -m pip install -e .
+nexcanvas --version
+```
+
+For a downloaded release bundle, run `python -m pip install .` instead. The
+package includes the pinned route, theme, schema, and icon-catalog data needed
+to run from any working directory. A clone-only host may use
+`python <skill-root>/scripts/nexcanvas_cli.py` as an installation-free launcher.
+
 Inspect runtime capabilities:
 
 ```bash
-python scripts/doctor.py
+nexcanvas doctor
 ```
 
 Initialize from only a title, brief, and output language. The skill infers the semantic intent and a compatible default route:
 
 ```bash
-python scripts/project.py init --name "Checkout request" --brief "Trace one checkout API request through payment and inventory" --language en
+nexcanvas init --name "Checkout request" --brief "Trace one checkout API request through payment and inventory" --language en
 ```
 
 Or choose an explicit directory:
 
 ```bash
-python scripts/project.py init docs/architecture --name "My architecture" --family software --profile c4-container
+nexcanvas init docs/architecture --name "My architecture" --family software --profile c4-container
 ```
 
 After completing the generated contracts, build and gate the artifact:
 
 ```bash
 PROJECT=nexcanvas-output/checkout-request
-python scripts/layout_brainstorm.py "$PROJECT/diagram_model.json" --output "$PROJECT/reports/layout_brainstorm.json"
-python scripts/build_drawio.py "$PROJECT/diagram_model.json" -o "$PROJECT/artifacts/diagram.drawio" --project-root "$PROJECT" --proof "$PROJECT/reports/build.json"
-python scripts/diagram_qa.py "$PROJECT/diagram_model.json" --drawio "$PROJECT/artifacts/diagram.drawio" --source-model "$PROJECT/source_model.json" --project-root "$PROJECT" --output "$PROJECT/reports/diagram_qa.json" --fail-on-warning
-python scripts/render.py "$PROJECT/artifacts/diagram.drawio" -o "$PROJECT/artifacts/diagram.drawio.png" --report "$PROJECT/reports/render.json"
+nexcanvas plan "$PROJECT/diagram_model.json" --output "$PROJECT/reports/layout_brainstorm.json"
+nexcanvas build "$PROJECT/diagram_model.json" -o "$PROJECT/artifacts/diagram.drawio" --project-root "$PROJECT" --proof "$PROJECT/reports/build.json"
+nexcanvas qa diagram "$PROJECT/diagram_model.json" --drawio "$PROJECT/artifacts/diagram.drawio" --source-model "$PROJECT/source_model.json" --project-root "$PROJECT" --output "$PROJECT/reports/diagram_qa.json" --fail-on-warning
+nexcanvas render "$PROJECT/artifacts/diagram.drawio" -o "$PROJECT/artifacts/diagram.drawio.png" --report "$PROJECT/reports/render.json"
 ```
 
 Inspect the PNG before recording approval:
 
 ```bash
-python scripts/visual_qa.py "$PROJECT/artifacts/diagram.drawio.png" --expected-width 1600 --expected-height 900 --approve --reviewer "Your name" --notes "Inspected at target size and connector terminals at 200%" --output "$PROJECT/reports/visual_qa.json"
-python scripts/postflight.py "$PROJECT" --output "$PROJECT/reports/postflight.json"
+nexcanvas qa visual "$PROJECT/artifacts/diagram.drawio.png" --expected-width 1600 --expected-height 900 --approve --reviewer "Your name" --notes "Inspected at target size and connector terminals at 200%" --output "$PROJECT/reports/visual_qa.json"
+nexcanvas postflight "$PROJECT" --output "$PROJECT/reports/postflight.json"
 ```
 
 ### Repository-backed diagrams
@@ -244,15 +258,15 @@ python scripts/postflight.py "$PROJECT" --output "$PROJECT/reports/postflight.js
 When the diagram must reflect a real codebase, capture the current Git identity before authoring facts:
 
 ```bash
-python scripts/repo_evidence.py capture . --source-model "$PROJECT/source_model.json" --source-id repo-1
+nexcanvas analyze capture . --source-model "$PROJECT/source_model.json" --source-id repo-1
 ```
 
 Add repo-relative file and line ranges to fact evidence, then verify the exact origin, full commit, optional blob hash, and range. Pass the repository root again to release QA and postflight so provenance is rechecked rather than trusted from an old report:
 
 ```bash
-python scripts/repo_evidence.py verify "$PROJECT/source_model.json" --repo-root . --output "$PROJECT/reports/repository_evidence.json"
-python scripts/diagram_qa.py "$PROJECT/diagram_model.json" --drawio "$PROJECT/artifacts/diagram.drawio" --source-model "$PROJECT/source_model.json" --project-root "$PROJECT" --repo-root . --output "$PROJECT/reports/diagram_qa.json" --fail-on-warning
-python scripts/postflight.py "$PROJECT" --repo-root . --output "$PROJECT/reports/postflight.json"
+nexcanvas analyze verify "$PROJECT/source_model.json" --repo-root . --output "$PROJECT/reports/repository_evidence.json"
+nexcanvas qa diagram "$PROJECT/diagram_model.json" --drawio "$PROJECT/artifacts/diagram.drawio" --source-model "$PROJECT/source_model.json" --project-root "$PROJECT" --repo-root . --output "$PROJECT/reports/diagram_qa.json" --fail-on-warning
+nexcanvas postflight "$PROJECT" --repo-root . --output "$PROJECT/reports/postflight.json"
 ```
 
 This verifies the authored evidence. It does not claim to discover live infrastructure, infer unknown ownership, or prove runtime behavior.
@@ -265,16 +279,16 @@ PowerShell users can replace the first line with
 Catalog assets are resolved before drawing:
 
 ```bash
-python scripts/icon_catalog.py postgresql
-python scripts/icon_sync.py nexcanvas-output/my-architecture postgresql
+nexcanvas asset search postgresql
+nexcanvas asset sync nexcanvas-output/my-architecture postgresql
 ```
 
 Azure reference projects can sync exact assets from Microsoft's official
 Architecture Icons package:
 
 ```bash
-python scripts/icon_sync.py nexcanvas-output/my-architecture azure-functions --provider microsoft-azure-official --accept-terms
-python scripts/icon_sync.py nexcanvas-output/my-architecture azure-ai-search --provider microsoft-azure-official --accept-terms
+nexcanvas asset sync nexcanvas-output/my-architecture azure-functions --provider microsoft-azure-official --accept-terms
+nexcanvas asset sync nexcanvas-output/my-architecture azure-ai-search --provider microsoft-azure-official --accept-terms
 ```
 
 AWS and Google Cloud projects accept an official provider ZIP through
@@ -328,8 +342,9 @@ workflows/                       generate, repair, and reference-conversion flow
 references/                      notation, intake, layout, asset, and QA contracts
 config/                          route, theme, archetype, and provider registries
 schemas/                         JSON contracts
-scripts/nexcanvas/               reusable implementation package
-scripts/*.py                     host-neutral command-line entry points
+src/nexcanvas/                   installable compiler and unified CLI package
+scripts/nexcanvas_cli.py         installation-free source-checkout launcher
+scripts/*.py                     deprecated v0.1 compatibility entry points
 tests/                           unit and reference-project tests
 examples/v2-rag-reference/       compact phase reference
 examples/v3-dense-industrial-ai/ dense industrial AI reference
@@ -341,14 +356,19 @@ nexcanvas-output/                documented default generated-output root
 ## Development and validation
 
 ```bash
+python -m pip install -e .
 python -m unittest discover -s tests -v
 python scripts/test_drawio_qa.py -v
-python scripts/doctor.py
+nexcanvas doctor
+python scripts/package_smoke.py
 ```
 
 The implementation uses the Python standard library for its core contract,
 layout, build, and QA pipeline. This keeps the same skill usable by Codex,
 GitHub Copilot, Claude Code, and other hosts that implement Agent Skills.
+
+The complete command surface, exit-code contract, installation behavior, and
+compatibility window are documented in the [CLI reference](docs/cli.md).
 
 ## Project governance
 

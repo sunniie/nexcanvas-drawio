@@ -48,7 +48,7 @@ def render_drawio(
         raise ValueError(f"Unsupported export format: {output_format}")
     cli = executable or find_drawio()
     if cli is None:
-        raise RuntimeError("Draw.io Desktop CLI was not found. Run scripts/doctor.py for capability details.")
+        raise RuntimeError("Draw.io Desktop CLI was not found. Run 'nexcanvas doctor' for capability details.")
     output.parent.mkdir(parents=True, exist_ok=True)
     command = [
         str(cli),

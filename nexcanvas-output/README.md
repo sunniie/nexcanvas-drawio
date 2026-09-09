@@ -1,6 +1,6 @@
 # Generated diagram projects
 
-This is NexCanvas Draw.io's default output root when `scripts/project.py init`
+This is NexCanvas Draw.io's default output root when `nexcanvas init`
 is run without an explicit project directory.
 
 ```text

@@ -6,8 +6,8 @@ import unittest
 import zlib
 from pathlib import Path
 
-from scripts.nexcanvas.runtime import inspect_runtime
-from scripts.nexcanvas.visual import create_visual_report
+from nexcanvas.runtime import inspect_runtime
+from nexcanvas.visual import create_visual_report
 
 
 def tiny_png(width: int, height: int) -> bytes:

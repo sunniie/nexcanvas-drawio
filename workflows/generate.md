@@ -4,7 +4,7 @@ Use this workflow for a diagram created from a prompt, repository, documentation
 
 ## 1. Discover the runtime and delivery target
 
-Run `scripts/doctor.py`. Record whether rendering is available. Follow [../references/intake-and-discovery.md](../references/intake-and-discovery.md): resolve the brief and language, then infer design and delivery choices. Ask only about missing language or material content ambiguity. Carry forward any visual reference or named design standard established earlier in the conversation and select its matching archetype before building the model.
+Run `nexcanvas doctor`. Record whether rendering is available. Follow [../references/intake-and-discovery.md](../references/intake-and-discovery.md): resolve the brief and language, then infer design and delivery choices. Ask only about missing language or material content ambiguity. Carry forward any visual reference or named design standard established earlier in the conversation and select its matching archetype before building the model.
 
 Choose canvas by target:
 
@@ -17,7 +17,7 @@ Default generated work to `./nexcanvas-output/<project-slug>/` in the user's cur
 
 ## 2. Resolve semantic intent
 
-Read [semantic intents and repository evidence](../references/semantic-intents-and-repository-evidence.md). Infer exactly one dominant `viewIntent` from the brief: architecture, workflow, sequence, data-flow, or lifecycle. Do not ask the user to select a type when the question is already clear. Use `scripts/view_intent.py` only as a routing hint when useful; resolve material ambiguity from evidence or one focused question.
+Read [semantic intents and repository evidence](../references/semantic-intents-and-repository-evidence.md). Infer exactly one dominant `viewIntent` from the brief: architecture, workflow, sequence, data-flow, or lifecycle. Do not ask the user to select a type when the question is already clear. Use `nexcanvas intent` only as a routing hint when useful; resolve material ambiguity from evidence or one focused question.
 
 The intent controls what the agent investigates and which semantic QA runs. It does not select a theme, provider, orientation, or visual archetype.
 
@@ -26,8 +26,8 @@ The intent controls what the agent investigates and which semantic QA runs. It d
 Inspect the actual sources according to the selected intent. Do not inventory every file. For repository-backed work, capture the Git identity first, then cite exact file/line ranges for confirmed facts:
 
 ```bash
-python <skill-root>/scripts/repo_evidence.py capture <repo-root> --source-model <project-dir>/source_model.json --source-id repo-1
-python <skill-root>/scripts/repo_evidence.py verify <project-dir>/source_model.json --repo-root <repo-root> --output <project-dir>/reports/repository_evidence.json
+nexcanvas analyze capture <repo-root> --source-model <project-dir>/source_model.json --source-id repo-1
+nexcanvas analyze verify <project-dir>/source_model.json --repo-root <repo-root> --output <project-dir>/reports/repository_evidence.json
 ```
 
 Record:
@@ -59,12 +59,12 @@ Before locking, select a visual archetype. Use `microsoft-reference`, `aws-refer
 Before choosing geometry, read [../references/reference-image-patterns.md](../references/reference-image-patterns.md) and run the brainstorm contract in [../references/layout-brainstorming.md](../references/layout-brainstorming.md):
 
 ```bash
-python <skill-root>/scripts/layout_brainstorm.py <project-dir>/diagram_model.json --output <project-dir>/reports/layout_brainstorm.json
+nexcanvas plan <project-dir>/diagram_model.json --output <project-dir>/reports/layout_brainstorm.json
 ```
 
 Compare the winner with the runner-up. Confirm whether the story is sparse or dense, whether containment or a central hub dominates, whether feedback requires a hybrid grid, and whether landscape or portrait shortens the primary paths. Set `layoutStrategy` explicitly after this review.
 
-Lock the selected intent, route, notation, layout adapter, `layoutStrategy`, visual archetype, theme, audience, delivery target, canvas, and asset policy. Set `sourceHash` to the canonical JSON hash used by `scripts/nexcanvas/common.py::sha256_json`. Update the hash whenever the source model changes.
+Lock the selected intent, route, notation, layout adapter, `layoutStrategy`, visual archetype, theme, audience, delivery target, canvas, and asset policy. Set `sourceHash` to the canonical JSON hash used by `nexcanvas.common.sha256_json`. Update the hash whenever the source model changes.
 
 ## 6. Write `diagram_model.json`
 
@@ -87,11 +87,11 @@ Provider reference diagrams must resolve service nodes from the provider-owned i
 
 ## 8. Build and run QA
 
-Build native `.drawio` with `scripts/build_drawio.py`, then run `scripts/diagram_qa.py --fail-on-warning`. For repository-backed sources, pass `--repo-root <repo-root>`; omission is a blocking error. Fix the model or layout logic rather than hiding findings with exemption tags. Exemptions are allowed only when the visual was reviewed and the heuristic is provably wrong.
+Build native `.drawio` with `nexcanvas build`, then run `nexcanvas qa diagram --fail-on-warning`. For repository-backed sources, pass `--repo-root <repo-root>`; omission is a blocking error. Fix the model or layout logic rather than hiding findings with exemption tags. Exemptions are allowed only when the visual was reviewed and the heuristic is provably wrong.
 
 ## 9. Render and inspect
 
-Render with `scripts/render.py`. Inspect at full resolution and at the actual delivery size. Check:
+Render with `nexcanvas render`. Inspect at full resolution and at the actual delivery size. Check:
 
 - title and labels are readable;
 - no clipping or accidental overlap;

@@ -81,11 +81,23 @@ Exit evidence:
 Objective: run NexCanvas predictably from any working directory and supported
 agent host.
 
-- [ ] Add `pyproject.toml` and a `src/nexcanvas` package.
-- [ ] Provide the `nexcanvas` entry point.
-- [ ] Consolidate doctor, init, analyze, plan, build, render, QA, and postflight.
-- [ ] Resolve configuration and assets independently of the current directory.
-- [ ] Test editable installs and packaged installs on all supported platforms.
+- [x] Add `pyproject.toml` and a `src/nexcanvas` package.
+- [x] Provide the `nexcanvas` entry point.
+- [x] Consolidate doctor, init, analyze, plan, build, render, QA, and postflight.
+- [x] Resolve configuration and assets independently of the current directory.
+- [x] Test editable installs and packaged installs on all supported platforms.
+
+Implementation evidence:
+
+- [`docs/cli.md`](docs/cli.md) records commands, exit codes, package behavior,
+  compatibility, and known limits.
+- [`scripts/package_smoke.py`](scripts/package_smoke.py) builds a wheel, installs
+  it in an isolated environment, and exercises it outside the repository.
+- The CI matrix performs editable installation, the full regression suite, and
+  packaged-install smoke testing on Linux, Windows, and macOS.
+
+Release evidence is recorded here only after the Phase 2 pull request, final CI,
+and `v0.2.0` release gates pass.
 
 Target release: `v0.2.0`.
 

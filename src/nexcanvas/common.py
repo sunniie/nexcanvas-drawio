@@ -4,14 +4,55 @@ import hashlib
 import json
 import os
 import re
+import sysconfig
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 
+def _has_runtime_data(path: Path) -> bool:
+    return all(
+        (path / relative).is_file()
+        for relative in (
+            "config/route-registry.json",
+            "config/styles.json",
+            "assets/catalog/technology-icons.json",
+            "schemas/diagram-model.schema.json",
+        )
+    )
+
+
+def resource_root() -> Path:
+    """Resolve immutable runtime data without depending on the process CWD."""
+
+    configured = os.environ.get("NEXCANVAS_HOME")
+    candidates = []
+    if configured:
+        candidates.append(Path(configured).expanduser())
+
+    package_file = Path(__file__).resolve()
+    candidates.extend(
+        [
+            package_file.parents[2],
+            Path(sysconfig.get_path("data")) / "share" / "nexcanvas",
+        ]
+    )
+    for candidate in candidates:
+        resolved = candidate.resolve()
+        if _has_runtime_data(resolved):
+            return resolved
+    checked = ", ".join(str(path) for path in candidates)
+    raise RuntimeError(
+        "NexCanvas runtime data was not found. Reinstall the package or set "
+        f"NEXCANVAS_HOME to a valid distribution root. Checked: {checked}"
+    )
+
+
 def skill_root() -> Path:
-    return Path(__file__).resolve().parents[2]
+    """Backward-compatible name for the resolved distribution resource root."""
+
+    return resource_root()
 
 
 def utc_now() -> str:

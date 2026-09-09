@@ -4,7 +4,7 @@ import json
 import unittest
 from pathlib import Path
 
-from scripts.nexcanvas.postflight import run_postflight
+from nexcanvas.postflight import run_postflight
 
 
 ROOT = Path(__file__).resolve().parents[1]

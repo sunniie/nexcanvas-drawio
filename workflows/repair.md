@@ -9,7 +9,7 @@ Work on the supplied file or a clearly named copy according to the request. Do n
 Run the legacy geometry audit first:
 
 ```bash
-python <skill-root>/scripts/drawio_qa.py <input.drawio> --qa-profile <baseline|composition|interaction>
+nexcanvas qa diagram <diagram_model.json> --drawio <input.drawio> --project-root <project-dir>
 ```
 
 Inspect the rendered current state when Draw.io Desktop is available. Structural findings and visual findings are separate evidence.

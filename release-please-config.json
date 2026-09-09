@@ -11,7 +11,7 @@
       "extra-files": [
         {
           "type": "generic",
-          "path": "scripts/nexcanvas/__init__.py"
+          "path": "src/nexcanvas/__init__.py"
         }
       ]
     }

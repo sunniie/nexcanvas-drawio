@@ -1,0 +1,7 @@
+include LICENSE
+include README.md
+include version.txt
+recursive-include config *.json
+recursive-include assets/catalog *.json
+recursive-include schemas *.json
+

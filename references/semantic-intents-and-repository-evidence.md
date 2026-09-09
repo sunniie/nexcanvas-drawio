@@ -12,7 +12,7 @@ NexCanvas separates the question a diagram answers from the visual grammar used 
 | `data-flow` | Where does data originate, transform, persist, and get consumed? | Sources, transforms, stores, consumers | Data movement, payload, or lineage |
 | `lifecycle` | Which states can one entity enter, and what triggers transitions? | Initial, active, waiting, failure, and terminal states | Events, guards, or transition conditions |
 
-Choose the intent from the user's question, not from a preferred visual template. One repository may justify several diagrams, but one artifact should keep one dominant question. Do not ask the user to choose from this list when the brief already makes the intent clear. Use `scripts/view_intent.py` only as a deterministic hint; the agent remains responsible for resolving material ambiguity.
+Choose the intent from the user's question, not from a preferred visual template. One repository may justify several diagrams, but one artifact should keep one dominant question. Do not ask the user to choose from this list when the brief already makes the intent clear. Use `nexcanvas intent` only as a deterministic hint; the agent remains responsible for resolving material ambiguity.
 
 Profiles refine an intent. For example, `architecture` may use C4, deployment, cloud-reference, RAG, or agent-orchestration. Some profiles are deliberately compatible with more than one intent: RAG can be an architecture or data-flow view; agent orchestration can be architecture, workflow, or sequence. The model and lock record the chosen intent explicitly.
 
@@ -70,13 +70,13 @@ Facts may cite exact repository ranges:
 Capture repository identity without authoring claims:
 
 ```bash
-python <skill-root>/scripts/repo_evidence.py capture <repo-root> --source-model <project-dir>/source_model.json --source-id repo-1
+nexcanvas analyze capture <repo-root> --source-model <project-dir>/source_model.json --source-id repo-1
 ```
 
 After adding fact ranges, verify origin, revision, blob, path, and lines:
 
 ```bash
-python <skill-root>/scripts/repo_evidence.py verify <project-dir>/source_model.json --repo-root <repo-root> --output <project-dir>/reports/repository_evidence.json
+nexcanvas analyze verify <project-dir>/source_model.json --repo-root <repo-root> --output <project-dir>/reports/repository_evidence.json
 ```
 
 Repository verification proves that cited bytes and ranges exist at the pinned revision. It does not prove a runtime deployment, business owner, or inferred behavior. Keep such claims as assumptions unless separately evidenced. A repository source without an explicit local `--repo-root` fails release QA; uncommitted work is never silently treated as part of the pinned commit.

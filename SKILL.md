@@ -61,7 +61,7 @@ editable artifact, previews, and QA reports.
 
 ## Required pipeline
 
-1. Run `python <skill-root>/scripts/doctor.py` and record whether Draw.io Desktop rendering is available.
+1. Run `nexcanvas doctor` and record whether Draw.io Desktop rendering is available.
 2. Infer one dominant `viewIntent`: architecture, workflow, sequence, data-flow, or lifecycle. Do not ask the user to choose when the brief is clear.
 3. Investigate only the source evidence required by that intent. For repository-backed facts, pin Git origin/revision and exact file/line ranges; separate confirmed facts, assumptions, and exclusions in `source_model.json`.
 4. Select one of the 48 profiles in `config/route-registry.json` as the specialized notation beneath the intent.
@@ -87,34 +87,41 @@ editable artifact, previews, and QA reports.
 - Embed synced SVG data so logos survive cloning and offline use.
 - Never call XML-only output visually verified.
 
-## Portable commands
+## Unified CLI
+
+Prefer the installed `nexcanvas` command. If the host has cloned the skill but
+has not installed the Python package, use
+`python <skill-root>/scripts/nexcanvas_cli.py` as the command prefix. Both invoke
+the same CLI and resolve bundled configuration and assets independently of the
+current working directory. Do not call the deprecated one-file script entry
+points in new workflows.
 
 Initialize at the standard output location:
 
 ```bash
-python <skill-root>/scripts/project.py init --name "<title>" --brief "<user brief>" --language <language>
+nexcanvas init --name "<title>" --brief "<user brief>" --language <language>
 ```
 
 An explicit project directory remains supported:
 
 ```bash
-python <skill-root>/scripts/project.py init <project-dir> --name "<title>" --brief "<user brief>" --language <language>
+nexcanvas init <project-dir> --name "<title>" --brief "<user brief>" --language <language>
 ```
 
 Build and gate after completing the contracts:
 
 ```bash
-python <skill-root>/scripts/layout_brainstorm.py <project-dir>/diagram_model.json --output <project-dir>/reports/layout_brainstorm.json
-python <skill-root>/scripts/build_drawio.py <project-dir>/diagram_model.json -o <project-dir>/artifacts/diagram.drawio --project-root <project-dir> --proof <project-dir>/reports/build.json
-python <skill-root>/scripts/diagram_qa.py <project-dir>/diagram_model.json --drawio <project-dir>/artifacts/diagram.drawio --source-model <project-dir>/source_model.json --project-root <project-dir> --output <project-dir>/reports/diagram_qa.json --fail-on-warning
-python <skill-root>/scripts/render.py <project-dir>/artifacts/diagram.drawio -o <project-dir>/artifacts/diagram.drawio.png --report <project-dir>/reports/render.json
+nexcanvas plan <project-dir>/diagram_model.json --output <project-dir>/reports/layout_brainstorm.json
+nexcanvas build <project-dir>/diagram_model.json -o <project-dir>/artifacts/diagram.drawio --project-root <project-dir> --proof <project-dir>/reports/build.json
+nexcanvas qa diagram <project-dir>/diagram_model.json --drawio <project-dir>/artifacts/diagram.drawio --source-model <project-dir>/source_model.json --project-root <project-dir> --output <project-dir>/reports/diagram_qa.json --fail-on-warning
+nexcanvas render <project-dir>/artifacts/diagram.drawio -o <project-dir>/artifacts/diagram.drawio.png --report <project-dir>/reports/render.json
 ```
 
 Only after actually viewing the preview:
 
 ```bash
-python <skill-root>/scripts/visual_qa.py <project-dir>/artifacts/diagram.drawio.png --expected-width <width> --expected-height <height> --approve --reviewer "<reviewer>" --notes "<specific observations>" --output <project-dir>/reports/visual_qa.json
-python <skill-root>/scripts/postflight.py <project-dir> --output <project-dir>/reports/postflight.json
+nexcanvas qa visual <project-dir>/artifacts/diagram.drawio.png --expected-width <width> --expected-height <height> --approve --reviewer "<reviewer>" --notes "<specific observations>" --output <project-dir>/reports/visual_qa.json
+nexcanvas postflight <project-dir> --output <project-dir>/reports/postflight.json
 ```
 
 If Draw.io Desktop is unavailable, produce and structurally validate the editable

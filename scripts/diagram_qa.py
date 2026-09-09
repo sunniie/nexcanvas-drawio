@@ -5,7 +5,7 @@ import argparse
 import json
 from pathlib import Path
 
-from drawio_qa import run_checks as run_geometry_checks
+from nexcanvas.geometry import run_checks as run_geometry_checks
 from nexcanvas.common import load_json, utc_now, write_json
 from nexcanvas.quality import run_quality, summarize
 from nexcanvas.registry import resolve_route

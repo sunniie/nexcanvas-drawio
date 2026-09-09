@@ -33,7 +33,8 @@ Pre-releases use `alpha`, `beta`, and `rc`, for example `0.5.0-alpha.1`.
 2. Release Please maintains a reviewed release pull request and changelog.
 3. Merge the release pull request only after the required CI gate passes.
 4. Automation creates an immutable `vX.Y.Z` tag and GitHub Release.
-5. Attach a repository bundle and `SHA256SUMS.txt`.
+5. Attach a repository bundle, Python wheel, source distribution, and
+   `SHA256SUMS.txt`.
 6. Verify tag, release notes, assets, and checksums from GitHub.
 
 For fully automatic validation of Release Please pull requests, configure the

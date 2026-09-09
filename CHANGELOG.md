@@ -4,6 +4,35 @@ All notable changes to NexCanvas are documented in this file. Releases follow
 [Semantic Versioning](https://semver.org/), while persisted schemas are versioned
 independently.
 
+## [0.3.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.2.0...v0.3.0) (2026-09-09)
+
+
+### Features
+
+* **pipeline:** add deterministic generate orchestration ([#10](https://github.com/sunniie/nexcanvas-drawio/issues/10)) ([38fb08b](https://github.com/sunniie/nexcanvas-drawio/commit/38fb08b07f2aaddea00fc6478f00136414b18bd4))
+
+### Fixes
+
+- Detect missing or externally changed generated outputs before reusing a stage.
+- Avoid false invalidation when an unchanged asset advances from `Embedded` to
+  `RenderVerified`.
+
+### Compatibility
+
+- Existing source, lock, diagram, asset, and editable Draw.io schema `2.0`
+  projects remain valid; their first orchestrated run creates
+  `project_state.json` in place.
+- Pipeline state uses its own public preview schema `1.0`.
+- `nexcanvas generate` adds exit code `3` for a successful handoff to required
+  external visual review. Existing command exit codes are unchanged.
+
+### Known limitations
+
+- Semantic investigation, model authoring, and visual judgment remain agent or
+  human responsibilities; orchestration does not infer unknown architecture.
+- Draw.io Desktop and actual image inspection are still required for a completed
+  visual gate.
+
 ## [0.2.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.1.0...v0.2.0) - 2026-09-09
 
 ### Added

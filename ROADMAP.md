@@ -251,6 +251,16 @@ Target release: `v0.4.0` (released 2026-09-10).
 
 Objective: update diagrams as repositories evolve without destroying manual work.
 
+Recorded scope and contract impact:
+
+- [`ADR 0008`](docs/adr/0008-repository-snapshot-and-three-way-sync.md) defines
+  revision-pinned Python and TypeScript/JavaScript analysis, repository snapshot
+  `1.0`, semantic sync-plan `1.0`, conservative removals, and field-level
+  three-way reconciliation.
+- `analyze snapshot`, `analyze diff`, `sync --dry-run`, and `sync --apply` are new
+  public-preview CLI contracts. Incremental sync requires Diagram Model V3; all
+  existing persisted contract versions remain unchanged.
+
 - [ ] Implement Python and TypeScript/JavaScript analyzers first.
 - [ ] Add snapshot, semantic diff, and `sync --dry-run`.
 - [ ] Implement three-way reconciliation of old semantics, new source, and edits.

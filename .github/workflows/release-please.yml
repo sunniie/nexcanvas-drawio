@@ -31,7 +31,7 @@ jobs:
 
       - name: Check out released tag
         if: ${{ steps.release.outputs.release_created }}
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ steps.release.outputs.tag_name }}
 

@@ -426,8 +426,11 @@ def sync_project(
     write_json(project / "diagram_model.json", merged_model)
     write_json(project / "source_model.json", companions["source"])
     write_json(project / "diagram_lock.json", companions["lock"])
-    snapshot_target = project / "repository_snapshot.json" if report["complete"] else project / "reports" / "repository_snapshot.candidate.json"
+    candidate_path = project / "reports" / "repository_snapshot.candidate.json"
+    snapshot_target = project / "repository_snapshot.json" if report["complete"] else candidate_path
     write_json(snapshot_target, incoming)
+    if report["complete"] and candidate_path.is_file():
+        candidate_path.unlink()
     report["snapshot"] = str(snapshot_target.relative_to(project)).replace("\\", "/")
     report["projectModified"] = True
     report_path = output.resolve() if output else project / "reports" / "semantic_sync.json"

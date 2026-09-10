@@ -254,6 +254,7 @@ class SemanticSyncTests(unittest.TestCase):
             pending_ids = {item["id"] for item in applied["pendingRemovals"]}
             final = sync_project(project, repo, dry_run=False, confirmed_removals=pending_ids)
             self.assertTrue(final["complete"])
+            self.assertFalse((project / "reports" / "repository_snapshot.candidate.json").exists())
             final_model = json.loads((project / "diagram_model.json").read_text(encoding="utf-8"))
             self.assertNotIn(util_id, {item["id"] for item in final_model["semantics"]["entities"]})
             self.assertEqual(json.loads((project / "repository_snapshot.json").read_text(encoding="utf-8"))["fingerprint"], candidate["fingerprint"])

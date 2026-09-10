@@ -195,6 +195,8 @@ def analyze_repository(
     exclude: list[str] | None = None,
     max_files: int = 500,
 ) -> dict[str, Any]:
+    if max_files < 1:
+        raise ValueError("--max-files must be at least 1.")
     root = Path(_git(repo_root.resolve(), "rev-parse", "--show-toplevel").strip()).resolve()
     revision = _git(root, "rev-parse", "HEAD").strip()
     resolved_source_id = f"{source_id}-{revision[:12]}"

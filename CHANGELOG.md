@@ -4,6 +4,18 @@ All notable changes to NexCanvas are documented in this file. Releases follow
 [Semantic Versioning](https://semver.org/), while persisted schemas are versioned
 independently.
 
+## [0.5.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.4.0...v0.5.0) (2026-09-10)
+
+
+### Features
+
+* **sync:** add incremental repository reconciliation ([#16](https://github.com/sunniie/nexcanvas-drawio/issues/16)) ([a06b76c](https://github.com/sunniie/nexcanvas-drawio/commit/a06b76c959c40de170cca2eb4fd9401c59640ce7))
+
+
+### Bug Fixes
+
+* **packaging:** modernize license metadata ([#18](https://github.com/sunniie/nexcanvas-drawio/issues/18)) ([86a5ea6](https://github.com/sunniie/nexcanvas-drawio/commit/86a5ea6971bfdb6a70e4db1ada775003daae9aeb))
+
 ## [0.4.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.3.0...v0.4.0) (2026-09-10)
 
 

@@ -4,6 +4,21 @@ All notable changes to NexCanvas are documented in this file. Releases follow
 [Semantic Versioning](https://semver.org/), while persisted schemas are versioned
 independently.
 
+## [0.6.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.5.0...v0.6.0) (2026-09-10)
+
+
+### Features
+
+* **cli:** add installable package and unified command ([#7](https://github.com/sunniie/nexcanvas-drawio/issues/7)) ([af87389](https://github.com/sunniie/nexcanvas-drawio/commit/af873897b955e89b7b6d5dbcfa2f136b35c58ca6))
+* **pipeline:** add deterministic generate orchestration ([#10](https://github.com/sunniie/nexcanvas-drawio/issues/10)) ([38fb08b](https://github.com/sunniie/nexcanvas-drawio/commit/38fb08b07f2aaddea00fc6478f00136414b18bd4))
+* **schema:** introduce canonical semantic model v3 ([#13](https://github.com/sunniie/nexcanvas-drawio/issues/13)) ([4e20be1](https://github.com/sunniie/nexcanvas-drawio/commit/4e20be1c2f5e1ff6aebb6454b6c767f8bf8a748a))
+* **sync:** add incremental repository reconciliation ([#16](https://github.com/sunniie/nexcanvas-drawio/issues/16)) ([a06b76c](https://github.com/sunniie/nexcanvas-drawio/commit/a06b76c959c40de170cca2eb4fd9401c59640ce7))
+
+
+### Bug Fixes
+
+* **packaging:** modernize license metadata ([#18](https://github.com/sunniie/nexcanvas-drawio/issues/18)) ([86a5ea6](https://github.com/sunniie/nexcanvas-drawio/commit/86a5ea6971bfdb6a70e4db1ada775003daae9aeb))
+
 ## [0.5.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.4.0...v0.5.0) (2026-09-10)
 
 

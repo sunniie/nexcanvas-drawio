@@ -11,6 +11,37 @@ independently.
 
 * **schema:** introduce canonical semantic model v3 ([#13](https://github.com/sunniie/nexcanvas-drawio/issues/13)) ([4e20be1](https://github.com/sunniie/nexcanvas-drawio/commit/4e20be1c2f5e1ff6aebb6454b6c767f8bf8a748a))
 
+- Separate evidence, semantics, and presentation into explicit ownership layers
+  with stable IDs and fact-level provenance.
+- Add `nexcanvas migrate v2-to-v3` for deterministic, non-destructive project
+  migration and make new projects use Diagram Model V3 by default.
+- Bind editable Draw.io output to both the complete model fingerprint and the
+  presentation-independent semantic fingerprint.
+
+### Fixes
+
+- Reject semantic/presentation field mixing, missing or duplicate presentation
+  references, and confidence drift from the source evidence model.
+- Prevent accidental in-place migration and output replacement unless the user
+  explicitly supplies `--force`.
+
+### Compatibility
+
+- Diagram Model V2 remains readable throughout the `0.4.x` release line; an
+  immediate migration is not required for existing projects.
+- Source Model and Diagram Lock remain at schema `2.0`, while pipeline state
+  remains at schema `1.0`.
+- Migration preserves V2 semantic IDs and extension data and never modifies the
+  input file.
+
+### Known limitations
+
+- Any change to `diagram_model.json` conservatively invalidates all generated
+  pipeline stages; semantic-aware incremental synchronization is planned for
+  Phase 5.
+- V3 defines and validates the architecture contract but does not infer unknown
+  repository architecture or replace required visual review.
+
 ## [0.3.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.2.0...v0.3.0) (2026-09-09)
 
 

@@ -26,6 +26,12 @@ clear release notes and migration support for persisted user projects.
 
 Pre-releases use `alpha`, `beta`, and `rc`, for example `0.5.0-alpha.1`.
 
+Every GitHub Release title uses `NexCanvas <tag>`, for example
+`NexCanvas v0.5.0` or `NexCanvas v0.5.0-rc.1`. Maturity belongs in GitHub's
+pre-release flag and the release notes, not in an ad hoc title suffix. Release
+automation normalizes this title after creating a release so the sidebar stays
+compact and consistent across versions.
+
 ## Release process
 
 1. Merge conventional feature and fix pull requests into an always-releasable

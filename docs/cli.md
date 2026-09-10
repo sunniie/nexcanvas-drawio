@@ -1,9 +1,9 @@
 # Unified command-line interface
 
 The `nexcanvas` command is the supported automation surface for the technical
-preview. Phase 3 adds a resumable orchestrator without changing persisted source,
-lock, diagram, or asset schema version `2.0`, or the editable Draw.io delivery
-format.
+preview. Product `v0.4.x` creates canonical diagram model `3.0`, reads legacy
+diagram model `2.0`, and keeps source, lock, asset, pipeline-state, and editable
+Draw.io contracts at their existing versions.
 
 ## Installation
 
@@ -39,7 +39,7 @@ python <skill-root>/scripts/nexcanvas_cli.py <command> [...]
 | Command | Responsibility |
 |---|---|
 | `doctor` | Inspect Python, Node, Draw.io, and authoring capabilities |
-| `init` | Create the standard project directories and v2 contracts |
+| `init` | Create the standard project directories and a canonical V3 diagram model |
 | `analyze capture` | Pin Git origin, revision, and tracked-file evidence |
 | `analyze verify` | Reverify repository evidence against a local checkout |
 | `plan` | Compare and score layout candidates |
@@ -49,8 +49,9 @@ python <skill-root>/scripts/nexcanvas_cli.py <command> [...]
 | `qa visual` | Record render checks and explicit human visual approval |
 | `postflight` | Verify final hashes, provenance, and delivery gates |
 | `generate` | Run or resume the hash-bound plan-to-postflight pipeline |
+| `migrate v2-to-v3` | Write a separate canonical V3 model from a legacy V2 model |
 | `intent` | Infer a semantic view intent as an agent routing hint |
-| `contract` | Validate a persisted v2 content contract or v1 pipeline-state contract |
+| `contract` | Validate a persisted V2/V3 diagram contract or another supported contract |
 | `asset search` | Search the pinned technology icon catalog |
 | `asset sync` | Resolve a verified catalog, provider, or user-owned SVG asset |
 
@@ -103,6 +104,21 @@ State is persisted at `<project-dir>/project_state.json`. See
 [deterministic pipeline state](pipeline-state.md) for invalidation and recovery
 semantics.
 
+## V2-to-V3 migration
+
+Migration never rewrites its input and refuses an existing output unless
+`--force` is explicit:
+
+```bash
+nexcanvas migrate v2-to-v3 <v2-model> --output <v3-model> [--source-model <source-model>]
+```
+
+When `--source-model` is omitted, a sibling `source_model.json` is used if
+present. The JSON result reports counts and a semantics-only fingerprint. The
+new file must pass `contract diagram-model`, build, render, visual QA, and
+postflight before replacing a project's active model. See the
+[Semantic Model V3 reference](../references/semantic-model-v3.md).
+
 ## Compatibility
 
 The `python scripts/*.py` interfaces published in `v0.1.x` remain as thin
@@ -113,6 +129,10 @@ only after the documented deprecation window.
 The importable modules under `src/nexcanvas` are implementation details; the
 technical preview does not yet publish a stable Python API.
 
+Diagram model `2.0` remains readable throughout `v0.4.x`. New `init` output uses
+diagram model `3.0`; source model and diagram lock remain schema `2.0`, while
+pipeline state remains schema `1.0`.
+
 ## Known limits
 
 - Draw.io Desktop remains required for deterministic raster/vector export and
@@ -122,3 +142,6 @@ technical preview does not yet publish a stable Python API.
 - Semantic authoring and visual judgment remain agent/human responsibilities;
   `generate` orchestrates deterministic stages but does not invent architecture
   facts or automatically approve aesthetics.
+- The `v0.4.x` pipeline fingerprints the complete diagram-model file, so a
+  presentation-only edit conservatively reruns every delivery stage even though
+  its semantics-only fingerprint remains stable.

@@ -11,6 +11,7 @@ from .builder import build_drawio
 from .common import load_json, safe_project_path, sha256_file, sha256_json, utc_now, write_json
 from .contracts import validate_project_state
 from .geometry import run_checks as run_geometry_checks
+from .model_v3 import normalize_diagram_model
 from .planning import brainstorm_layout
 from .postflight import run_postflight
 from .quality import run_quality, summarize
@@ -326,10 +327,11 @@ def _run_stage(
         return "complete", {"ok": True, "nodes": result["nodes"], "edges": result["edges"]}
 
     if stage == "diagram-qa":
-        model = load_json(model_path)
+        canonical_model = load_json(model_path)
+        model = normalize_diagram_model(canonical_model)
         drawio = project_root / "artifacts" / "diagram.drawio"
         issues = run_quality(
-            model,
+            canonical_model,
             load_json(project_root / "source_model.json"),
             project_root,
             drawio,
@@ -452,7 +454,7 @@ def run_generate(
         raise ValueError("--expected-width and --expected-height must be supplied together.")
     if expected_width is not None and (expected_width <= 0 or expected_height is None or expected_height <= 0):
         raise ValueError("Expected visual dimensions must be greater than zero.")
-    model = load_json(project_root / "diagram_model.json")
+    model = normalize_diagram_model(load_json(project_root / "diagram_model.json"))
     canvas = model.get("canvas") if isinstance(model, dict) else {}
     width = expected_width or int(canvas.get("width", 0) or 0) or None
     height = expected_height or int(canvas.get("height", 0) or 0) or None

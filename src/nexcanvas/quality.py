@@ -9,6 +9,7 @@ from .assets import load_manifest
 from .archetypes import resolve_archetype
 from .contracts import Issue, validate_diagram_model, validate_manifest, validate_source_model
 from .intents import resolve_view_intent
+from .model_v3 import is_v3_model, normalize_diagram_model, semantic_fingerprint
 from .repository import verify_repository_evidence
 from .registry import resolve_route, resolve_theme
 
@@ -249,6 +250,37 @@ def _source_evidence_checks(model: dict[str, Any], source_model: dict[str, Any] 
     return issues
 
 
+def _v3_provenance_checks(model: dict[str, Any], source_model: dict[str, Any] | None) -> list[Issue]:
+    if not is_v3_model(model) or source_model is None:
+        return []
+    facts = {
+        str(item.get("id")): str(item.get("confidence", "unknown"))
+        for item in source_model.get("facts", [])
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
+    issues: list[Issue] = []
+    semantics = model.get("semantics") if isinstance(model.get("semantics"), dict) else {}
+    for key in ("groups", "entities", "relationships"):
+        records = semantics.get(key, []) if isinstance(semantics, dict) else []
+        for index, item in enumerate(records if isinstance(records, list) else []):
+            if not isinstance(item, dict):
+                continue
+            for provenance_index, entry in enumerate(item.get("provenance", [])):
+                if not isinstance(entry, dict):
+                    continue
+                fact_id = str(entry.get("factId", ""))
+                if fact_id in facts and entry.get("confidence") != facts[fact_id]:
+                    issues.append(
+                        Issue(
+                            "error",
+                            "v3-provenance-confidence-drift",
+                            f"Provenance confidence for {fact_id!r} does not match source_model ({facts[fact_id]!r}).",
+                            f"semantics.{key}[{index}].provenance[{provenance_index}].confidence",
+                        )
+                    )
+    return issues
+
+
 def _asset_checks(model: dict[str, Any], project_root: Path | None, root: Path | None) -> list[Issue]:
     requested = {str(node.get("assetRef")) for node in model.get("nodes", []) if node.get("assetRef")}
     if not requested:
@@ -344,6 +376,11 @@ def validate_drawio_metadata(drawio_path: Path, model: dict[str, Any]) -> list[I
     if root.tag != "mxfile":
         issues.append(Issue("error", "drawio-root", "Root element must be mxfile.", str(drawio_path)))
         return issues
+    canonical_model = model
+    try:
+        model = normalize_diagram_model(canonical_model)
+    except ValueError as exc:
+        return issues + [Issue("error", "diagram-model", str(exc), "diagram_model")]
     expected_route = f"{model['route']['family']}/{model['route']['profile']}"
     if root.get("nc-route") != expected_route:
         issues.append(Issue("error", "drawio-route", "Draw.io route metadata does not match diagram_model.", "mxfile@nc-route"))
@@ -352,6 +389,11 @@ def validate_drawio_metadata(drawio_path: Path, model: dict[str, Any]) -> list[I
     expected_archetype = str(model.get("visualArchetype") or "technical-editorial")
     if root.get("nc-visual-archetype") != expected_archetype:
         issues.append(Issue("error", "drawio-archetype", "Draw.io visual archetype metadata does not match diagram_model.", "mxfile@nc-visual-archetype"))
+    if is_v3_model(canonical_model):
+        if root.get("nc-model-schema-version") != "3.0":
+            issues.append(Issue("error", "drawio-model-version", "Draw.io metadata is not bound to diagram model schema 3.0.", "mxfile@nc-model-schema-version"))
+        if root.get("nc-semantic-hash") != semantic_fingerprint(canonical_model):
+            issues.append(Issue("error", "drawio-semantic-drift", "Draw.io semantic fingerprint does not match the canonical V3 semantics layer.", "mxfile@nc-semantic-hash"))
     cells = list(root.iter("mxCell"))
     ids = [cell.get("id", "") for cell in cells]
     if len(ids) != len(set(ids)):
@@ -397,13 +439,16 @@ def run_quality(
     root: Path | None = None,
     repo_root: Path | None = None,
 ) -> list[Issue]:
-    issues = validate_diagram_model(model, root)
+    canonical_model = model
+    issues = validate_diagram_model(canonical_model, root)
     if any(issue.severity == "error" for issue in issues):
         return issues
+    model = normalize_diagram_model(canonical_model)
     route = resolve_route(model["route"]["family"], model["route"]["profile"], root)
     issues.extend(_intent_checks(model))
     issues.extend(_profile_checks(model))
     issues.extend(_source_evidence_checks(model, source_model))
+    issues.extend(_v3_provenance_checks(canonical_model, source_model))
     if source_model is not None:
         issues.extend(validate_source_model(source_model))
         issues.extend(verify_repository_evidence(source_model, repo_root))
@@ -413,7 +458,7 @@ def run_quality(
     if len(model.get("nodes", [])) > 18 and model.get("deliveryTarget") == "slide":
         issues.append(Issue("warning", "slide-density", "A slide-target diagram has more than 18 nodes; split or progressive-disclose it.", "nodes"))
     if drawio_path:
-        issues.extend(validate_drawio_metadata(drawio_path, model))
+        issues.extend(validate_drawio_metadata(drawio_path, canonical_model))
     for rule in route.get("requiredChecks", []):
         if rule == "evidence" and source_model is None:
             issues.append(Issue("error", "profile-evidence", "This route requires a confirmed source_model.", "sourceModel"))

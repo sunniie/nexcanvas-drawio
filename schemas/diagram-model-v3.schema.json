@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nexcanvas.dev/schemas/diagram-model-v3.schema.json",
+  "title": "NexCanvas Canonical Diagram Model V3",
+  "type": "object",
+  "required": ["schemaVersion", "metadata", "semantics", "presentation"],
+  "properties": {
+    "schemaVersion": {"const": "3.0"},
+    "metadata": {
+      "type": "object",
+      "required": ["title", "viewIntent", "route", "audience", "deliveryTarget", "language", "evidenceModel"],
+      "properties": {
+        "title": {"type": "string", "minLength": 1},
+        "subtitle": {"type": "string"},
+        "viewIntent": {"enum": ["architecture", "workflow", "sequence", "data-flow", "lifecycle"]},
+        "route": {
+          "type": "object",
+          "required": ["family", "profile"],
+          "properties": {
+            "family": {"type": "string", "minLength": 1},
+            "profile": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        },
+        "audience": {"type": "string", "minLength": 1},
+        "deliveryTarget": {"enum": ["readme", "engineering-doc", "slide", "poster", "print", "interactive"]},
+        "language": {"type": "string", "minLength": 1},
+        "evidenceModel": {"type": "string", "minLength": 1},
+        "assumptions": {"type": "array", "items": {"type": "string"}},
+        "extensions": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "semantics": {
+      "type": "object",
+      "required": ["groups", "entities", "relationships"],
+      "properties": {
+        "groups": {"type": "array", "items": {"$ref": "#/$defs/group"}},
+        "entities": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/entity"}},
+        "relationships": {"type": "array", "items": {"$ref": "#/$defs/relationship"}}
+      },
+      "additionalProperties": false
+    },
+    "presentation": {
+      "type": "object",
+      "required": ["theme", "visualArchetype", "showTitle", "direction", "canvas", "groups", "entities", "relationships"],
+      "properties": {
+        "theme": {"type": "string", "minLength": 1},
+        "visualArchetype": {"type": "string", "minLength": 1},
+        "layoutStrategy": {"enum": ["auto", "compact-pipeline", "phase-columns", "dense-phase-columns", "phase-rows", "hybrid-grid", "hub-and-spoke", "nested-topology"]},
+        "showTitle": {"type": "boolean"},
+        "direction": {"enum": ["LR", "RL", "TB", "BT"]},
+        "canvas": {
+          "type": "object",
+          "required": ["width", "height"],
+          "properties": {
+            "width": {"type": "integer", "minimum": 640, "maximum": 10000},
+            "height": {"type": "integer", "minimum": 480, "maximum": 10000},
+            "background": {"type": "string"}
+          },
+          "additionalProperties": false
+        },
+        "groups": {"type": "array", "items": {"$ref": "#/$defs/groupPresentation"}},
+        "entities": {"type": "array", "items": {"$ref": "#/$defs/entityPresentation"}},
+        "relationships": {"type": "array", "items": {"$ref": "#/$defs/relationshipPresentation"}},
+        "legend": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["kind", "label"],
+            "properties": {"kind": {"type": "string"}, "label": {"type": "string"}},
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.:-]*$"},
+    "provenance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["factId", "confidence"],
+        "properties": {
+          "factId": {"$ref": "#/$defs/id"},
+          "confidence": {"enum": ["confirmed", "inferred", "unknown"]}
+        },
+        "additionalProperties": false
+      }
+    },
+    "group": {
+      "type": "object",
+      "required": ["id", "label", "kind", "provenance"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "label": {"type": "string", "minLength": 1},
+        "kind": {"type": "string", "minLength": 1},
+        "parent": {"$ref": "#/$defs/id"},
+        "description": {"type": "string"},
+        "tags": {"type": "array", "items": {"type": "string"}},
+        "provenance": {"$ref": "#/$defs/provenance"},
+        "extensions": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "entity": {
+      "type": "object",
+      "required": ["id", "label", "kind", "provenance"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "label": {"type": "string", "minLength": 1},
+        "kind": {"type": "string", "minLength": 1},
+        "description": {"type": "string"},
+        "caption": {"type": "string"},
+        "technology": {"type": "string"},
+        "fields": {"type": "array", "items": {"type": "string"}},
+        "tags": {"type": "array", "items": {"type": "string"}},
+        "provenance": {"$ref": "#/$defs/provenance"},
+        "extensions": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "relationship": {
+      "type": "object",
+      "required": ["id", "source", "target", "kind", "provenance"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "source": {"$ref": "#/$defs/id"},
+        "target": {"$ref": "#/$defs/id"},
+        "kind": {"type": "string", "minLength": 1},
+        "label": {"type": "string"},
+        "protocol": {"type": "string"},
+        "payload": {"type": "string"},
+        "async": {"type": "boolean"},
+        "authority": {"type": "string"},
+        "trustCrossing": {"type": "boolean"},
+        "annotation": {"type": "string"},
+        "tags": {"type": "array", "items": {"type": "string"}},
+        "provenance": {"$ref": "#/$defs/provenance"},
+        "extensions": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "groupPresentation": {
+      "type": "object",
+      "required": ["semanticId"],
+      "properties": {
+        "semanticId": {"$ref": "#/$defs/id"},
+        "presentation": {"enum": ["phase-column", "outline-phase", "phase-row", "foundation-band", "solid-group", "dashed-group", "hub-ring", "provider-boundary", "semantic-container"]},
+        "weight": {"type": "number", "exclusiveMinimum": 0},
+        "order": {"type": "number"},
+        "layout": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "entityPresentation": {
+      "type": "object",
+      "required": ["semanticId"],
+      "properties": {
+        "semanticId": {"$ref": "#/$defs/id"},
+        "boundary": {"$ref": "#/$defs/id"},
+        "presentation": {"enum": ["service-icon", "service-tile", "compact-glyph", "semantic-card", "note"]},
+        "assetRef": {"type": "string"},
+        "importance": {"enum": ["primary", "secondary", "support"]},
+        "layout": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "relationshipPresentation": {
+      "type": "object",
+      "required": ["semanticId"],
+      "properties": {
+        "semanticId": {"$ref": "#/$defs/id"},
+        "labelMode": {"enum": ["none", "offset", "callout", "note"]},
+        "labelPlacement": {"type": "object"},
+        "laneId": {"$ref": "#/$defs/id"},
+        "busId": {"$ref": "#/$defs/id"},
+        "allowCrossing": {"type": "boolean"},
+        "lineClass": {"enum": ["control", "data", "optional", "response", "dependency"]},
+        "step": {"oneOf": [{"type": "integer", "minimum": 1}, {"type": "string", "minLength": 1}]},
+        "importance": {"enum": ["primary", "secondary", "support"]},
+        "layout": {"type": "object"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

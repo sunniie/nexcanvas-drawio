@@ -17,7 +17,9 @@ Intent rules first check that the artifact answers one dominant question: struct
 - MLOps needs training, deployment/serving, and monitoring feedback.
 - sequences/traces need participants, messages, ordering, and useful protocol labels.
 
-Evidence IDs on nodes/edges must resolve to source facts.
+V3 provenance IDs on semantic groups/entities/relationships must resolve to
+source facts, and each recorded confidence must match its fact. Presentation
+records must cover every stable semantic ID exactly once and cannot redefine it.
 
 For repository sources, QA must receive `--repo-root` and verify origin, full commit, cited blob when supplied, repo-relative path, and line range. Missing or mismatched repository evidence blocks release; verification proves source provenance, not live runtime behavior.
 
@@ -27,7 +29,8 @@ Requested marks must resolve in `asset_manifest.json`. File-backed SVG must exis
 
 ## Gate 4: structural and geometry QA
 
-The combined QA runs v2 metadata checks plus the established `drawio_qa.py` heuristics. Fix:
+The combined QA runs canonical model/build metadata checks plus the established
+`drawio_qa.py` heuristics. Fix:
 
 - overlaps and connector-through-node crossings;
 - wrong terminal entry/exit directions;

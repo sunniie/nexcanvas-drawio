@@ -83,9 +83,9 @@ Repository verification proves that cited bytes and ranges exist at the pinned r
 
 ## Delivery invariants
 
-- `diagram_model.viewIntent` and `diagram_lock.viewIntent` must agree.
+- `diagram_model.metadata.viewIntent` and `diagram_lock.viewIntent` must agree in V3.
 - The route must be compatible with the intent.
-- Every diagram node/edge evidence ID must resolve to a source fact.
+- Every semantic provenance fact ID must resolve to a source fact and carry matching confidence.
 - Repository-backed release QA and postflight must receive the same explicit repository root and reverify the pinned evidence.
-- Draw.io embeds `nc-view-intent`, route, archetype, and model hash as inspectable metadata.
+- Draw.io embeds `nc-view-intent`, route, archetype, model schema/hash, and the V3 semantic fingerprint as inspectable metadata.
 - Semantic intent never selects a visual style. Apply the established user reference and NexCanvas visual grammar only after the content model is stable.

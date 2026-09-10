@@ -4,7 +4,7 @@ Use this reference for cloud, data, AI/ML, integration, deployment, and platform
 
 ## Select the archetype before layout
 
-Set `visualArchetype` in `diagram_model.json`:
+Set `presentation.visualArchetype` in diagram model V3:
 
 - `microsoft-reference`: Microsoft Architecture Center-style phase columns, neutral connectors, green numbered steps, and a platform band.
 - `aws-reference`: the same reference composition with AWS-neutral line and badge colors; use only official AWS icons.
@@ -36,18 +36,34 @@ Reference diagrams use these presentation fields:
 
 ```json
 {
-  "visualArchetype": "microsoft-reference",
-  "showTitle": false,
-  "boundaries": [
-    {"id": "ingest", "label": "Ingest", "kind": "phase", "presentation": "phase-column", "order": 1},
-    {"id": "platform", "label": "Platform", "kind": "foundation", "presentation": "foundation-band", "order": 9}
-  ],
-  "nodes": [
-    {"id": "events", "label": "Azure Event Hubs", "caption": "Streaming ingestion", "kind": "service", "presentation": "service-icon", "assetRef": "azure-event-hubs", "boundary": "ingest"}
-  ],
-  "edges": [
-    {"id": "flow-1", "source": "source", "target": "events", "kind": "data", "lineClass": "control", "label": "Stream events", "step": 1}
-  ]
+  "semantics": {
+    "groups": [
+      {"id": "ingest", "label": "Ingest", "kind": "phase", "provenance": []},
+      {"id": "platform", "label": "Platform", "kind": "foundation", "provenance": []}
+    ],
+    "entities": [
+      {"id": "source", "label": "Telemetry", "kind": "source", "provenance": []},
+      {"id": "events", "label": "Azure Event Hubs", "caption": "Streaming ingestion", "kind": "service", "provenance": []}
+    ],
+    "relationships": [
+      {"id": "flow-1", "source": "source", "target": "events", "kind": "data", "label": "Stream events", "provenance": []}
+    ]
+  },
+  "presentation": {
+    "visualArchetype": "microsoft-reference",
+    "showTitle": false,
+    "groups": [
+      {"semanticId": "ingest", "presentation": "phase-column", "order": 1},
+      {"semanticId": "platform", "presentation": "foundation-band", "order": 9}
+    ],
+    "entities": [
+      {"semanticId": "source", "boundary": "ingest"},
+      {"semanticId": "events", "presentation": "service-icon", "assetRef": "azure-event-hubs", "boundary": "ingest"}
+    ],
+    "relationships": [
+      {"semanticId": "flow-1", "lineClass": "control", "step": 1}
+    ]
+  }
 }
 ```
 

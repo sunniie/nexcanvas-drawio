@@ -13,6 +13,7 @@ from .common import load_json, utc_now, write_json
 from .contracts import validate_file
 from .geometry import run_checks as run_geometry_checks
 from .intents import DEFAULT_ROUTES, VIEW_INTENTS, classify_brief
+from .model_v3 import migrate_file
 from .planning import brainstorm_layout
 from .pipeline import run_generate
 from .postflight import run_postflight
@@ -179,6 +180,20 @@ def _intent(args: argparse.Namespace) -> int:
     return 0
 
 
+def _migrate_v2_to_v3(args: argparse.Namespace) -> int:
+    input_model = load_json(args.model.resolve())
+    if not isinstance(input_model, dict) or input_model.get("schemaVersion") != "2.0":
+        raise ValueError("v2-to-v3 requires an input diagram model with schemaVersion '2.0'.")
+    result = migrate_file(
+        args.model,
+        args.output,
+        source_path=args.source_model,
+        force=args.force,
+    )
+    _emit(result)
+    return 0
+
+
 def _contract(args: argparse.Namespace) -> int:
     issues = validate_file(
         args.path.resolve(),
@@ -334,6 +349,15 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--allow-warnings", action="store_true")
     generate.add_argument("--restart", action="store_true")
     _set_handler(generate, _generate)
+
+    migrate = commands.add_parser("migrate", help="Migrate persisted NexCanvas contracts without rewriting the source.")
+    migrate_commands = migrate.add_subparsers(dest="migrate_command", required=True)
+    v2_to_v3 = migrate_commands.add_parser("v2-to-v3", help="Create a canonical diagram model V3 from a diagram model V2.")
+    v2_to_v3.add_argument("model", type=Path)
+    v2_to_v3.add_argument("--output", "-o", type=Path, required=True)
+    v2_to_v3.add_argument("--source-model", type=Path)
+    v2_to_v3.add_argument("--force", action="store_true", help="Replace only the requested output file if it already exists.")
+    _set_handler(v2_to_v3, _migrate_v2_to_v3)
 
     intent = commands.add_parser("intent", help="Infer semantic view intent from a brief.")
     intent.add_argument("brief")

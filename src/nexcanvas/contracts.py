@@ -9,6 +9,7 @@ from .common import load_json
 from .archetypes import resolve_archetype
 from .layout import PRESENTATION_MIN_SIZES
 from .intents import VIEW_INTENTS, compatible_view_intents, resolve_view_intent
+from .model_v3 import CONFIDENCE_VALUES, normalize_diagram_model
 from .registry import SUPPORTED_LAYOUTS, resolve_route, resolve_theme
 
 
@@ -37,6 +38,12 @@ def _required_string(value: Any, field: str, issues: list[Issue]) -> None:
         issues.append(Issue("error", "required-string", f"{field} must be a non-empty string.", field))
 
 
+def _reject_extra_fields(value: dict[str, Any], allowed: set[str], location: str, issues: list[Issue]) -> None:
+    extra = set(value) - allowed
+    if extra:
+        issues.append(Issue("error", "v3-unknown-field", f"Unsupported fields: {', '.join(sorted(extra))}.", location))
+
+
 def _unique_ids(items: Iterable[dict[str, Any]], kind: str, issues: list[Issue]) -> set[str]:
     seen: set[str] = set()
     for index, item in enumerate(items):
@@ -51,7 +58,7 @@ def _unique_ids(items: Iterable[dict[str, Any]], kind: str, issues: list[Issue])
     return seen
 
 
-def validate_diagram_model(model: dict[str, Any], root: Path | None = None) -> list[Issue]:
+def _validate_v2_diagram_model(model: dict[str, Any], root: Path | None = None) -> list[Issue]:
     issues: list[Issue] = []
     if model.get("schemaVersion") != "2.0":
         issues.append(Issue("error", "schema-version", "diagram_model schemaVersion must be 2.0.", "schemaVersion"))
@@ -216,6 +223,244 @@ def validate_diagram_model(model: dict[str, Any], root: Path | None = None) -> l
             issues.append(Issue("warning", "self-edge", "Self-edge should use kind=self-loop or be removed.", f"edges[{index}]"))
 
     return issues
+
+
+def _semantic_records(
+    semantics: dict[str, Any],
+    key: str,
+    issues: list[Issue],
+    *,
+    required: bool = False,
+) -> list[dict[str, Any]]:
+    value = semantics.get(key)
+    if not isinstance(value, list) or (required and not value):
+        qualifier = "a non-empty array" if required else "an array"
+        issues.append(Issue("error", f"v3-{key}", f"semantics.{key} must be {qualifier}.", f"semantics.{key}"))
+        return []
+    records: list[dict[str, Any]] = []
+    for index, item in enumerate(value):
+        if not isinstance(item, dict):
+            issues.append(Issue("error", "v3-semantic-record", "Semantic records must be objects.", f"semantics.{key}[{index}]"))
+        else:
+            records.append(item)
+    return records
+
+
+def _validate_provenance(item: dict[str, Any], location: str, issues: list[Issue]) -> None:
+    provenance = item.get("provenance")
+    if not isinstance(provenance, list):
+        issues.append(Issue("error", "v3-provenance", "Every semantic record requires a provenance array.", f"{location}.provenance"))
+        return
+    seen: set[str] = set()
+    for index, entry in enumerate(provenance):
+        entry_location = f"{location}.provenance[{index}]"
+        if not isinstance(entry, dict):
+            issues.append(Issue("error", "v3-provenance", "Provenance entries must be objects.", entry_location))
+            continue
+        fact_id = entry.get("factId")
+        if not isinstance(fact_id, str) or not ID_RE.fullmatch(fact_id):
+            issues.append(Issue("error", "v3-provenance-fact", f"Invalid provenance factId: {fact_id!r}.", f"{entry_location}.factId"))
+        elif fact_id in seen:
+            issues.append(Issue("error", "v3-provenance-duplicate", f"Duplicate provenance factId: {fact_id}.", f"{entry_location}.factId"))
+        else:
+            seen.add(fact_id)
+        if entry.get("confidence") not in CONFIDENCE_VALUES:
+            issues.append(Issue("error", "v3-provenance-confidence", "Provenance confidence must be confirmed, inferred, or unknown.", f"{entry_location}.confidence"))
+        extra = set(entry) - {"factId", "confidence"}
+        if extra:
+            issues.append(Issue("error", "v3-provenance-field", f"Unsupported provenance fields: {', '.join(sorted(extra))}.", entry_location))
+
+
+def _presentation_records(
+    presentation: dict[str, Any],
+    key: str,
+    semantic_ids: set[str],
+    issues: list[Issue],
+) -> list[dict[str, Any]]:
+    value = presentation.get(key)
+    if not isinstance(value, list):
+        issues.append(Issue("error", f"v3-presentation-{key}", f"presentation.{key} must be an array.", f"presentation.{key}"))
+        return []
+    records = [item for item in value if isinstance(item, dict)]
+    for index, item in enumerate(value):
+        if not isinstance(item, dict):
+            issues.append(Issue("error", "v3-presentation-record", "Presentation records must be objects.", f"presentation.{key}[{index}]"))
+    refs: list[str] = []
+    for index, item in enumerate(records):
+        semantic_id = item.get("semanticId")
+        if not isinstance(semantic_id, str) or not ID_RE.fullmatch(semantic_id):
+            issues.append(Issue("error", "v3-presentation-ref", f"Invalid semanticId: {semantic_id!r}.", f"presentation.{key}[{index}].semanticId"))
+        else:
+            refs.append(semantic_id)
+            if semantic_id not in semantic_ids:
+                issues.append(Issue("error", "v3-presentation-ref", f"Presentation refers to unknown semantic id {semantic_id!r}.", f"presentation.{key}[{index}].semanticId"))
+    duplicates = {value for value in refs if refs.count(value) > 1}
+    for duplicate in sorted(duplicates):
+        issues.append(Issue("error", "v3-presentation-duplicate", f"Semantic id {duplicate!r} has multiple presentation records.", f"presentation.{key}"))
+    missing = semantic_ids - set(refs)
+    for semantic_id in sorted(missing):
+        issues.append(Issue("error", "v3-presentation-missing", f"Semantic id {semantic_id!r} has no presentation record.", f"presentation.{key}"))
+    return records
+
+
+def _validate_v3_diagram_model(model: dict[str, Any], root: Path | None = None) -> list[Issue]:
+    issues: list[Issue] = []
+    allowed_root = {"schemaVersion", "metadata", "semantics", "presentation"}
+    extra_root = set(model) - allowed_root
+    if extra_root:
+        issues.append(Issue("error", "v3-layer-leak", f"V3 root fields must belong to metadata, semantics, or presentation: {', '.join(sorted(extra_root))}.", "diagram_model"))
+
+    metadata = model.get("metadata")
+    semantics = model.get("semantics")
+    presentation = model.get("presentation")
+    if not isinstance(metadata, dict):
+        issues.append(Issue("error", "v3-metadata", "metadata must be an object.", "metadata"))
+        metadata = {}
+    if not isinstance(semantics, dict):
+        issues.append(Issue("error", "v3-semantics", "semantics must be an object.", "semantics"))
+        semantics = {}
+    if not isinstance(presentation, dict):
+        issues.append(Issue("error", "v3-presentation", "presentation must be an object.", "presentation"))
+        presentation = {}
+
+    _required_string(metadata.get("title"), "metadata.title", issues)
+    _required_string(metadata.get("audience"), "metadata.audience", issues)
+    _required_string(metadata.get("language"), "metadata.language", issues)
+    _required_string(metadata.get("evidenceModel"), "metadata.evidenceModel", issues)
+    if metadata.get("deliveryTarget") not in DELIVERY_TARGETS:
+        issues.append(Issue("error", "delivery-target", f"Unsupported deliveryTarget: {metadata.get('deliveryTarget')!r}.", "metadata.deliveryTarget"))
+    if metadata.get("viewIntent") not in VIEW_INTENTS:
+        issues.append(Issue("error", "view-intent", f"Unsupported viewIntent: {metadata.get('viewIntent')!r}.", "metadata.viewIntent"))
+    if not isinstance(metadata.get("assumptions"), list):
+        issues.append(Issue("error", "v3-assumptions", "metadata.assumptions must be an array.", "metadata.assumptions"))
+    _reject_extra_fields(
+        metadata,
+        {"title", "subtitle", "viewIntent", "route", "audience", "deliveryTarget", "language", "evidenceModel", "assumptions", "extensions"},
+        "metadata",
+        issues,
+    )
+    _reject_extra_fields(semantics, {"groups", "entities", "relationships"}, "semantics", issues)
+    _reject_extra_fields(
+        presentation,
+        {"theme", "visualArchetype", "layoutStrategy", "showTitle", "direction", "canvas", "groups", "entities", "relationships", "legend"},
+        "presentation",
+        issues,
+    )
+    for field in ("theme", "visualArchetype"):
+        _required_string(presentation.get(field), f"presentation.{field}", issues)
+    if not isinstance(presentation.get("showTitle"), bool):
+        issues.append(Issue("error", "v3-show-title", "presentation.showTitle must be boolean.", "presentation.showTitle"))
+    if presentation.get("direction") not in {"LR", "RL", "TB", "BT"}:
+        issues.append(Issue("error", "v3-direction", "presentation.direction must be LR, RL, TB, or BT.", "presentation.direction"))
+
+    groups = _semantic_records(semantics, "groups", issues)
+    entities = _semantic_records(semantics, "entities", issues, required=True)
+    relationships = _semantic_records(semantics, "relationships", issues)
+    group_ids = _unique_ids(groups, "semantics.groups", issues)
+    entity_ids = _unique_ids(entities, "semantics.entities", issues)
+    relationship_ids = _unique_ids(relationships, "semantics.relationships", issues)
+    all_ids = group_ids | entity_ids | relationship_ids
+    if len(all_ids) != len(group_ids) + len(entity_ids) + len(relationship_ids):
+        for collision in sorted((group_ids & entity_ids) | (group_ids & relationship_ids) | (entity_ids & relationship_ids)):
+            issues.append(Issue("error", "cross-type-id", f"Stable semantic id {collision!r} is reused across object types.", collision))
+
+    forbidden_semantic = {
+        "assetRef",
+        "boundary",
+        "importance",
+        "labelMode",
+        "labelPlacement",
+        "laneId",
+        "busId",
+        "allowCrossing",
+        "lineClass",
+        "step",
+        "layout",
+        "presentation",
+        "x",
+        "y",
+        "width",
+        "height",
+        "style",
+    }
+    for key, records in (("groups", groups), ("entities", entities), ("relationships", relationships)):
+        for index, item in enumerate(records):
+            location = f"semantics.{key}[{index}]"
+            _validate_provenance(item, location, issues)
+            leaked = forbidden_semantic & set(item)
+            if leaked:
+                issues.append(Issue("error", "v3-presentation-leak", f"Presentation fields are not allowed in semantic records: {', '.join(sorted(leaked))}.", location))
+
+    group_fields = {"id", "label", "kind", "parent", "description", "tags", "provenance", "extensions"}
+    entity_fields = {"id", "label", "kind", "description", "caption", "technology", "fields", "tags", "provenance", "extensions"}
+    relationship_fields = {"id", "source", "target", "kind", "label", "protocol", "payload", "async", "authority", "trustCrossing", "annotation", "tags", "provenance", "extensions"}
+    for key, records, allowed in (
+        ("groups", groups, group_fields),
+        ("entities", entities, entity_fields),
+        ("relationships", relationships, relationship_fields),
+    ):
+        for index, item in enumerate(records):
+            _reject_extra_fields(item, allowed, f"semantics.{key}[{index}]", issues)
+
+    for index, group in enumerate(groups):
+        _required_string(group.get("label"), f"semantics.groups[{index}].label", issues)
+        _required_string(group.get("kind"), f"semantics.groups[{index}].kind", issues)
+        parent = group.get("parent")
+        if parent and parent not in group_ids:
+            issues.append(Issue("error", "boundary-parent", f"Group parent {parent!r} does not exist.", f"semantics.groups[{index}].parent"))
+    for index, entity in enumerate(entities):
+        _required_string(entity.get("label"), f"semantics.entities[{index}].label", issues)
+        _required_string(entity.get("kind"), f"semantics.entities[{index}].kind", issues)
+    for index, relationship in enumerate(relationships):
+        _required_string(relationship.get("kind"), f"semantics.relationships[{index}].kind", issues)
+        if relationship.get("source") not in entity_ids:
+            issues.append(Issue("error", "edge-source", f"Relationship source {relationship.get('source')!r} does not exist.", f"semantics.relationships[{index}].source"))
+        if relationship.get("target") not in entity_ids:
+            issues.append(Issue("error", "edge-target", f"Relationship target {relationship.get('target')!r} does not exist.", f"semantics.relationships[{index}].target"))
+
+    group_views = _presentation_records(presentation, "groups", group_ids, issues)
+    entity_views = _presentation_records(presentation, "entities", entity_ids, issues)
+    relationship_views = _presentation_records(presentation, "relationships", relationship_ids, issues)
+    for key, records, allowed in (
+        ("groups", group_views, {"semanticId", "presentation", "weight", "order", "layout"}),
+        ("entities", entity_views, {"semanticId", "boundary", "presentation", "assetRef", "importance", "layout"}),
+        ("relationships", relationship_views, {"semanticId", "labelMode", "labelPlacement", "laneId", "busId", "allowCrossing", "lineClass", "step", "importance", "layout"}),
+    ):
+        for index, item in enumerate(records):
+            _reject_extra_fields(item, allowed, f"presentation.{key}[{index}]", issues)
+    for index, item in enumerate(entity_views):
+        boundary = item.get("boundary")
+        if boundary and boundary not in group_ids:
+            issues.append(Issue("error", "node-boundary", f"Entity boundary {boundary!r} does not exist.", f"presentation.entities[{index}].boundary"))
+    for index, item in enumerate(group_views):
+        if "layout" in item and not isinstance(item.get("layout"), dict):
+            issues.append(Issue("error", "v3-presentation-layout", "Presentation layout must be an object.", f"presentation.groups[{index}].layout"))
+
+    if not any(issue.severity == "error" for issue in issues):
+        try:
+            projection = normalize_diagram_model(model)
+        except ValueError as exc:
+            issues.append(Issue("error", "v3-normalization", str(exc), "diagram_model"))
+        else:
+            for issue in _validate_v2_diagram_model(projection, root):
+                issues.append(Issue(issue.severity, issue.code, issue.message, f"projection.{issue.location}"))
+    return issues
+
+
+def validate_diagram_model(model: dict[str, Any], root: Path | None = None) -> list[Issue]:
+    version = model.get("schemaVersion")
+    if version == "2.0":
+        return _validate_v2_diagram_model(model, root)
+    if version == "3.0":
+        return _validate_v3_diagram_model(model, root)
+    return [
+        Issue(
+            "error",
+            "schema-version",
+            f"Unsupported diagram_model schemaVersion {version!r}; expected '2.0' or '3.0'.",
+            "schemaVersion",
+        )
+    ]
 
 
 def validate_source_model(model: dict[str, Any]) -> list[Issue]:

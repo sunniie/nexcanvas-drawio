@@ -11,6 +11,7 @@ from .common import load_json, portable_path, sha256_json, utc_now
 from .contracts import validate_diagram_model
 from .intents import resolve_view_intent
 from .layout import EdgeRoute, Rect, layout_model
+from .model_v3 import is_v3_model, normalize_diagram_model, semantic_fingerprint
 from .registry import resolve_route, resolve_theme
 
 
@@ -582,10 +583,12 @@ def _append_flow_label(
 
 
 def build_tree(model: dict[str, Any], project_root: Path | None = None, root: Path | None = None) -> tuple[ET.ElementTree, set[str]]:
-    issues = validate_diagram_model(model, root)
+    canonical_model = model
+    issues = validate_diagram_model(canonical_model, root)
     errors = [issue for issue in issues if issue.severity == "error"]
     if errors:
         raise ValueError("Invalid diagram model:\n" + "\n".join(f"- {issue.location}: {issue.message}" for issue in errors))
+    model = normalize_diagram_model(canonical_model)
     route = resolve_route(model["route"]["family"], model["route"]["profile"], root)
     theme = resolve_theme(model["theme"], root)
     archetype = resolve_archetype(str(model.get("visualArchetype", "")) or None, root)
@@ -594,22 +597,26 @@ def build_tree(model: dict[str, Any], project_root: Path | None = None, root: Pa
     canvas = model["canvas"]
     view_intent = resolve_view_intent(model)
 
+    metadata = {
+        "host": "NexCanvas Draw.io",
+        "agent": "nexcanvas-drawio/2.0",
+        "version": "2.0",
+        "type": "device",
+        "modified": utc_now(),
+        "nc-model-hash": sha256_json(canonical_model),
+        "nc-model-schema-version": str(canonical_model.get("schemaVersion", "")),
+        "nc-route": f"{model['route']['family']}/{model['route']['profile']}",
+        "nc-view-intent": view_intent,
+        "nc-visual-archetype": str(archetype["key"]),
+        "nc-layout-strategy": str(model.get("layoutStrategy", "auto")),
+        "pageWidth": str(canvas["width"]),
+        "pageHeight": str(canvas["height"]),
+    }
+    if is_v3_model(canonical_model):
+        metadata["nc-semantic-hash"] = semantic_fingerprint(canonical_model)
     mxfile = ET.Element(
         "mxfile",
-        {
-            "host": "NexCanvas Draw.io",
-            "agent": "nexcanvas-drawio/2.0",
-            "version": "2.0",
-            "type": "device",
-            "modified": utc_now(),
-            "nc-model-hash": sha256_json(model),
-            "nc-route": f"{model['route']['family']}/{model['route']['profile']}",
-            "nc-view-intent": view_intent,
-            "nc-visual-archetype": str(archetype["key"]),
-            "nc-layout-strategy": str(model.get("layoutStrategy", "auto")),
-            "pageWidth": str(canvas["width"]),
-            "pageHeight": str(canvas["height"]),
-        },
+        metadata,
     )
     diagram = ET.SubElement(mxfile, "diagram", {"id": "nexcanvas-page-1", "name": view_intent.replace("-", " ").title()})
     graph = ET.SubElement(
@@ -921,20 +928,25 @@ def build_tree(model: dict[str, Any], project_root: Path | None = None, root: Pa
 
 
 def build_drawio(model_path: Path, output_path: Path, project_root: Path | None = None, root: Path | None = None) -> dict[str, Any]:
-    model = load_json(model_path)
-    if not isinstance(model, dict):
+    canonical_model = load_json(model_path)
+    if not isinstance(canonical_model, dict):
         raise ValueError("diagram model must be a JSON object")
-    tree, embedded_keys = build_tree(model, project_root, root)
+    model = normalize_diagram_model(canonical_model)
+    tree, embedded_keys = build_tree(canonical_model, project_root, root)
     ET.indent(tree, space="  ")
     output_path.parent.mkdir(parents=True, exist_ok=True)
     tree.write(output_path, encoding="utf-8", xml_declaration=True, short_empty_elements=True)
     if project_root and embedded_keys:
         mark_assets(project_root, embedded_keys, "Embedded")
-    return {
+    result = {
         "output": portable_path(output_path, project_root),
         "route": f"{model['route']['family']}/{model['route']['profile']}",
         "nodes": len(model.get("nodes", [])),
         "edges": len(model.get("edges", [])),
         "embeddedAssets": sorted(embedded_keys),
-        "modelHash": sha256_json(model),
+        "modelHash": sha256_json(canonical_model),
+        "modelSchemaVersion": str(canonical_model.get("schemaVersion", "")),
     }
+    if is_v3_model(canonical_model):
+        result["semanticFingerprint"] = semantic_fingerprint(canonical_model)
+    return result

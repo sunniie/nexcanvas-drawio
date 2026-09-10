@@ -6,6 +6,10 @@ Use this reference for workflow, cloud, data, AI/ML, network, deployment, and ot
 
 Create a connector ledger before geometry:
 
+In diagram model V3, connector meaning (`source`, `target`, `kind`, semantic
+label, protocol, and payload) belongs to `semantics.relationships`; every field
+described below belongs to the matching `presentation.relationships` record.
+
 1. Classify each edge as primary flow, data, dependency, response, feedback, error, or semantic bus.
 2. Remove labels that merely repeat the source, target, or obvious direction.
 3. Reserve horizontal or vertical gutters between phases, groups, and node rows.

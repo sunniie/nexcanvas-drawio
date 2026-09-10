@@ -3,6 +3,8 @@ from __future__ import annotations
 from collections import defaultdict, deque
 from typing import Any
 
+from .model_v3 import normalize_diagram_model
+
 
 STRATEGIES = (
     "compact-pipeline",
@@ -154,6 +156,8 @@ def _phase_weights(model: dict[str, Any]) -> dict[str, float]:
 
 
 def brainstorm_layout(model: dict[str, Any]) -> dict[str, Any]:
+    if model.get("schemaVersion") == "3.0":
+        model = normalize_diagram_model(model)
     metrics = analyze_model(model)
     scores = {strategy: 0.0 for strategy in STRATEGIES}
     reasons: dict[str, list[str]] = {strategy: [] for strategy in STRATEGIES}

@@ -6,8 +6,9 @@ from typing import Any
 
 from .assets import load_manifest, mark_assets
 from .common import load_json, portable_path, sha256_file, sha256_json, utc_now
-from .contracts import Issue, validate_lock, validate_manifest, validate_source_model
+from .contracts import Issue, validate_diagram_model, validate_lock, validate_manifest, validate_source_model
 from .intents import resolve_view_intent
+from .model_v3 import is_v3_model, normalize_diagram_model
 from .quality import validate_drawio_metadata
 from .repository import verify_repository_evidence
 
@@ -36,6 +37,7 @@ def run_postflight(project_root: Path, root: Path | None = None, repo_root: Path
     visual = load_json(paths["visual"])
     manifest = load_manifest(project_root, root)
     issues.extend(validate_source_model(source))
+    issues.extend(validate_diagram_model(model, root))
     issues.extend(verify_repository_evidence(source, repo_root))
     issues.extend(validate_lock(lock, root))
     issues.extend(validate_manifest(manifest, project_root))
@@ -45,7 +47,11 @@ def run_postflight(project_root: Path, root: Path | None = None, repo_root: Path
         issues.append(Issue("error", "lock-unconfirmed", "diagram_lock.status must be confirmed before delivery.", "diagram_lock.status"))
     if lock.get("sourceHash") != sha256_json(source):
         issues.append(Issue("error", "source-lock-drift", "diagram_lock sourceHash does not match source_model.", "diagram_lock.sourceHash"))
-    if resolve_view_intent(model) != resolve_view_intent({"route": lock.get("route", {}), "viewIntent": lock.get("viewIntent", "")}):
+    projection = normalize_diagram_model(model) if not any(issue.severity == "error" for issue in issues) else {}
+    metadata = model.get("metadata") if isinstance(model.get("metadata"), dict) else {}
+    if is_v3_model(model) and metadata.get("evidenceModel") != "source_model.json":
+        issues.append(Issue("error", "v3-evidence-model", "Delivered V3 projects must reference source_model.json as their evidence model.", "diagram_model.metadata.evidenceModel"))
+    if projection and resolve_view_intent(projection) != resolve_view_intent({"route": lock.get("route", {}), "viewIntent": lock.get("viewIntent", "")}):
         issues.append(Issue("error", "view-intent-lock-drift", "diagram_model and diagram_lock resolve to different semantic view intents.", "diagram_lock.viewIntent"))
     issues.extend(validate_drawio_metadata(paths["drawio"], model))
     drawio_root = ET.parse(paths["drawio"]).getroot()
@@ -65,7 +71,7 @@ def run_postflight(project_root: Path, root: Path | None = None, repo_root: Path
         issues.append(Issue("error", "asset-unresolved", f"Assets still need manual resolution: {', '.join(map(str, unresolved))}.", "assets"))
 
     if not any(issue.severity == "error" for issue in issues):
-        embedded = {str(node.get("assetRef")) for node in model.get("nodes", []) if node.get("assetRef")}
+        embedded = {str(node.get("assetRef")) for node in projection.get("nodes", []) if node.get("assetRef")}
         if embedded:
             mark_assets(project_root, embedded, "RenderVerified")
     artifacts = {

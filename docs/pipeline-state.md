@@ -4,6 +4,11 @@
 machine. It operates on an authored project; it does not replace evidence
 investigation, semantic modeling, asset selection, or visual judgment.
 
+`diagram_model.json` may use legacy schema `2.0` or canonical schema `3.0`.
+V3 is normalized in memory for layout and rendering; no second persisted model is
+created. The full canonical file remains the stage input, so either semantic or
+presentation edits invalidate plan and every downstream stage.
+
 ## Ordered stages
 
 | Stage | Primary inputs | Outputs |

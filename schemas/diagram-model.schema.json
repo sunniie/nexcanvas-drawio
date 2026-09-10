@@ -1,7 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://nexcanvas.dev/schemas/diagram-model.schema.json",
-  "title": "NexCanvas Diagram Model",
+  "title": "NexCanvas Diagram Model V2 (legacy compatibility)",
+  "description": "Readable throughout product v0.4.x. New projects use diagram-model-v3.schema.json.",
   "type": "object",
   "required": ["schemaVersion", "title", "route", "audience", "deliveryTarget", "canvas", "theme", "nodes", "edges"],
   "properties": {

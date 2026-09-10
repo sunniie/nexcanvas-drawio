@@ -22,6 +22,7 @@ Always read:
 
 - [references/intake-and-discovery.md](references/intake-and-discovery.md)
 - [references/project-contract.md](references/project-contract.md)
+- [references/semantic-model-v3.md](references/semantic-model-v3.md)
 - [references/asset-policy.md](references/asset-policy.md)
 - [references/qa-contract.md](references/qa-contract.md)
 
@@ -65,7 +66,7 @@ editable artifact, previews, and QA reports.
 2. Infer one dominant `viewIntent`: architecture, workflow, sequence, data-flow, or lifecycle. Do not ask the user to choose when the brief is clear.
 3. Investigate only the source evidence required by that intent. For repository-backed facts, pin Git origin/revision and exact file/line ranges; separate confirmed facts, assumptions, and exclusions in `source_model.json`.
 4. Select one of the 48 profiles in `config/route-registry.json` as the specialized notation beneath the intent.
-5. Build `diagram_model.json` and compare plausible layout alternatives before locking orientation and composition; the orchestrator persists the scored brainstorm report.
+5. Build `diagram_model.json` schema `3.0`: keep stable groups, entities, relationships, and fact provenance in `semantics`; keep icons, emphasis, geometry, label placement, connector lanes, and routes in `presentation`. Compare plausible layout alternatives before locking orientation and composition; the orchestrator persists the scored brainstorm report.
 6. Confirm intent, audience, delivery target, route, notation, layout strategy, theme, canvas, source hash, and asset policy in `diagram_lock.json`.
 7. Resolve exact official logos from verified catalogs or provider-owned packs. Use neutral native glyphs for internal concepts. Never substitute a neighboring product logo.
 8. Run `nexcanvas generate <project-dir>` to plan, build native uncompressed mxGraph XML, run strict diagram QA, and render. Do not paste a screenshot onto a Draw.io canvas.
@@ -124,6 +125,16 @@ For repository-backed evidence, pass `--repo-root <repo-root>` on every
 `generate` invocation. Read `project_state.json` or the JSON command result to
 distinguish reused, rerun, failed, and awaiting-review stages. Do not bypass the
 orchestrator with stale reports when claiming completion.
+
+For a V2 project, keep the original model and create a separate V3 candidate:
+
+```bash
+nexcanvas migrate v2-to-v3 <project-dir>/diagram_model.json --output <project-dir>/diagram_model.v3.json
+```
+
+Inspect and validate the candidate before adopting it as `diagram_model.json`.
+Never put coordinates, styles, icons, label placement, or connector routes back
+into V3 semantic records.
 
 If Draw.io Desktop is unavailable, produce and structurally validate the editable
 `.drawio`, leave visual approval pending, and state the limitation explicitly.

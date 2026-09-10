@@ -16,6 +16,8 @@ The following are public contracts:
 - the standard generated-project directory layout;
 - stable semantic IDs and semantics-only fingerprints in diagram model V3;
 - repository snapshot `1.0` and semantic sync-plan `1.0`;
+- conformance suite `1.0`, host adapter `1.0`, execution record `1.0`, and
+  conformance result `1.0`;
 - extension manifests and plugin interfaces once published;
 - the delivery definition for editable, rendered, and verified artifacts.
 
@@ -63,3 +65,8 @@ Host-specific skill discovery and permissions are separate from the diagram
 contract. A host is supported only when its documented installation is tested and
 its capability limitations are published. Prompt similarity alone is not evidence
 of cross-agent conformance.
+
+Conformance fixtures validate the deterministic evaluator only. A host is marked
+`verified` only from an observed run whose execution record binds the host,
+adapter, skill, corpus case, project artifacts, and timestamps by digest. Results
+become stale when any of those versioned inputs changes.

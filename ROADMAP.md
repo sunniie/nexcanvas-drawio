@@ -354,6 +354,12 @@ and compatible Agent Skills hosts.
 
 Target release: `v0.6.0`.
 
+Accepted scope: one shared `SKILL.md` and CLI core; data-only host adapters;
+versioned, provider-neutral corpus cases; deterministic artifact scoring across
+five independent dimensions; and a capability matrix that distinguishes
+`verified`, `not-run`, `unavailable`, and `failed`. Fixture runs may test the
+evaluator but may not establish host support. See ADR 0009.
+
 ## Phase 7 - extension ecosystem and visual benchmarks
 
 Objective: let contributors extend the project without editing compiler internals.

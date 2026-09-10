@@ -4,6 +4,52 @@ All notable changes to NexCanvas are documented in this file. Releases follow
 [Semantic Versioning](https://semver.org/), while persisted schemas are versioned
 independently.
 
+## [0.5.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.4.0...v0.5.0) (2026-09-10)
+
+
+### Features
+
+* **sync:** add incremental repository reconciliation ([#16](https://github.com/sunniie/nexcanvas-drawio/issues/16)) ([a06b76c](https://github.com/sunniie/nexcanvas-drawio/commit/a06b76c959c40de170cca2eb4fd9401c59640ce7))
+
+- Add Git-pinned repository snapshots for Python, TypeScript, JavaScript, and
+  their JSX/module variants, including modules, public symbols, and static
+  internal imports.
+- Add `nexcanvas analyze snapshot`, `nexcanvas analyze diff`, and
+  `nexcanvas sync` with schema-validated, machine-readable plans.
+- Reconcile baseline, incoming repository facts, and the current V3 model with
+  a field-level three-way merge that preserves manual presentation work.
+
+### Fixes
+
+* **packaging:** modernize license metadata ([#18](https://github.com/sunniie/nexcanvas-drawio/issues/18)) ([86a5ea6](https://github.com/sunniie/nexcanvas-drawio/commit/86a5ea6971bfdb6a70e4db1ada775003daae9aeb))
+
+- Retain last-known semantics as `unknown` when a parser cannot safely resolve
+  a changed source file; ambiguous evidence is never converted into deletion.
+- Reject snapshots from unrelated repository origins and preserve stable IDs
+  across Git-detected renames.
+- Keep unresolved apply results in a candidate snapshot and clean that
+  candidate only after a complete, confirmed synchronization.
+
+### Compatibility
+
+- Incremental synchronization requires Diagram Model V3. V2 projects remain
+  readable and can be migrated explicitly with `nexcanvas migrate v2-to-v3`.
+- Existing source, diagram-lock, asset-manifest, and project-state schema
+  versions are unchanged. Repository Snapshot and Semantic Sync Plan begin at
+  schema version `1.0`.
+- Existing render, QA, repair, and reference-conversion workflows remain
+  available without repository synchronization.
+
+### Known limitations
+
+- Repository analysis is static and module-oriented. It does not infer runtime
+  wiring, framework dependency injection, infrastructure, or deployment
+  topology that is not represented by supported source imports and symbols.
+- The agent or author still chooses the correct architectural viewpoint and
+  must review conflicts, pending removals, and semantic uncertainty.
+- A successful semantic sync does not replace Draw.io rendering and visual
+  inspection before delivery.
+
 ## [0.4.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.3.0...v0.4.0) (2026-09-10)
 
 

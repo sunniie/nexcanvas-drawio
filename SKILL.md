@@ -15,6 +15,7 @@ drawing unsupported boxes directly from a thin prompt.
 Read exactly one primary workflow:
 
 - New diagram from a request, repository, document, or mixed evidence: [workflows/generate.md](workflows/generate.md)
+- Update an existing repository-backed V3 project after source changes: [workflows/sync-repository.md](workflows/sync-repository.md)
 - Repair, restyle, or extend an existing `.drawio`: [workflows/repair.md](workflows/repair.md)
 - Recreate a screenshot, slide, Mermaid/PlantUML result, or visual reference: [workflows/convert-reference.md](workflows/convert-reference.md)
 
@@ -135,6 +136,19 @@ nexcanvas migrate v2-to-v3 <project-dir>/diagram_model.json --output <project-di
 Inspect and validate the candidate before adopting it as `diagram_model.json`.
 Never put coordinates, styles, icons, label placement, or connector routes back
 into V3 semantic records.
+
+For a repository-backed V3 project whose source has evolved, read
+[workflows/sync-repository.md](workflows/sync-repository.md) and preview the
+three-way reconciliation before applying it:
+
+```bash
+nexcanvas sync <project-dir> --repo-root <repo-root> --dry-run
+nexcanvas sync <project-dir> --repo-root <repo-root> --apply
+```
+
+Never confirm a removal without tracing its stable ID to the repository change.
+Sync preserves current presentation records and reports same-field conflicts
+instead of overwriting user edits.
 
 If Draw.io Desktop is unavailable, produce and structurally validate the editable
 `.drawio`, leave visual approval pending, and state the limitation explicitly.

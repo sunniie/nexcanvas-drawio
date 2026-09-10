@@ -99,7 +99,7 @@ machine-readable semantic fingerprint. Existing output is rejected unless
 
 After inspection, a project may adopt V3 by moving the new file to
 `diagram_model.json`, rebuilding, rendering, visually approving, and completing
-postflight. V2 remains readable throughout `v0.4.x`.
+postflight. V2 remains readable throughout `v0.5.x`, but repository sync requires V3.
 
 ## Fingerprints and edits
 
@@ -107,6 +107,6 @@ Draw.io output from V3 records both `nc-model-hash` and `nc-semantic-hash`.
 Changing presentation changes the full model hash but must leave the semantic
 fingerprint unchanged. Changing an entity, relationship, endpoint, or provenance
 changes both. Reordering semantic arrays does not change the semantic fingerprint;
-ordering belongs to presentation. The `v0.4.x` pipeline conservatively rebuilds
+ordering belongs to presentation. The `v0.5.x` pipeline conservatively rebuilds
 after either kind of change; presentation-aware incremental reconciliation
 belongs to a later phase.

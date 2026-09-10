@@ -15,6 +15,7 @@ The following are public contracts:
 - asset-manifest and QA-report schemas;
 - the standard generated-project directory layout;
 - stable semantic IDs and semantics-only fingerprints in diagram model V3;
+- repository snapshot `1.0` and semantic sync-plan `1.0`;
 - extension manifests and plugin interfaces once published;
 - the delivery definition for editable, rendered, and verified artifacts.
 
@@ -40,9 +41,14 @@ Unknown schema-major versions must fail with an actionable message. They must no
 be guessed, partially loaded, or silently rewritten.
 
 Diagram model `3.0` is canonical from product `v0.4.0`. Diagram model `2.0`
-remains a readable compatibility contract throughout `v0.4.x`, and the explicit
+remains a readable compatibility contract throughout `v0.5.x`, and the explicit
 V2-to-V3 migration writes a separate output instead of silently replacing user
 data.
+
+Repository snapshot and semantic sync-plan schema `1.0` are introduced in
+product `v0.5.0`. They do not change Diagram Model V3, Source Model `2.0`,
+Diagram Lock `2.0`, or pipeline-state `1.0`. Incremental sync is rejected for V2
+models rather than guessing how to preserve mixed semantic/presentation fields.
 
 ## Deprecation policy
 

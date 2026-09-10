@@ -5,7 +5,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable
 
-from .common import load_json
+from .common import load_json, sha256_json
 from .archetypes import resolve_archetype
 from .layout import PRESENTATION_MIN_SIZES
 from .intents import VIEW_INTENTS, compatible_view_intents, resolve_view_intent
@@ -648,6 +648,122 @@ def validate_project_state(state: dict[str, Any]) -> list[Issue]:
     return issues
 
 
+def validate_repository_snapshot(snapshot: dict[str, Any]) -> list[Issue]:
+    issues: list[Issue] = []
+    if snapshot.get("schemaVersion") != "1.0":
+        issues.append(Issue("error", "schema-version", "repository_snapshot schemaVersion must be 1.0.", "schemaVersion"))
+    _required_string(snapshot.get("analyzerVersion"), "analyzerVersion", issues)
+    _required_string(snapshot.get("sourceBaseId"), "sourceBaseId", issues)
+    source = snapshot.get("source") if isinstance(snapshot.get("source"), dict) else {}
+    repository = source.get("repository") if isinstance(source.get("repository"), dict) else {}
+    if source.get("type") != "repository":
+        issues.append(Issue("error", "snapshot-source", "Repository snapshot source must have type 'repository'.", "source.type"))
+    revision = repository.get("revision")
+    if source.get("snapshot") != revision:
+        issues.append(Issue("error", "snapshot-revision", "source.snapshot must equal source.repository.revision.", "source.snapshot"))
+    if not isinstance(revision, str) or not re.fullmatch(r"[0-9a-fA-F]{40,64}", revision):
+        issues.append(Issue("error", "snapshot-revision", "Repository revision must be a full hexadecimal commit hash.", "source.repository.revision"))
+
+    files = snapshot.get("files")
+    if not isinstance(files, list):
+        issues.append(Issue("error", "snapshot-files", "files must be an array.", "files"))
+        files = []
+    paths: set[str] = set()
+    entity_ids: set[str] = set()
+    for index, item in enumerate(files):
+        if not isinstance(item, dict):
+            issues.append(Issue("error", "snapshot-file", "Snapshot file must be an object.", f"files[{index}]"))
+            continue
+        path = item.get("path")
+        if not isinstance(path, str) or not path or path.startswith(("/", "\\")) or ".." in Path(path).parts:
+            issues.append(Issue("error", "snapshot-path", "Snapshot paths must be safe repo-relative paths.", f"files[{index}].path"))
+        elif path in paths:
+            issues.append(Issue("error", "snapshot-path", f"Duplicate snapshot path: {path}.", f"files[{index}].path"))
+        else:
+            paths.add(path)
+        entity_id = item.get("entityId")
+        if not isinstance(entity_id, str) or not ID_RE.fullmatch(entity_id):
+            issues.append(Issue("error", "snapshot-entity-id", "entityId must be a valid stable model ID.", f"files[{index}].entityId"))
+        elif entity_id in entity_ids:
+            issues.append(Issue("error", "snapshot-entity-id", f"Duplicate file entity ID: {entity_id}.", f"files[{index}].entityId"))
+        else:
+            entity_ids.add(entity_id)
+
+    projection = snapshot.get("semanticProjection") if isinstance(snapshot.get("semanticProjection"), dict) else {}
+    groups = projection.get("groups", [])
+    entities = projection.get("entities", [])
+    relationships = projection.get("relationships", [])
+    if not all(isinstance(value, list) for value in (groups, entities, relationships)):
+        issues.append(Issue("error", "snapshot-projection", "semanticProjection collections must be arrays.", "semanticProjection"))
+        groups, entities, relationships = [], [], []
+    group_ids = _unique_ids((item for item in groups if isinstance(item, dict)), "semanticProjection.groups", issues)
+    projected_entity_ids = _unique_ids((item for item in entities if isinstance(item, dict)), "semanticProjection.entities", issues)
+    _unique_ids((item for item in relationships if isinstance(item, dict)), "semanticProjection.relationships", issues)
+    if entity_ids != projected_entity_ids:
+        issues.append(Issue("error", "snapshot-projection-coverage", "Every analyzed file must map to exactly one projected entity.", "semanticProjection.entities"))
+    for index, relationship in enumerate(relationships):
+        if not isinstance(relationship, dict):
+            continue
+        if relationship.get("source") not in projected_entity_ids or relationship.get("target") not in projected_entity_ids:
+            issues.append(Issue("error", "snapshot-relationship-endpoint", "Projected relationship endpoints must resolve to projected entities.", f"semanticProjection.relationships[{index}]"))
+    if group_ids & projected_entity_ids:
+        issues.append(Issue("error", "snapshot-cross-type-id", "Projected group and entity IDs must not collide.", "semanticProjection"))
+
+    source_contract = {
+        "schemaVersion": "2.0",
+        "status": "confirmed",
+        "sources": [source] if source else [],
+        "facts": snapshot.get("facts", []),
+        "assumptions": [],
+    }
+    issues.extend(validate_source_model(source_contract))
+    expected_input = {
+        "source": {"remote": repository.get("remote"), "revision": revision},
+        "scope": {
+            "include": snapshot.get("scope", {}).get("include", []),
+            "exclude": snapshot.get("scope", {}).get("exclude", []),
+        },
+        "files": files,
+        "semanticProjection": projection,
+        "facts": snapshot.get("facts", []),
+        "diagnostics": snapshot.get("diagnostics", []),
+    }
+    if snapshot.get("fingerprint") != sha256_json(expected_input):
+        issues.append(Issue("error", "snapshot-fingerprint", "Repository snapshot fingerprint does not match its canonical content.", "fingerprint"))
+    return issues
+
+
+def validate_sync_plan(plan: dict[str, Any]) -> list[Issue]:
+    issues: list[Issue] = []
+    if plan.get("schemaVersion") != "1.0":
+        issues.append(Issue("error", "schema-version", "semantic sync-plan schemaVersion must be 1.0.", "schemaVersion"))
+    if plan.get("projectRoot") != ".":
+        issues.append(Issue("error", "project-root", "semantic sync-plan projectRoot must be '.'.", "projectRoot"))
+    hash_re = re.compile(r"^[0-9a-f]{64}$")
+    for field in ("incomingFingerprint", "currentSemanticFingerprint", "mergedSemanticFingerprint"):
+        value = plan.get(field)
+        if not isinstance(value, str) or not hash_re.fullmatch(value):
+            issues.append(Issue("error", "sync-hash", f"{field} must be a lowercase SHA-256 hash.", field))
+    collections = {
+        "operations": plan.get("operations"),
+        "conflicts": plan.get("conflicts"),
+        "pendingRemovals": plan.get("pendingRemovals"),
+    }
+    for field, value in collections.items():
+        if not isinstance(value, list):
+            issues.append(Issue("error", "sync-collection", f"{field} must be an array.", field))
+            collections[field] = []
+    summary = plan.get("summary") if isinstance(plan.get("summary"), dict) else {}
+    for field in collections:
+        if summary.get(field) != len(collections[field]):
+            issues.append(Issue("error", "sync-summary", f"summary.{field} must equal the number of {field} records.", f"summary.{field}"))
+    if plan.get("complete") is True and (collections["conflicts"] or collections["pendingRemovals"]):
+        issues.append(Issue("error", "sync-false-complete", "A complete sync plan cannot contain conflicts or pending removals.", "complete"))
+    if plan.get("mode") == "dry-run" and plan.get("projectModified") is not False:
+        issues.append(Issue("error", "sync-dry-run-write", "A dry-run plan must report projectModified=false.", "projectModified"))
+    return issues
+
+
 def validate_file(path: Path, kind: str, root: Path | None = None, project_root: Path | None = None) -> list[Issue]:
     value = load_json(path)
     if not isinstance(value, dict):
@@ -662,4 +778,8 @@ def validate_file(path: Path, kind: str, root: Path | None = None, project_root:
         return validate_manifest(value, project_root)
     if kind == "project-state":
         return validate_project_state(value)
+    if kind == "repository-snapshot":
+        return validate_repository_snapshot(value)
+    if kind == "sync-plan":
+        return validate_sync_plan(value)
     raise ValueError(f"Unknown contract kind: {kind}")

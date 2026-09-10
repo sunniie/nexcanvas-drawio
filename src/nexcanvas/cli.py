@@ -10,7 +10,7 @@ from . import __version__
 from .assets import load_catalog, search_catalog, sync_catalog_asset, sync_provider_asset, sync_user_asset
 from .builder import build_drawio
 from .common import load_json, utc_now, write_json
-from .contracts import validate_file
+from .contracts import validate_file, validate_repository_snapshot
 from .geometry import run_checks as run_geometry_checks
 from .intents import DEFAULT_ROUTES, VIEW_INTENTS, classify_brief
 from .model_v3 import migrate_file
@@ -22,7 +22,9 @@ from .quality import run_quality, summarize
 from .registry import resolve_route
 from .rendering import render_drawio
 from .repository import inspect_repository, verify_repository_evidence
+from .repository_analysis import analyze_repository, diff_repository_snapshots
 from .runtime import inspect_runtime
+from .semantic_sync import sync_project
 from .visual import create_visual_report
 
 
@@ -74,6 +76,35 @@ def _analyze_verify(args: argparse.Namespace) -> int:
     }
     _emit(report, args.output)
     return 0 if report["ok"] else 1
+
+
+def _analyze_snapshot(args: argparse.Namespace) -> int:
+    previous = load_json(args.previous.resolve()) if args.previous else None
+    if previous is not None:
+        errors = [issue for issue in validate_repository_snapshot(previous) if issue.severity == "error"]
+        if errors:
+            raise ValueError(f"Previous repository snapshot is invalid: {errors[0].code}: {errors[0].message}")
+    snapshot = analyze_repository(
+        args.repo_root.resolve(),
+        source_id=args.source_id,
+        previous_snapshot=previous,
+        include=args.include,
+        exclude=args.exclude,
+        max_files=args.max_files,
+    )
+    _emit(snapshot, args.output)
+    return 0
+
+
+def _analyze_diff(args: argparse.Namespace) -> int:
+    before = load_json(args.before.resolve())
+    after = load_json(args.after.resolve())
+    for label, value in (("before", before), ("after", after)):
+        errors = [issue for issue in validate_repository_snapshot(value) if issue.severity == "error"]
+        if errors:
+            raise ValueError(f"{label} repository snapshot is invalid: {errors[0].code}: {errors[0].message}")
+    _emit(diff_repository_snapshots(before, after), args.output)
+    return 0
 
 
 def _plan(args: argparse.Namespace) -> int:
@@ -170,6 +201,22 @@ def _generate(args: argparse.Namespace) -> int:
     )
     _emit(result)
     return int(result["exitCode"])
+
+
+def _sync(args: argparse.Namespace) -> int:
+    result = sync_project(
+        args.project_root,
+        args.repo_root,
+        dry_run=args.dry_run,
+        source_id=args.source_id,
+        include=args.include,
+        exclude=args.exclude,
+        max_files=args.max_files,
+        confirmed_removals=set(args.confirm_removal or []),
+        output=args.output,
+    )
+    _emit(result)
+    return 0 if args.dry_run or result["complete"] else 1
 
 
 def _intent(args: argparse.Namespace) -> int:
@@ -286,6 +333,20 @@ def build_parser() -> argparse.ArgumentParser:
     verify.add_argument("--repo-root", type=Path, required=True)
     verify.add_argument("--output", type=Path)
     _set_handler(verify, _analyze_verify)
+    snapshot = analyze_commands.add_parser("snapshot", help="Analyze tracked Python and TypeScript/JavaScript modules at HEAD.")
+    snapshot.add_argument("repo_root", type=Path)
+    snapshot.add_argument("--source-id", default="repository-sync")
+    snapshot.add_argument("--previous", type=Path, help="Previous snapshot used for rename-aware stable IDs.")
+    snapshot.add_argument("--include", action="append", help="Git-style path pattern; repeat to add scopes.")
+    snapshot.add_argument("--exclude", action="append", help="Git-style path pattern; repeat to add exclusions.")
+    snapshot.add_argument("--max-files", type=int, default=500)
+    snapshot.add_argument("--output", "-o", type=Path)
+    _set_handler(snapshot, _analyze_snapshot)
+    diff = analyze_commands.add_parser("diff", help="Compare two repository snapshots by stable semantic ID.")
+    diff.add_argument("before", type=Path)
+    diff.add_argument("after", type=Path)
+    diff.add_argument("--output", "-o", type=Path)
+    _set_handler(diff, _analyze_diff)
 
     plan = commands.add_parser("plan", help="Score layout candidates before geometry generation.")
     plan.add_argument("model", type=Path)
@@ -350,6 +411,20 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--restart", action="store_true")
     _set_handler(generate, _generate)
 
+    sync = commands.add_parser("sync", help="Three-way reconcile repository semantics with a Diagram Model V3 project.")
+    sync.add_argument("project_root", type=Path)
+    sync.add_argument("--repo-root", type=Path, required=True)
+    mode = sync.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--dry-run", action="store_true", help="Print the sync plan without modifying project files.")
+    mode.add_argument("--apply", action="store_true", help="Apply safe changes and preserve reported conflicts.")
+    sync.add_argument("--source-id", default="repository-sync")
+    sync.add_argument("--include", action="append", help="Path pattern; repeat to add scopes.")
+    sync.add_argument("--exclude", action="append", help="Path pattern; repeat to add exclusions.")
+    sync.add_argument("--max-files", type=int)
+    sync.add_argument("--confirm-removal", action="append", default=[], help="Stable semantic ID approved for removal; repeat per ID.")
+    sync.add_argument("--output", type=Path, help="Optional plan/report path.")
+    _set_handler(sync, _sync)
+
     migrate = commands.add_parser("migrate", help="Migrate persisted NexCanvas contracts without rewriting the source.")
     migrate_commands = migrate.add_subparsers(dest="migrate_command", required=True)
     v2_to_v3 = migrate_commands.add_parser("v2-to-v3", help="Create a canonical diagram model V3 from a diagram model V2.")
@@ -365,7 +440,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     contract = commands.add_parser("contract", help="Validate one persisted NexCanvas contract.")
     contract.add_argument(
-        "kind", choices=["source-model", "diagram-lock", "diagram-model", "asset-manifest", "project-state"]
+        "kind", choices=["source-model", "diagram-lock", "diagram-model", "asset-manifest", "project-state", "repository-snapshot", "sync-plan"]
     )
     contract.add_argument("path", type=Path)
     contract.add_argument("--project-root", type=Path)

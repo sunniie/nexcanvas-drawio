@@ -1,8 +1,8 @@
 # Project contract
 
 A diagram project is a reproducible evidence-to-artifact workspace. New projects
-use diagram model V3; V2 models remain readable during the `v0.4.x`
-compatibility window. When no explicit project path is supplied, create it at
+use diagram model V3; V2 models remain readable during the `v0.5.x`
+compatibility window but cannot use incremental sync. When no explicit project path is supplied, create it at
 `<current-working-directory>/nexcanvas-output/<project-slug>/`. Never write a
 user project into the installed skill directory.
 
@@ -12,6 +12,7 @@ nexcanvas-output/<project-slug>/
 |-- diagram_lock.json
 |-- diagram_model.json
 |-- project_state.json
+|-- repository_snapshot.json      optional applied sync baseline
 |-- assets/
 |   |-- asset_manifest.json
 |   `-- icons/
@@ -24,6 +25,7 @@ nexcanvas-output/<project-slug>/
     |-- diagram_qa.json
     |-- render.json
     |-- visual_qa.json
+    |-- semantic_sync.json         emitted by applied repository sync
     `-- postflight.json
 ```
 
@@ -58,6 +60,19 @@ control can inspect it. Every generated node/edge carries `nc-*` metadata, and
 the root carries view intent, route, archetype, full model hash, schema version,
 and—on V3 models—the semantics-only fingerprint. A page-sized tagged background
 produces deterministic exports. Synced SVG marks are embedded as data URIs.
+
+## Repository snapshot and semantic sync
+
+Repository snapshot schema `1.0` records a pinned Git source, analyzer scope,
+tracked file/blob identities, public symbols, internal static imports, exact
+facts, diagnostics, and the analyzer's semantic projection. It is an applied
+baseline, not a replacement for `source_model.json`.
+
+Semantic sync-plan schema `1.0` records the old-to-new repository diff and the
+three-way reconciliation against the current Diagram Model V3. Existing
+presentation records remain user-owned. Unconfirmed removals and same-field
+conflicts remain visible and prevent the new snapshot from becoming the applied
+baseline. See [the repository-sync workflow](../workflows/sync-repository.md).
 
 ## State transitions
 

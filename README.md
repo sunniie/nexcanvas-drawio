@@ -62,6 +62,7 @@ as a generic component inventory.
 |---|---|
 | Semantic intent | Infers architecture, workflow, sequence, data-flow, or lifecycle from the brief without forcing a type questionnaire |
 | Evidence contract | Records confirmed facts, assumptions, exclusions, and source snapshots before drawing; repository facts can be pinned to Git origin, revision, blob, file, and line range |
+| Incremental repository sync | Analyzes Python and TypeScript/JavaScript modules, previews semantic diffs, and three-way merges source changes without overwriting manual presentation |
 | Technical routing | Selects from 9 diagram families and 48 profiles across software, cloud, data, security, delivery, product, and AI/ML |
 | Layout brainstorming | Scores phase columns, dense columns, rows, compact pipelines, hub-and-spoke, and hybrid compositions before geometry is locked |
 | Reference grammar | Supports provider-neutral and Microsoft/AWS/Google-style icon-led architecture diagrams |
@@ -111,6 +112,7 @@ The default project location is deliberately outside the installed skill:
         ├── diagram_lock.json
         ├── diagram_model.json
         ├── project_state.json
+        ├── repository_snapshot.json      # after a completed repository sync
         ├── assets/
         │   ├── asset_manifest.json
         │   └── icons/
@@ -125,6 +127,7 @@ The default project location is deliberately outside the installed skill:
             ├── diagram_qa.json
             ├── render.json
             ├── visual_qa.json
+            ├── semantic_sync.json
             └── postflight.json
 ```
 
@@ -144,7 +147,7 @@ layout adjustment from masquerading as an architecture change:
 
 Generated Draw.io, previews, and QA reports stay outside the canonical model.
 V3 output carries both a full model hash and a semantics-only fingerprint, so
-future repository sync can distinguish meaning from presentation edits. See the
+repository sync can distinguish meaning from presentation edits. See the
 [Semantic Model V3 contract](references/semantic-model-v3.md).
 
 The tracked [`nexcanvas-output/README.md`](nexcanvas-output/README.md) makes this
@@ -254,7 +257,8 @@ nexcanvas init docs/architecture --name "My architecture" --family software --pr
 ```
 
 `init` creates a canonical V3 diagram model. Existing V2 projects remain readable
-throughout `v0.4.x`. To migrate without overwriting the original:
+in `v0.5.x`, but incremental repository sync requires V3. To migrate without
+overwriting the original:
 
 ```bash
 nexcanvas migrate v2-to-v3 docs/architecture/diagram_model.json \
@@ -305,6 +309,43 @@ nexcanvas generate "$PROJECT" --repo-root . --approve-visual --reviewer "Your na
 ```
 
 This verifies the authored evidence. It does not claim to discover live infrastructure, infer unknown ownership, or prove runtime behavior.
+
+### Incremental repository sync
+
+When a repository-backed V3 diagram already exists, preview the semantic update
+before changing project files:
+
+```bash
+nexcanvas sync "$PROJECT" --repo-root . --dry-run
+```
+
+The analyzer reads Git-tracked Python, TypeScript, JavaScript, TSX, JSX, MTS,
+CTS, MJS, and CJS modules at the pinned `HEAD`. It extracts public top-level
+symbols and statically resolvable internal imports. Use repeated `--include` and
+`--exclude` options to keep the analysis aligned with the diagram's scope.
+
+After reviewing `operations`, `conflicts`, `pendingRemovals`, and diagnostics,
+apply safe changes:
+
+```bash
+nexcanvas sync "$PROJECT" --repo-root . --apply
+```
+
+Removals are retained until each stable semantic ID is explicitly approved:
+
+```bash
+nexcanvas sync "$PROJECT" --repo-root . --apply \
+  --confirm-removal repo-module-example \
+  --confirm-removal repo-import-example
+```
+
+Three-way reconciliation compares the last applied repository snapshot, the new
+source revision, and the current user-edited model. Source-only fields update;
+user-only fields remain; same-field conflicts preserve the current value and are
+reported. Existing annotations, positions, assets, boundaries, labels, ports,
+and unaffected connector lanes are not regenerated. Complete the update by
+running `generate --repo-root .`, inspecting the new render, and approving that
+exact artifact. See the [repository-sync workflow](workflows/sync-repository.md).
 
 PowerShell users can replace the first line with
 `$Project = "nexcanvas-output/my-architecture"` and `$PROJECT` with `$Project`.
@@ -373,7 +414,7 @@ structurally validate editable `.drawio`, but visual approval remains pending.
 ```text
 SKILL.md                          portable agent instructions
 agents/openai.yaml               optional Codex interface metadata
-workflows/                       generate, repair, and reference-conversion flows
+workflows/                       generate, repository-sync, repair, and reference-conversion flows
 references/                      notation, intake, layout, asset, and QA contracts
 config/                          route, theme, archetype, and provider registries
 schemas/                         JSON contracts

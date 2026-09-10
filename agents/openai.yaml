@@ -1,5 +1,5 @@
 interface:
   display_name: "NexCanvas Draw.io"
   short_description: "Build evidence-grounded, editable technical diagrams"
-  default_prompt: "Use $nexcanvas-drawio to infer the semantic view from the brief, pin repository evidence when applicable, choose the right notation and layout, build an editable Draw.io artifact, and complete structural plus rendered visual QA."
+  default_prompt: "Use $nexcanvas-drawio to infer the semantic view from the brief, pin or incrementally sync repository evidence when applicable, preserve manual presentation, choose the right notation and layout, build an editable Draw.io artifact, and complete structural plus rendered visual QA."
   brand_color: "#2563EB"

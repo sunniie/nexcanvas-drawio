@@ -10,12 +10,18 @@ nexcanvas-output/
     ├── diagram_lock.json
     ├── diagram_model.json
     ├── project_state.json
+    ├── repository_snapshot.json  # optional applied sync baseline
     ├── assets/
     ├── artifacts/
     │   ├── diagram.drawio
     │   └── diagram.drawio.png
     └── reports/
 ```
+
+An applied repository synchronization also writes
+`reports/semantic_sync.json`. Incomplete reconciliation keeps the incoming
+snapshot at `reports/repository_snapshot.candidate.json` until conflicts and
+removals are resolved.
 
 Generated projects under this folder are ignored by this repository. The
 reference projects that ship with the skill live under [`examples/`](../examples/).

@@ -47,7 +47,7 @@ Edge meaning is encoded by `kind`: primary sync/control, secondary dashed async,
 
 Choose the adapter from the route registry; override node size/order only for content-driven tuning. Never use arbitrary absolute coordinates as the primary model.
 
-`visualArchetype` may deliberately override the route's default layout. For example, `ai-ml/rag` normally uses its offline/online lane adapter, while `microsoft-reference` switches it to the reference adapter. This is a presentation decision; the route still owns semantic QA.
+V3 `presentation.visualArchetype` may deliberately override the route's default layout. For example, `ai-ml/rag` normally uses its offline/online lane adapter, while `microsoft-reference` switches it to the reference adapter. This is a presentation decision; the route still owns semantic QA.
 
 ## Themes
 

@@ -14,7 +14,7 @@ The following are public contracts:
   `project_state.json` schemas;
 - asset-manifest and QA-report schemas;
 - the standard generated-project directory layout;
-- stable semantic IDs once Semantic Model V3 is introduced;
+- stable semantic IDs and semantics-only fingerprints in diagram model V3;
 - extension manifests and plugin interfaces once published;
 - the delivery definition for editable, rendered, and verified artifacts.
 
@@ -38,6 +38,11 @@ migration tool and fixtures covering representative prior projects.
 
 Unknown schema-major versions must fail with an actionable message. They must not
 be guessed, partially loaded, or silently rewritten.
+
+Diagram model `3.0` is canonical from product `v0.4.0`. Diagram model `2.0`
+remains a readable compatibility contract throughout `v0.4.x`, and the explicit
+V2-to-V3 migration writes a separate output instead of silently replacing user
+data.
 
 ## Deprecation policy
 

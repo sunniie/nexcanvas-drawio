@@ -62,16 +62,20 @@ Lock the selected intent, route, notation, layout adapter, `layoutStrategy`, vis
 
 ## 6. Write `diagram_model.json`
 
-Model the content before drawing:
+Read [Semantic Model V3](../references/semantic-model-v3.md), then model content
+before drawing:
 
-- each node has one responsibility and a notation-appropriate `kind`;
-- boundaries communicate ownership, runtime, trust, lifecycle, or lane semantics—not decoration;
-- every edge has direction and `kind`; add protocol, payload, authority, async, trust crossing, and evidence when meaningful;
-- classify each rendered relationship label with `labelMode`; reserve `labelPlacement`, `laneId`, rails, and any real `busId` before build;
-- evidence IDs must resolve to `source_model.json` facts;
-- use concise labels; move explanation into `description` only when it helps the reader;
-- set `layout.order` to encode a real sequence, rank, or lane order;
-- set `importance=primary` for the end-to-end story so composition QA can measure it.
+- `metadata` owns intent, route, audience, delivery context, language, evidence-model link, and assumptions;
+- `semantics.groups` communicate ownership, runtime, trust, lifecycle, phase, or lane meaning—not decoration;
+- each `semantics.entities` record has a stable ID, one responsibility, a notation-appropriate `kind`, and fact provenance;
+- every `semantics.relationships` record has a stable ID, source, target, and meaningful `kind`; add protocol, payload, authority, async, or trust crossing when evidenced;
+- every provenance `factId` resolves to `source_model.json`, and its confidence matches the source fact;
+- use concise semantic labels; move explanation into `description` only when it helps the reader;
+- `presentation` owns icons, boundaries, importance, geometry, label mode and placement, ports, lanes, rails, steps, and any real `busId`;
+- set presentation `layout.order` only for a real sequence, rank, or lane order, and use `importance=primary` for the end-to-end story.
+
+Never copy presentation controls into semantic records. Stable IDs must survive
+label, theme, orientation, and coordinate changes.
 
 ## 7. Resolve assets
 

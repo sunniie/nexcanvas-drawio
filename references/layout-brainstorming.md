@@ -4,7 +4,8 @@ Run layout brainstorming after the semantic model is stable and before geometry 
 
 ## Inputs
 
-The brainstormer reads `diagram_model.json` and measures:
+The brainstormer reads `diagram_model.json` and measures the normalized semantic
+graph plus its presentation constraints:
 
 - node, edge, boundary, and ordered-phase counts;
 - number of nested boundaries and containment ratio;
@@ -50,7 +51,7 @@ The chosen plan defines:
 - the step-badge policy;
 - a list of manual review risks such as high feedback, a weak hub, or excessive density.
 
-Nodes may set `layout.track` from `0.0` to `1.0` to align related services across phase columns. Edges may set `layout.rail` to `top`, `bottom`, or an absolute Y coordinate for long bypass paths and `layout.lane` to separate repeated rails/gutters. Select `labelMode`, `labelPlacement`, `laneId`, and any justified `busId` using [connector-label-routing.md](connector-label-routing.md). These are deterministic layout controls, not arbitrary pixel placement.
+V3 `presentation.entities` may set `layout.track` from `0.0` to `1.0` to align related services across phase columns. `presentation.relationships` may set `layout.rail` to `top`, `bottom`, or an absolute Y coordinate for long bypass paths and `layout.lane` to separate repeated rails/gutters. Select `labelMode`, `labelPlacement`, `laneId`, and any justified `busId` using [connector-label-routing.md](connector-label-routing.md). These are deterministic layout controls, not semantic facts or arbitrary pixel placement.
 
 For `hub-and-spoke`, assign each top-level boundary `layout.role` as `source`, `ingest`, `hub`, `consumer`, or `satellite`. Common aliases such as `sources`, `ingress`, `analytical-hub`, `insights`, and `advanced-analytics` are normalized automatically. Use `presentation: hub-ring` for the single central analytical service, outline groups for source/ingest/consumer towers, and `layout.flow: row` for a lower enrichment zone. If roles are omitted, the renderer falls back to semantic order, but explicit roles are preferred for reviewable architecture models.
 

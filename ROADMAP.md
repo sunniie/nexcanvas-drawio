@@ -173,6 +173,17 @@ Target release: `v0.3.0`.
 
 Objective: separate evidence, semantics, presentation, and generated artifacts.
 
+Recorded scope and contract impact:
+
+- [`ADR 0007`](docs/adr/0007-semantic-model-v3-contracts.md) defines the V3
+  metadata, semantics, and presentation layers; stable-ID and provenance
+  invariants; the non-destructive migration contract; and the V2 compatibility
+  window.
+- Diagram model `3.0`, `nexcanvas migrate v2-to-v3`, and the semantics-only
+  fingerprint are new public preview contracts. Diagram model `2.0` remains
+  readable throughout `v0.4.x`; the other persisted contract versions do not
+  change.
+
 - [ ] Introduce stable semantic entity and relationship IDs.
 - [ ] Record confidence and provenance per fact.
 - [ ] Move coordinates, style, and connector routes into a presentation layer.

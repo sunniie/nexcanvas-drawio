@@ -51,8 +51,10 @@ class ProjectInitializationTests(unittest.TestCase):
             state = json.loads((expected / "project_state.json").read_text(encoding="utf-8"))
             self.assertEqual(state["status"], "pending")
             model = json.loads((expected / "diagram_model.json").read_text(encoding="utf-8"))
-            self.assertFalse(model["showTitle"])
-            self.assertNotIn("subtitle", model)
+            self.assertEqual(model["schemaVersion"], "3.0")
+            self.assertFalse(model["presentation"]["showTitle"])
+            self.assertNotIn("subtitle", model["metadata"])
+            self.assertEqual(model["semantics"]["entities"][0]["id"], "system")
             self.assertFalse((expected / "assets" / "icons").exists())
 
     def test_brief_first_initialization_infers_lifecycle_and_route(self) -> None:
@@ -72,8 +74,12 @@ class ProjectInitializationTests(unittest.TestCase):
             model = json.loads((project / "diagram_model.json").read_text(encoding="utf-8"))
             lock = json.loads((project / "diagram_lock.json").read_text(encoding="utf-8"))
             source = json.loads((project / "source_model.json").read_text(encoding="utf-8"))
-            self.assertEqual(model["viewIntent"], "lifecycle")
-            self.assertEqual(model["route"], {"family": "behavior", "profile": "state-machine"})
+            self.assertEqual(model["metadata"]["viewIntent"], "lifecycle")
+            self.assertEqual(model["metadata"]["route"], {"family": "behavior", "profile": "state-machine"})
+            self.assertEqual(
+                model["semantics"]["entities"][0]["provenance"],
+                [{"factId": "fact-brief", "confidence": "confirmed"}],
+            )
             self.assertEqual(lock["viewIntent"], "lifecycle")
             self.assertEqual(source["facts"][0]["id"], "fact-brief")
 

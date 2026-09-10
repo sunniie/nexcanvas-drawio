@@ -109,6 +109,18 @@ def main() -> int:
         ]
         if not all(path.is_file() for path in required):
             raise RuntimeError("Packaged CLI did not create the standard project contract set.")
+        initialized_model = json.loads((project / "diagram_model.json").read_text(encoding="utf-8"))
+        if initialized_model.get("schemaVersion") != "3.0":
+            raise RuntimeError("Packaged CLI did not initialize the canonical diagram model V3 contract.")
+        model_contract = json.loads(
+            _run(
+                [str(_venv_command(environment)), "contract", "diagram-model", str(project / "diagram_model.json")],
+                outside,
+            ).stdout
+        )
+        if not model_contract["ok"]:
+            raise RuntimeError("Packaged CLI created an invalid canonical diagram model V3 contract.")
+        _run([str(_venv_command(environment)), "migrate", "v2-to-v3", "--help"], outside)
         state_contract = json.loads(
             _run(
                 [str(_venv_command(environment)), "contract", "project-state", str(project / "project_state.json")],

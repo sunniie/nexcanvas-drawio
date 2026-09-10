@@ -16,6 +16,7 @@ from nexcanvas.common import sha256_file
 from nexcanvas.contracts import validate_project_state
 from nexcanvas.cli import main
 from nexcanvas.pipeline import STAGES, run_generate
+from nexcanvas.model_v3 import migrate_v2_model
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -97,6 +98,30 @@ class PipelineTests(unittest.TestCase):
                     {name: after["stages"][name]["attempts"] for name in STAGES},
                 )
                 self.assertEqual(validate_project_state(after), [])
+
+    def test_v3_model_runs_through_the_same_resumable_pipeline(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            project = self._project(directory)
+            model_path = project / "diagram_model.json"
+            source = json.loads((project / "source_model.json").read_text(encoding="utf-8"))
+            legacy = json.loads(model_path.read_text(encoding="utf-8"))
+            model_path.write_text(
+                json.dumps(migrate_v2_model(legacy, source), ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            with patch("nexcanvas.pipeline.render_drawio", side_effect=_fake_render):
+                pending = run_generate(project)
+                complete = run_generate(
+                    project,
+                    approve_visual=True,
+                    reviewer="pipeline-test",
+                    notes="Inspected the V3 render at target size and connector terminals at 200%.",
+                )
+            self.assertEqual(pending["outcome"], "awaiting-review")
+            self.assertEqual(complete["outcome"], "complete")
+            drawio = (project / "artifacts" / "diagram.drawio").read_text(encoding="utf-8")
+            self.assertIn('nc-model-schema-version="3.0"', drawio)
+            self.assertIn("nc-semantic-hash=", drawio)
 
     def test_model_change_invalidates_every_downstream_delivery_stage(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

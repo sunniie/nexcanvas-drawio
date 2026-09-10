@@ -23,7 +23,7 @@ class UnifiedCliTests(unittest.TestCase):
             action for action in parser._actions if isinstance(action, argparse._SubParsersAction)
         )
         self.assertTrue(
-            {"doctor", "init", "analyze", "plan", "build", "render", "qa", "postflight", "generate"}.issubset(
+            {"doctor", "init", "analyze", "plan", "build", "render", "qa", "postflight", "generate", "migrate"}.issubset(
                 subparsers.choices
             )
         )

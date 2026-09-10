@@ -8,6 +8,7 @@ from pathlib import Path
 from nexcanvas.assets import load_manifest, manifest_file
 from nexcanvas.common import sha256_json, slugify, utc_now, write_json
 from nexcanvas.intents import DEFAULT_ROUTES, VIEW_INTENTS, classify_brief, compatible_view_intents, default_view_intent
+from nexcanvas.model_v3 import migrate_v2_model
 from nexcanvas.registry import resolve_route, resolve_theme
 from nexcanvas.archetypes import resolve_archetype
 from nexcanvas.runtime import inspect_runtime
@@ -55,7 +56,7 @@ def init_project(args: argparse.Namespace) -> dict[str, object]:
         "assumptions": [],
         "exclusions": [],
     }
-    model = {
+    legacy_model = {
         "schemaVersion": "2.0",
         "title": args.name,
         "showTitle": False,
@@ -69,20 +70,21 @@ def init_project(args: argparse.Namespace) -> dict[str, object]:
         "direction": args.direction,
         "canvas": {"width": args.width, "height": args.height},
         "boundaries": [],
-        "nodes": [{"id": "system", "label": args.name, "kind": "system", "importance": "primary", "evidence": []}],
+        "nodes": [{"id": "system", "label": args.name, "kind": "system", "importance": "primary", "evidence": ["fact-brief"] if brief else []}],
         "edges": [],
         "legend": [],
         "sourceSnapshot": "source_model.json",
         "assumptions": [],
     }
+    model = migrate_v2_model(legacy_model, source)
     lock = {
         "schemaVersion": "2.0",
         "status": "draft",
         "viewIntent": view_intent,
-        "route": model["route"],
+        "route": legacy_model["route"],
         "theme": args.theme,
         "visualArchetype": archetype["key"],
-        "canvas": model["canvas"],
+        "canvas": legacy_model["canvas"],
         "sourceHash": sha256_json(source),
         "decisions": {
             "audience": args.audience,
@@ -105,7 +107,7 @@ def init_project(args: argparse.Namespace) -> dict[str, object]:
         "slug": slug,
         "usedDefaultOutput": explicit_root is None,
         "viewIntent": view_intent,
-        "route": model["route"],
+        "route": legacy_model["route"],
         "created": protected + ["assets/asset_manifest.json", "reports/runtime.json"],
     }
 

@@ -1,7 +1,8 @@
 # Project contract
 
-A v2 diagram project is a reproducible evidence-to-artifact workspace. When no
-explicit project path is supplied, create it at
+A diagram project is a reproducible evidence-to-artifact workspace. New projects
+use diagram model V3; V2 models remain readable during the `v0.4.x`
+compatibility window. When no explicit project path is supplied, create it at
 `<current-working-directory>/nexcanvas-output/<project-slug>/`. Never write a
 user project into the installed skill directory.
 
@@ -36,15 +37,27 @@ For repository-backed work, record the canonical Git origin and full commit hash
 
 The lock prevents silent design drift. It must record semantic view intent, route, notation, layout, audience, delivery target, theme, canvas, asset policy, and the canonical source hash. Use `draft` during exploration and `confirmed` for delivery.
 
-## Diagram model
+## Diagram model V3
 
-The diagram model is the semantic intermediate representation. `viewIntent` states whether the artifact answers an architecture, workflow, sequence, data-flow, or lifecycle question. Stable IDs connect source evidence, assets, generated cells, QA findings, and future edits. Coordinates are optional overrides; semantics must not depend on them.
+The canonical model has separate `metadata`, `semantics`, and `presentation`
+layers. `metadata.viewIntent` states whether the artifact answers an architecture,
+workflow, sequence, data-flow, or lifecycle question. Globally unique stable IDs
+connect source facts, presentation records, generated cells, QA findings, and
+future sync. Every semantic record carries a provenance array; each cited fact
+records its confidence.
 
-Node kinds are open but should follow the route notation. Edge kinds should describe meaning (`sync`, `async`, `publish`, `retrieval`, `write`, `response`, `deny`) rather than appearance (`blue-arrow`).
+Semantic entity and relationship kinds describe meaning (`service`, `model`,
+`sync`, `publish`, `retrieval`, `write`, `response`, `deny`). Icons, importance,
+coordinates, label placement, connector lanes, and routes belong only in
+`presentation`. See [Semantic Model V3](semantic-model-v3.md).
 
 ## Generated Draw.io
 
-The builder writes uncompressed `mxGraphModel` XML so other agents and version control can inspect it. Every generated node/edge carries `nc-*` metadata, and the root carries view intent, route, archetype, and model hash. A page-sized tagged background produces deterministic exports. Synced SVG marks are embedded as data URIs.
+The builder writes uncompressed `mxGraphModel` XML so other agents and version
+control can inspect it. Every generated node/edge carries `nc-*` metadata, and
+the root carries view intent, route, archetype, full model hash, schema version,
+and—on V3 models—the semantics-only fingerprint. A page-sized tagged background
+produces deterministic exports. Synced SVG marks are embedded as data URIs.
 
 ## State transitions
 

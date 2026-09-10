@@ -19,6 +19,7 @@ def _has_runtime_data(path: Path) -> bool:
             "config/styles.json",
             "assets/catalog/technology-icons.json",
             "schemas/diagram-model.schema.json",
+            "schemas/diagram-model-v3.schema.json",
         )
     )
 

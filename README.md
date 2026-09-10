@@ -131,6 +131,22 @@ The default project location is deliberately outside the installed skill:
 `repository_evidence.json` is emitted only for repository-backed diagrams. Other
 reports are produced as their corresponding build, render, and review stages run.
 
+### Canonical Semantic Model V3
+
+New projects use `diagram_model.json` schema `3.0`. Its three layers prevent a
+layout adjustment from masquerading as an architecture change:
+
+| Layer | Responsibility |
+|---|---|
+| `metadata` | View intent, route, audience, language, delivery context, and evidence-model link |
+| `semantics` | Stable groups, entities, relationships, endpoints, and fact-level provenance |
+| `presentation` | Theme, canvas, icons, emphasis, geometry, labels, connector lanes, ports, and routes |
+
+Generated Draw.io, previews, and QA reports stay outside the canonical model.
+V3 output carries both a full model hash and a semantics-only fingerprint, so
+future repository sync can distinguish meaning from presentation edits. See the
+[Semantic Model V3 contract](references/semantic-model-v3.md).
+
 The tracked [`nexcanvas-output/README.md`](nexcanvas-output/README.md) makes this
 location visible in a fresh clone, while generated contents stay ignored. An
 explicit project path can still be supplied.
@@ -236,6 +252,19 @@ Or choose an explicit directory:
 ```bash
 nexcanvas init docs/architecture --name "My architecture" --family software --profile c4-container
 ```
+
+`init` creates a canonical V3 diagram model. Existing V2 projects remain readable
+throughout `v0.4.x`. To migrate without overwriting the original:
+
+```bash
+nexcanvas migrate v2-to-v3 docs/architecture/diagram_model.json \
+  --source-model docs/architecture/source_model.json \
+  --output docs/architecture/diagram_model.v3.json
+nexcanvas contract diagram-model docs/architecture/diagram_model.v3.json
+```
+
+Inspect and test the new file before adopting it as the active
+`diagram_model.json`.
 
 After completing the generated contracts and resolving assets, run the
 hash-bound pipeline. It plans, builds, runs diagram QA, renders, and then stops

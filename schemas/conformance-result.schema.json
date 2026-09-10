@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nexcanvas.dev/schemas/conformance-result.schema.json",
+  "title": "NexCanvas Conformance Result",
+  "type": "object",
+  "required": ["schemaVersion", "resultId", "mode", "status", "hostId", "caseId", "digests", "dimensions", "passed", "evaluatedAt"],
+  "properties": {
+    "schemaVersion": {"const": "1.0"},
+    "resultId": {"type": "string"},
+    "mode": {"enum": ["fixture", "observed"]},
+    "status": {"enum": ["fixture", "verified", "failed"]},
+    "hostId": {"type": "string"},
+    "caseId": {"type": "string"},
+    "digests": {"type": "object"},
+    "dimensions": {"type": "object"},
+    "passed": {"type": "boolean"},
+    "evaluatedAt": {"type": "string"}
+  },
+  "additionalProperties": true
+}

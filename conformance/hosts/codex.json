@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0",
+  "id": "codex",
+  "displayName": "OpenAI Codex",
+  "sharedSkill": "SKILL.md",
+  "docsUrl": "https://learn.chatgpt.com/docs/build-skills",
+  "discoveryPaths": [".agents/skills/nexcanvas-drawio", "$HOME/.agents/skills/nexcanvas-drawio", "$CODEX_HOME/skills/nexcanvas-drawio", "~/.codex/skills/nexcanvas-drawio"],
+  "executableNames": ["codex"],
+  "execution": "automated-cli",
+  "evidence": ["non-interactive command transcript", "completed NexCanvas project", "host version"],
+  "limitations": ["Tool availability and approval policy vary by Codex environment."]
+}

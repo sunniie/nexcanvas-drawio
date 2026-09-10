@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0",
+  "id": "claude-code",
+  "displayName": "Claude Code",
+  "sharedSkill": "SKILL.md",
+  "docsUrl": "https://code.claude.com/docs/en/slash-commands",
+  "discoveryPaths": [".claude/skills/nexcanvas-drawio"],
+  "executableNames": ["claude"],
+  "execution": "automated-cli",
+  "evidence": ["non-interactive command transcript", "completed NexCanvas project", "host version"],
+  "limitations": ["Tool permissions, model selection, and project trust settings affect execution."]
+}

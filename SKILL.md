@@ -19,6 +19,10 @@ Read exactly one primary workflow:
 - Repair, restyle, or extend an existing `.drawio`: [workflows/repair.md](workflows/repair.md)
 - Recreate a screenshot, slide, Mermaid/PlantUML result, or visual reference: [workflows/convert-reference.md](workflows/convert-reference.md)
 
+When measuring whether this skill behaves consistently in another agent host,
+read [workflows/conformance.md](workflows/conformance.md). Conformance is an
+evaluation workflow, not a substitute for one of the drawing workflows above.
+
 Always read:
 
 - [references/intake-and-discovery.md](references/intake-and-discovery.md)

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nexcanvas.dev/schemas/conformance-execution.schema.json",
+  "title": "NexCanvas Conformance Execution Record",
+  "type": "object",
+  "required": ["schemaVersion", "mode", "hostId", "hostVersion", "surface", "caseId", "startedAt", "completedAt", "requestSha256", "skillSha256", "adapterSha256", "caseSha256", "invocation", "evidence"],
+  "properties": {
+    "schemaVersion": {"const": "1.0"},
+    "mode": {"const": "observed"},
+    "hostId": {"type": "string"},
+    "hostVersion": {"type": "string", "minLength": 1},
+    "surface": {"type": "string", "minLength": 1},
+    "caseId": {"type": "string"},
+    "startedAt": {"type": "string"},
+    "completedAt": {"type": "string"},
+    "requestSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "skillSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "adapterSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "caseSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "invocation": {"type": "string", "minLength": 1},
+    "evidence": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["path", "sha256"]}}
+  },
+  "additionalProperties": false
+}

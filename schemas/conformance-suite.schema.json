@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nexcanvas.dev/schemas/conformance-suite.schema.json",
+  "title": "NexCanvas Conformance Suite",
+  "type": "object",
+  "required": ["schemaVersion", "suiteId", "cases"],
+  "properties": {
+    "schemaVersion": {"const": "1.0"},
+    "suiteId": {"type": "string", "minLength": 1},
+    "description": {"type": "string"},
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "prompt", "expectations"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]+$"},
+          "title": {"type": "string", "minLength": 1},
+          "prompt": {"type": "object", "required": ["language", "text"]},
+          "expectations": {"type": "object"},
+          "baselineProject": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -43,7 +43,10 @@ version = { attr = "nexcanvas.__version__" }
 where = ["src"]
 
 [tool.setuptools.data-files]
+"share/nexcanvas" = ["SKILL.md"]
 "share/nexcanvas/config" = ["config/*.json"]
 "share/nexcanvas/assets/catalog" = ["assets/catalog/*.json"]
 "share/nexcanvas/schemas" = ["schemas/*.json"]
+"share/nexcanvas/conformance" = ["conformance/*.json"]
+"share/nexcanvas/conformance/hosts" = ["conformance/hosts/*.json"]
 

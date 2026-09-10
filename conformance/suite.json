@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0",
+  "suiteId": "nexcanvas-core-2026.09",
+  "description": "Provider-neutral cases covering the five semantic intents and sparse-to-dense compositions.",
+  "cases": [
+    {
+      "id": "dense-cloud-architecture",
+      "title": "Dense cloud reference architecture",
+      "baselineProject": "examples/v3-dense-industrial-ai",
+      "prompt": {"language": "en", "text": "Create an editable reference-grade architecture diagram for connected-factory analytics. Show operational sources, streaming ingestion, durable stores, hot and cold processing, model training, real-time serving, business consumption, and a platform/governance foundation. Use verified Azure service icons and clearly labeled independent connector lanes."},
+      "expectations": {"viewIntent": "architecture", "allowedRoutes": ["ai-ml/mlops", "runtime-cloud/cloud-reference"], "minNodes": 18, "minEdges": 14, "requiredConcepts": [["connected equipment", "production equipment"], ["event hubs"], ["storage", "data lake"], ["machine learning"], ["monitor"]], "requiredEdgePairs": [{"source": ["event hubs", "iot hub"], "target": ["stream analytics", "storage"]}], "requiredAssetKeys": ["azure-event-hubs", "azure-machine-learning", "azure-monitor"], "requiresLayoutBrainstorm": true}
+    },
+    {
+      "id": "multi-agent-workflow",
+      "title": "Multi-agent orchestration workflow",
+      "baselineProject": "examples/v5-multi-agent-workflow",
+      "prompt": {"language": "en", "text": "Create an editable workflow for a multi-agent system. One orchestrator plans and delegates to parallel specialist agents, a reviewer can trigger a bounded retry, high-risk work escalates to a human, and approved results are returned with telemetry and durable memory."},
+      "expectations": {"viewIntent": "workflow", "allowedRoutes": ["ai-ml/agent-orchestration", "behavior/bpmn"], "minNodes": 10, "minEdges": 9, "requiredConcepts": [["orchestrator"], ["research agent", "specialist agent"], ["review"], ["retry"], ["human approval", "human"], ["telemetry"]], "requiredEdgePairs": [{"source": ["orchestrator"], "target": ["research agent", "data and tool agent", "specialist agent"]}], "requiredAssetKeys": ["generic-orchestrator", "generic-agent", "generic-review"], "requiresLayoutBrainstorm": true}
+    },
+    {
+      "id": "grounded-answer-sequence",
+      "title": "Grounded answer request sequence",
+      "prompt": {"language": "en", "text": "Draw one request sequence for a grounded AI answer. Include user, API, policy check, retriever, vector store, model, citation validator, telemetry, timeout, fallback, and the final response. Distinguish synchronous calls, asynchronous telemetry, and returns."},
+      "expectations": {"viewIntent": "sequence", "allowedRoutes": ["behavior/sequence", "behavior/request-trace", "ai-ml/inference-trace"], "minNodes": 7, "minEdges": 8, "requiredConcepts": [["user"], ["api"], ["retriever", "search"], ["vector store", "index"], ["model"], ["citation", "validator"], ["telemetry"]], "requiredEdgePairs": [{"source": ["api"], "target": ["retriever", "search"]}], "requiredAssetKeys": [], "requiresLayoutBrainstorm": true}
+    },
+    {
+      "id": "event-analytics-data-flow",
+      "title": "Event analytics data flow",
+      "prompt": {"language": "en", "text": "Draw a data-flow view from devices and business systems through event ingestion, validation, stream and batch transformations, bronze/silver/gold stores, analytical serving, dashboards, and governed archival. Label important payloads and lineage."},
+      "expectations": {"viewIntent": "data-flow", "allowedRoutes": ["data/streaming", "data/etl-elt", "data/lakehouse-medallion"], "minNodes": 10, "minEdges": 9, "requiredConcepts": [["devices", "sensors"], ["event"], ["bronze"], ["silver"], ["gold"], ["dashboard", "analytics"], ["archive"]], "requiredEdgePairs": [{"source": ["bronze"], "target": ["silver"]}, {"source": ["silver"], "target": ["gold"]}], "requiredAssetKeys": [], "requiresLayoutBrainstorm": true}
+    },
+    {
+      "id": "model-release-lifecycle",
+      "title": "Model release lifecycle",
+      "prompt": {"language": "en", "text": "Draw the lifecycle of a machine-learning model from candidate through training, evaluation, approval, registry, staged deployment, monitoring, rollback or retraining, deprecation, and retirement. Show transition triggers and terminal states."},
+      "expectations": {"viewIntent": "lifecycle", "allowedRoutes": ["ai-ml/ml-lifecycle", "behavior/state-machine"], "minNodes": 8, "minEdges": 8, "requiredConcepts": [["candidate"], ["training"], ["evaluation"], ["approval"], ["registry"], ["deployment"], ["monitor"], ["retire"]], "requiredEdgePairs": [{"source": ["evaluation"], "target": ["approval"]}, {"source": ["monitor"], "target": ["retrain", "training", "rollback"]}], "requiredAssetKeys": [], "requiresLayoutBrainstorm": true}
+    }
+  ]
+}

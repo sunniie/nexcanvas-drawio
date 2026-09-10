@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0",
+  "id": "github-copilot",
+  "displayName": "GitHub Copilot",
+  "sharedSkill": "SKILL.md",
+  "docsUrl": "https://docs.github.com/en/copilot/concepts/agents/about-agent-skills",
+  "discoveryPaths": [".github/skills/nexcanvas-drawio", ".agents/skills/nexcanvas-drawio"],
+  "executableNames": ["copilot"],
+  "execution": "manual-export",
+  "evidence": ["Copilot session transcript or task URL", "completed NexCanvas project", "host version or surface"],
+  "limitations": ["GitHub, IDE, coding-agent, and CLI surfaces can expose different tools and permissions."]
+}

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import shutil
+import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable
@@ -330,7 +331,12 @@ def _routing_checks(project: Path, model: dict[str, Any], lock: dict[str, Any], 
 def _gate_checks(project: Path) -> list[dict[str, Any]]:
     diagram_qa = load_json(project / "reports" / "diagram_qa.json") if (project / "reports" / "diagram_qa.json").is_file() else {}
     visual_qa = load_json(project / "reports" / "visual_qa.json") if (project / "reports" / "visual_qa.json").is_file() else {}
-    postflight = run_postflight(project)
+    # Postflight may promote already embedded assets to RenderVerified. Evaluate
+    # an isolated copy so conformance never repairs or changes the host output.
+    with tempfile.TemporaryDirectory(prefix="nexcanvas-conformance-") as directory:
+        isolated = Path(directory) / "project"
+        shutil.copytree(project, isolated)
+        postflight = run_postflight(isolated)
     visual = visual_qa.get("manualReview", {})
     return [
         _check("editable-drawio", (project / "artifacts" / "diagram.drawio").is_file(), "artifacts/diagram.drawio"),

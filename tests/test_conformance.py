@@ -53,6 +53,8 @@ class ConformanceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
             prepare_run("multi-agent-workflow", "codex", output, ROOT)
+            manifest = ROOT / "examples" / "v5-multi-agent-workflow" / "assets" / "asset_manifest.json"
+            before = sha256_file(manifest)
             result = evaluate_run(
                 output / "request.json",
                 ROOT / "examples" / "v5-multi-agent-workflow",
@@ -62,6 +64,7 @@ class ConformanceTests(unittest.TestCase):
             self.assertTrue(result["passed"])
             self.assertEqual(result["status"], "fixture")
             self.assertTrue(all(result["dimensions"][name]["score"] == 1.0 for name in result["dimensions"]))
+            self.assertEqual(sha256_file(manifest), before)
 
     def test_observed_evaluation_requires_execution_evidence(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

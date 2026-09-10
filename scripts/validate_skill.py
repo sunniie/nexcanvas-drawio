@@ -143,6 +143,10 @@ def validate() -> list[str]:
         "CONTRIBUTING.md",
         "SECURITY.md",
         "SUPPORT.md",
+        "docs/cli.md",
+        "docs/conformance.md",
+        "docs/host-capability-matrix.md",
+        "workflows/conformance.md",
     ]:
         path = ROOT / relative
         if path.is_file():

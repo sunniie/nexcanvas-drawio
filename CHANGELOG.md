@@ -4,6 +4,13 @@ All notable changes to NexCanvas are documented in this file. Releases follow
 [Semantic Versioning](https://semver.org/), while persisted schemas are versioned
 independently.
 
+## [0.4.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.3.0...v0.4.0) (2026-09-10)
+
+
+### Features
+
+* **schema:** introduce canonical semantic model v3 ([#13](https://github.com/sunniie/nexcanvas-drawio/issues/13)) ([4e20be1](https://github.com/sunniie/nexcanvas-drawio/commit/4e20be1c2f5e1ff6aebb6454b6c767f8bf8a748a))
+
 ## [0.3.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.2.0...v0.3.0) (2026-09-09)
 
 

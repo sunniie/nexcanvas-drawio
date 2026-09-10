@@ -261,11 +261,32 @@ Recorded scope and contract impact:
   public-preview CLI contracts. Incremental sync requires Diagram Model V3; all
   existing persisted contract versions remain unchanged.
 
-- [ ] Implement Python and TypeScript/JavaScript analyzers first.
-- [ ] Add snapshot, semantic diff, and `sync --dry-run`.
-- [ ] Implement three-way reconciliation of old semantics, new source, and edits.
-- [ ] Preserve stable IDs, annotations, positions, and unaffected connector lanes.
-- [ ] Never delete low-confidence or ambiguous entities without confirmation.
+- [x] Implement Python and TypeScript/JavaScript analyzers first.
+- [x] Add snapshot, semantic diff, and `sync --dry-run`.
+- [x] Implement three-way reconciliation of old semantics, new source, and edits.
+- [x] Preserve stable IDs, annotations, positions, and unaffected connector lanes.
+- [x] Never delete low-confidence or ambiguous entities without confirmation.
+
+Implementation evidence:
+
+- [`src/nexcanvas/repository_analysis.py`](src/nexcanvas/repository_analysis.py)
+  extracts revision-pinned modules, public symbols, and internal static imports,
+  preserves IDs across Git-detected renames, and retains last-known semantics as
+  `unknown` when parsing becomes ambiguous.
+- [`src/nexcanvas/semantic_sync.py`](src/nexcanvas/semantic_sync.py) implements
+  field-level three-way reconciliation, explicit removal confirmation,
+  presentation preservation, source-fact refresh, candidate snapshots, and lock
+  hash updates.
+- [`schemas/repository-snapshot.schema.json`](schemas/repository-snapshot.schema.json)
+  and [`schemas/semantic-sync-plan.schema.json`](schemas/semantic-sync-plan.schema.json)
+  define the new independently versioned `1.0` contracts.
+- [`tests/test_repository_sync.py`](tests/test_repository_sync.py) covers mixed
+  Python/TypeScript/JavaScript analysis, rename identity, parser ambiguity,
+  fingerprint tampering, CLI snapshot/diff/contracts, non-mutating dry-run,
+  three-way conflict handling, manual geometry/annotation/lane preservation,
+  conservative removals, evidence verification, and V2 rejection.
+- [`workflows/sync-repository.md`](workflows/sync-repository.md) and
+  [`docs/cli.md`](docs/cli.md) document the portable Agent Skill and CLI flow.
 
 Target release: `v0.5.0`, preceded by alpha and release-candidate builds.
 

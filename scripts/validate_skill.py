@@ -73,8 +73,19 @@ def validate() -> list[str]:
         "schemas/diagram-model-v3.schema.json",
         "schemas/repository-snapshot.schema.json",
         "schemas/semantic-sync-plan.schema.json",
+        "schemas/conformance-suite.schema.json",
+        "schemas/host-adapter.schema.json",
+        "schemas/conformance-execution.schema.json",
+        "schemas/conformance-result.schema.json",
+        "conformance/suite.json",
+        "conformance/hosts/codex.json",
+        "conformance/hosts/github-copilot.json",
+        "conformance/hosts/claude-code.json",
+        "docs/conformance.md",
+        "docs/host-capability-matrix.md",
         "docs/pipeline-state.md",
         "references/semantic-model-v3.md",
+        "workflows/conformance.md",
         "workflows/sync-repository.md",
         "version.txt",
         "release-please-config.json",
@@ -140,6 +151,15 @@ def validate() -> list[str]:
     legacy_core = [path for path in (ROOT / "scripts" / "nexcanvas").glob("*.py") if path.name != "__init__.py"]
     if legacy_core:
         issues.append(f"legacy implementation modules remain under scripts/nexcanvas: {legacy_core}")
+
+    sys.path.insert(0, str(ROOT / "src"))
+    try:
+        from nexcanvas.conformance import load_adapters, load_suite
+
+        load_suite(ROOT)
+        load_adapters(ROOT)
+    except (OSError, ValueError) as exc:
+        issues.append(f"conformance contracts are invalid: {exc}")
 
     return issues
 

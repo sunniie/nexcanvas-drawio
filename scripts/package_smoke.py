@@ -52,8 +52,14 @@ def _assert_cli(environment: Path, outside: Path) -> tuple[str, dict[str, object
     _run([str(command), "analyze", "snapshot", "--help"], outside)
     _run([str(command), "analyze", "diff", "--help"], outside)
     _run([str(command), "sync", "--help"], outside)
+    conformance = json.loads(_run([str(command), "conformance", "doctor"], outside).stdout)
+    _run([str(command), "conformance", "prepare", "--help"], outside)
+    _run([str(command), "conformance", "evaluate", "--help"], outside)
+    _run([str(command), "conformance", "report", "--no-discovery"], outside)
     if not doctor["capabilities"]["authorNativeDrawio"] or catalog["count"] != 1:
         raise RuntimeError("Installed runtime data or core capability checks failed.")
+    if len(conformance.get("hosts", [])) < 4:
+        raise RuntimeError("Installed runtime is missing conformance host adapters.")
     return version, doctor
 
 
@@ -132,7 +138,14 @@ def main() -> int:
         )
         if not state_contract["ok"]:
             raise RuntimeError("Packaged CLI created an invalid project pipeline state contract.")
-        for schema in ("repository-snapshot.schema.json", "semantic-sync-plan.schema.json"):
+        for schema in (
+            "repository-snapshot.schema.json",
+            "semantic-sync-plan.schema.json",
+            "conformance-suite.schema.json",
+            "host-adapter.schema.json",
+            "conformance-execution.schema.json",
+            "conformance-result.schema.json",
+        ):
             if not (Path(doctor["skillRoot"]) / "schemas" / schema).is_file():
                 raise RuntimeError(f"Packaged runtime is missing {schema}.")
         print(

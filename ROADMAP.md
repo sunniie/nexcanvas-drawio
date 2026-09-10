@@ -347,10 +347,10 @@ release-candidate builds.
 Objective: measure consistent semantics and quality across Codex, Copilot, Claude,
 and compatible Agent Skills hosts.
 
-- [ ] Keep one shared core and thin host-specific adapters.
-- [ ] Build a representative conformance corpus.
+- [x] Keep one shared core and thin host-specific adapters.
+- [x] Build a representative conformance corpus.
 - [ ] Compare semantic coverage, evidence, assets, routing, and gate completion.
-- [ ] Publish a host capability and limitation matrix.
+- [x] Publish a host capability and limitation matrix.
 
 Target release: `v0.6.0`.
 
@@ -359,6 +359,13 @@ versioned, provider-neutral corpus cases; deterministic artifact scoring across
 five independent dimensions; and a capability matrix that distinguishes
 `verified`, `not-run`, `unavailable`, and `failed`. Fixture runs may test the
 evaluator but may not establish host support. See ADR 0009.
+
+Implementation checkpoint: the suite contains five semantic-intent cases and two
+tracked fixture baselines; four data-only host adapters share the root skill; the
+installed wheel carries the corpus, adapters, schemas, and skill digest input;
+and CI validates the scorer plus the rule that fixtures cannot verify a host.
+Observed corpus runs are still required before the comparison item and Phase 6
+can be marked complete.
 
 ## Phase 7 - extension ecosystem and visual benchmarks
 

@@ -10,6 +10,7 @@ from . import __version__
 from .assets import load_catalog, search_catalog, sync_catalog_asset, sync_provider_asset, sync_user_asset
 from .builder import build_drawio
 from .common import load_json, utc_now, write_json
+from .conformance import build_matrix, evaluate_run, host_capabilities, matrix_markdown, prepare_run
 from .contracts import validate_file, validate_repository_snapshot
 from .geometry import run_checks as run_geometry_checks
 from .intents import DEFAULT_ROUTES, VIEW_INTENTS, classify_brief
@@ -255,6 +256,38 @@ def _contract(args: argparse.Namespace) -> int:
     return 0 if report["ok"] else 1
 
 
+def _conformance_doctor(args: argparse.Namespace) -> int:
+    _emit(host_capabilities(), args.output)
+    return 0
+
+
+def _conformance_prepare(args: argparse.Namespace) -> int:
+    _emit(prepare_run(args.case, args.host, args.output.resolve()))
+    return 0
+
+
+def _conformance_evaluate(args: argparse.Namespace) -> int:
+    result = evaluate_run(
+        args.request.resolve(),
+        args.project.resolve(),
+        mode=args.mode,
+        execution_path=args.execution.resolve() if args.execution else None,
+    )
+    _emit(result, args.output)
+    return 0 if result["passed"] else 1
+
+
+def _conformance_report(args: argparse.Namespace) -> int:
+    results = [load_json(path.resolve()) for path in args.results]
+    matrix = build_matrix(results, detect=not args.no_discovery)
+    if args.markdown:
+        markdown = matrix_markdown(matrix)
+        args.markdown.resolve().parent.mkdir(parents=True, exist_ok=True)
+        args.markdown.resolve().write_text(markdown, encoding="utf-8", newline="\n")
+    _emit(matrix, args.output)
+    return 0
+
+
 def _asset_search(args: argparse.Namespace) -> int:
     results = search_catalog(args.query, limit=args.limit) if args.query else load_catalog().get("entries", [])[: args.limit]
     _emit({"count": len(results), "results": results})
@@ -445,6 +478,30 @@ def build_parser() -> argparse.ArgumentParser:
     contract.add_argument("path", type=Path)
     contract.add_argument("--project-root", type=Path)
     _set_handler(contract, _contract)
+
+    conformance = commands.add_parser("conformance", help="Prepare, evaluate, and report evidence-based host conformance.")
+    conformance_commands = conformance.add_subparsers(dest="conformance_command", required=True)
+    conformance_doctor = conformance_commands.add_parser("doctor", help="Inspect local host adapter availability.")
+    conformance_doctor.add_argument("--output", type=Path)
+    _set_handler(conformance_doctor, _conformance_doctor)
+    conformance_prepare = conformance_commands.add_parser("prepare", help="Create a hash-bound host run pack for one corpus case.")
+    conformance_prepare.add_argument("case")
+    conformance_prepare.add_argument("--host", required=True)
+    conformance_prepare.add_argument("--output", type=Path, required=True)
+    _set_handler(conformance_prepare, _conformance_prepare)
+    conformance_evaluate = conformance_commands.add_parser("evaluate", help="Score one completed conformance project.")
+    conformance_evaluate.add_argument("request", type=Path)
+    conformance_evaluate.add_argument("--project", type=Path, required=True)
+    conformance_evaluate.add_argument("--mode", choices=["fixture", "observed"], required=True)
+    conformance_evaluate.add_argument("--execution", type=Path)
+    conformance_evaluate.add_argument("--output", type=Path)
+    _set_handler(conformance_evaluate, _conformance_evaluate)
+    conformance_report = conformance_commands.add_parser("report", help="Aggregate observed results into a host matrix.")
+    conformance_report.add_argument("results", type=Path, nargs="*")
+    conformance_report.add_argument("--no-discovery", action="store_true", help="Report not-run instead of machine-local unavailable.")
+    conformance_report.add_argument("--output", type=Path)
+    conformance_report.add_argument("--markdown", type=Path)
+    _set_handler(conformance_report, _conformance_report)
 
     asset = commands.add_parser("asset", help="Search or sync verified diagram assets.")
     asset_commands = asset.add_subparsers(dest="asset_command", required=True)

@@ -1,7 +1,7 @@
 # Unified command-line interface
 
 The `nexcanvas` command is the supported automation surface for the technical
-preview. Product `v0.5.x` creates canonical diagram model `3.0`, reads legacy
+preview. Product `v0.6.x` creates canonical diagram model `3.0`, reads legacy
 diagram model `2.0`, and keeps source, lock, asset, pipeline-state, and editable
 Draw.io contracts at their existing versions. Repository sync requires V3.
 
@@ -55,6 +55,10 @@ python <skill-root>/scripts/nexcanvas_cli.py <command> [...]
 | `migrate v2-to-v3` | Write a separate canonical V3 model from a legacy V2 model |
 | `intent` | Infer a semantic view intent as an agent routing hint |
 | `contract` | Validate a persisted V2/V3 diagram contract or another supported contract |
+| `conformance doctor` | Detect locally available host adapters without claiming a passing run |
+| `conformance prepare` | Create a host/case run pack bound to the skill, adapter, and corpus digests |
+| `conformance evaluate` | Score a fixture or observed project across the five conformance dimensions |
+| `conformance report` | Aggregate observed results into a truthful host capability matrix |
 | `asset search` | Search the pinned technology icon catalog |
 | `asset sync` | Resolve a verified catalog, provider, or user-owned SVG asset |
 
@@ -160,6 +164,30 @@ unchanged. Every apply writes `reports/semantic_sync.json`, updates analyzer fac
 in `source_model.json`, and refreshes `diagram_lock.json.sourceHash`. Run
 `generate --repo-root` afterwards to rebuild and visually verify the artifact.
 
+## Cross-agent conformance
+
+Prepare a run pack from the bundled five-intent corpus:
+
+```bash
+nexcanvas conformance doctor
+nexcanvas conformance prepare <case-id> --host <host-id> --output <run-pack>
+```
+
+After the named host completes the generated `PROMPT.md`, retain its transcript,
+fill `execution.json`, and evaluate the untouched project:
+
+```bash
+nexcanvas conformance evaluate <run-pack>/request.json \
+  --project <run-pack>/project \
+  --mode observed \
+  --execution <run-pack>/execution.json \
+  --output <run-pack>/result.json
+```
+
+`--mode fixture` is reserved for evaluator tests and always emits status
+`fixture`, even when every dimension passes. `conformance report` ignores fixture
+results when determining host status. See [cross-agent conformance](conformance.md).
+
 ## Compatibility
 
 The `python scripts/*.py` interfaces published in `v0.1.x` remain as thin
@@ -170,7 +198,7 @@ only after the documented deprecation window.
 The importable modules under `src/nexcanvas` are implementation details; the
 technical preview does not yet publish a stable Python API.
 
-Diagram model `2.0` remains readable throughout `v0.5.x`. New `init` output uses
+Diagram model `2.0` remains readable throughout `v0.6.x`. New `init` output uses
 diagram model `3.0`; source model and diagram lock remain schema `2.0`, while
 pipeline state, repository snapshot, and semantic sync plan use independent
 schema `1.0` contracts. Incremental sync requires V3.
@@ -184,8 +212,10 @@ schema `1.0` contracts. Incremental sync requires V3.
 - Semantic authoring and visual judgment remain agent/human responsibilities;
   `generate` orchestrates deterministic stages but does not invent architecture
   facts or automatically approve aesthetics.
-- The `v0.5.x` pipeline fingerprints the complete diagram-model file, so a
+- The `v0.6.x` pipeline fingerprints the complete diagram-model file, so a
   presentation-only edit conservatively reruns every delivery stage even though
   its semantics-only fingerprint remains stable.
 - Phase 5 analyzers expose module/import evidence only. They do not infer dynamic
   runtime calls, framework routing, ownership, deployment, or production state.
+- A bundled adapter and local executable detection do not prove host conformance.
+  Only complete, current observed corpus runs can produce `verified` status.

@@ -76,10 +76,23 @@ jobs:
       - run: python scripts/nexcanvas_cli.py postflight examples/v4-hub-spoke-industrial
       - run: python scripts/nexcanvas_cli.py postflight examples/v5-multi-agent-workflow
 
+  conformance-validation:
+    name: Cross-agent conformance contracts and fixtures
+    env:
+      PYTHONPATH: ${{ github.workspace }}/src
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python scripts/validate_conformance.py
+      - run: python scripts/nexcanvas_cli.py conformance report --no-discovery
+
   quality-gate:
     name: Quality gate
     if: always()
-    needs: [core-tests, skill-validation, reference-validation]
+    needs: [core-tests, skill-validation, reference-validation, conformance-validation]
     runs-on: ubuntu-latest
     steps:
       - name: Require every validation job
@@ -87,6 +100,7 @@ jobs:
           CORE_RESULT: ${{ needs.core-tests.result }}
           SKILL_RESULT: ${{ needs.skill-validation.result }}
           REFERENCE_RESULT: ${{ needs.reference-validation.result }}
+          CONFORMANCE_RESULT: ${{ needs.conformance-validation.result }}
         run: |
           python - <<'PY'
           import os
@@ -96,6 +110,7 @@ jobs:
               "core-tests": os.environ["CORE_RESULT"],
               "skill-validation": os.environ["SKILL_RESULT"],
               "reference-validation": os.environ["REFERENCE_RESULT"],
+              "conformance-validation": os.environ["CONFORMANCE_RESULT"],
           }
           failed = {name: result for name, result in results.items() if result != "success"}
           if failed:

@@ -25,6 +25,7 @@ python -m pip install -e .
 python -m unittest discover -s tests -v
 python scripts/test_drawio_qa.py -v
 python scripts/validate_skill.py
+python scripts/validate_conformance.py
 nexcanvas doctor
 python scripts/package_smoke.py
 ```

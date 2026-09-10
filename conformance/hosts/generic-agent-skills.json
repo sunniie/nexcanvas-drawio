@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0",
+  "id": "generic-agent-skills",
+  "displayName": "Compatible Agent Skills host",
+  "sharedSkill": "SKILL.md",
+  "docsUrl": "https://agentskills.io",
+  "discoveryPaths": ["host-defined skill directory"],
+  "executableNames": [],
+  "execution": "manual-export",
+  "evidence": ["host session transcript", "completed NexCanvas project", "host and adapter identity"],
+  "limitations": ["Discovery, invocation, and tool permissions are host-defined until a dedicated adapter is published."]
+}

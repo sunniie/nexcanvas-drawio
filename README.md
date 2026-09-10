@@ -70,6 +70,7 @@ as a generic component inventory.
 | Native output | Produces inspectable, uncompressed mxGraph XML instead of pasting a bitmap onto a canvas |
 | Collision QA | Rejects node, icon, label, step-badge, connector-lane, and visible boundary-outline collisions |
 | Visual proof | Renders through Draw.io Desktop, requires human/agent image inspection, then seals hashes at postflight |
+| Cross-agent conformance | Uses one shared skill, hash-bound host run packs, five-dimensional scoring, and explicit verified/not-run/unavailable/failed states |
 
 ## Agent-guided intake
 
@@ -257,7 +258,7 @@ nexcanvas init docs/architecture --name "My architecture" --family software --pr
 ```
 
 `init` creates a canonical V3 diagram model. Existing V2 projects remain readable
-in `v0.5.x`, but incremental repository sync requires V3. To migrate without
+in `v0.6.x`, but incremental repository sync requires V3. To migrate without
 overwriting the original:
 
 ```bash
@@ -435,6 +436,7 @@ nexcanvas-output/                documented default generated-output root
 python -m pip install -e .
 python -m unittest discover -s tests -v
 python scripts/test_drawio_qa.py -v
+python scripts/validate_conformance.py
 nexcanvas doctor
 python scripts/package_smoke.py
 ```
@@ -445,6 +447,23 @@ GitHub Copilot, Claude Code, and other hosts that implement Agent Skills.
 
 The complete command surface, exit-code contract, installation behavior, and
 compatibility window are documented in the [CLI reference](docs/cli.md).
+
+## Cross-agent conformance
+
+NexCanvas does not call two prompts equivalent merely because their screenshots
+look similar. The Phase 6 harness evaluates semantic coverage, source evidence,
+assets, routing/layout decisions, and completed delivery gates against a versioned
+five-intent corpus. Fixture baselines test the evaluator and never verify a host.
+
+```bash
+nexcanvas conformance doctor
+nexcanvas conformance prepare multi-agent-workflow --host codex --output conformance-run
+nexcanvas conformance evaluate conformance-run/request.json --project conformance-run/project --mode observed --execution conformance-run/execution.json
+```
+
+Read the [method and trust model](docs/conformance.md), the
+[run workflow](workflows/conformance.md), and the current
+[host capability matrix](docs/host-capability-matrix.md).
 
 ## Project governance
 

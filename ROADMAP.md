@@ -10,7 +10,7 @@ request branches and is marked complete only after its exit gates pass.
 - [x] Phase 1 - open-source foundation
 - [x] Phase 2 - installable package and unified CLI
 - [x] Phase 3 - deterministic pipeline state and orchestration
-- [ ] Phase 4 - canonical semantic model V3
+- [x] Phase 4 - canonical semantic model V3
 - [ ] Phase 5 - repository analysis and incremental semantic sync
 - [ ] Phase 6 - cross-agent conformance
 - [ ] Phase 7 - extension ecosystem and visual benchmarks
@@ -184,12 +184,68 @@ Recorded scope and contract impact:
   readable throughout `v0.4.x`; the other persisted contract versions do not
   change.
 
-- [ ] Introduce stable semantic entity and relationship IDs.
-- [ ] Record confidence and provenance per fact.
-- [ ] Move coordinates, style, and connector routes into a presentation layer.
-- [ ] Provide V2-to-V3 migrations and compatibility tests.
+- [x] Introduce stable semantic entity and relationship IDs.
+- [x] Record confidence and provenance per fact.
+- [x] Move coordinates, style, and connector routes into a presentation layer.
+- [x] Provide V2-to-V3 migrations and compatibility tests.
 
-Target release: `v0.4.0`.
+Implementation evidence:
+
+- [`schemas/diagram-model-v3.schema.json`](schemas/diagram-model-v3.schema.json)
+  and [`references/semantic-model-v3.md`](references/semantic-model-v3.md)
+  define the canonical layer, stable-ID, provenance, and presentation-reference
+  contracts.
+- [`src/nexcanvas/model_v3.py`](src/nexcanvas/model_v3.py) implements
+  deterministic V2 normalization, non-destructive migration, and semantic
+  fingerprints that ignore presentation-only changes.
+- [`tests/test_model_v3.py`](tests/test_model_v3.py) covers migration fidelity,
+  overwrite safety, provenance, stable IDs, presentation ownership and coverage,
+  confidence drift, fingerprint stability, CLI behavior, and Draw.io bindings.
+- Builder, planner, quality, postflight, package-smoke, and pipeline paths accept
+  V3 while preserving V2 readability; new `init` projects use V3 by default.
+
+Exit evidence:
+
+- [Pull request #13](https://github.com/sunniie/nexcanvas-drawio/pull/13)
+  introduced V3 after its Linux, Windows, macOS, validator, reference-postflight,
+  and [Quality gate](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34444342291)
+  passed.
+- [Release pull request #14](https://github.com/sunniie/nexcanvas-drawio/pull/14)
+  documented features, fixes, compatibility, and known limits and passed its
+  complete
+  [cross-platform package matrix](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34444769821).
+- The feature [main CI run](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34444590114)
+  and final release [main CI run](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34444881747)
+  passed all required jobs.
+- GitHub Release [`v0.4.0`](https://github.com/sunniie/nexcanvas-drawio/releases/tag/v0.4.0)
+  publishes the portable skill bundle, wheel, source distribution, and matching
+  SHA-256 checksums with full release notes.
+- The published wheel was installed outside the repository: version, `doctor`,
+  V3 `init`, diagram-model contract validation, and migration help passed. The
+  portable ZIP contains the V3 schema, migration module, reference, and skill.
+- A migrated reference project completed a real Draw.io Desktop cycle through
+  generation, rendered PNG inspection, explicit approval, zero-error postflight,
+  and deterministic full-stage reuse. All four tracked V2 reference projects
+  continue to pass live postflight validation.
+- Diagram Model V2 remains readable for the complete `v0.4.x` line; migration is
+  opt-in, does not modify its input, and preserves stable IDs and extension data.
+
+Phase gate evaluation:
+
+- [x] Scope and public-contract impact were recorded in ADR 0007 before
+  implementation.
+- [x] Design, implementation, release, and completion evidence used reviewable
+  commits and short-lived branches.
+- [x] New V3 behavior has migration, contract, compiler, pipeline, and CLI coverage.
+- [x] Existing unit and Draw.io QA suites pass.
+- [x] The repository-local and Agent Skill validators pass.
+- [x] All tracked reference projects pass live postflight validation.
+- [x] Published wheel and portable ZIP checks pass outside the repository.
+- [x] User-visible behavior and migration requirements are documented.
+- [x] Feature, release, and final-main CI runs are green.
+- [x] Release notes cover features, fixes, compatibility, and known limits.
+
+Target release: `v0.4.0` (released 2026-09-10).
 
 ## Phase 5 - repository analysis and semantic sync
 

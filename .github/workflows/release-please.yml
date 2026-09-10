@@ -22,6 +22,13 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
+      - name: Normalize GitHub release title
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag_name }}
+        run: gh release edit "$RELEASE_TAG" --title "NexCanvas $RELEASE_TAG"
+
       - name: Check out released tag
         if: ${{ steps.release.outputs.release_created }}
         uses: actions/checkout@v6

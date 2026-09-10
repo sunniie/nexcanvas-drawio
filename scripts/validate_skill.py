@@ -79,6 +79,7 @@ def validate() -> list[str]:
         "version.txt",
         "release-please-config.json",
         ".release-please-manifest.json",
+        ".github/workflows/release-please.yml",
     ]
     for relative in required:
         if not (ROOT / relative).is_file():
@@ -113,6 +114,16 @@ def validate() -> list[str]:
         }
         if len(set(versions.values())) != 1:
             issues.append(f"product versions do not match: {versions}")
+
+    release_workflow_path = ROOT / ".github" / "workflows" / "release-please.yml"
+    if release_workflow_path.is_file():
+        release_workflow = release_workflow_path.read_text(encoding="utf-8")
+        title_command = 'gh release edit "$RELEASE_TAG" --title "NexCanvas $RELEASE_TAG"'
+        if title_command not in release_workflow:
+            issues.append(
+                ".github/workflows/release-please.yml: missing canonical "
+                "NexCanvas release-title normalization"
+            )
 
     for relative in [
         "SKILL.md",

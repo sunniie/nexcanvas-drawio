@@ -1,9 +1,9 @@
 # Unified command-line interface
 
 The `nexcanvas` command is the supported automation surface for the technical
-preview. Product `v0.4.x` creates canonical diagram model `3.0`, reads legacy
+preview. Product `v0.5.x` creates canonical diagram model `3.0`, reads legacy
 diagram model `2.0`, and keeps source, lock, asset, pipeline-state, and editable
-Draw.io contracts at their existing versions.
+Draw.io contracts at their existing versions. Repository sync requires V3.
 
 ## Installation
 
@@ -42,6 +42,8 @@ python <skill-root>/scripts/nexcanvas_cli.py <command> [...]
 | `init` | Create the standard project directories and a canonical V3 diagram model |
 | `analyze capture` | Pin Git origin, revision, and tracked-file evidence |
 | `analyze verify` | Reverify repository evidence against a local checkout |
+| `analyze snapshot` | Extract revision-pinned Python and TypeScript/JavaScript module semantics |
+| `analyze diff` | Compare two repository snapshots by stable semantic ID |
 | `plan` | Compare and score layout candidates |
 | `build` | Compile a diagram model to native, uncompressed Draw.io XML |
 | `render` | Export PNG, SVG, or PDF through Draw.io Desktop |
@@ -49,6 +51,7 @@ python <skill-root>/scripts/nexcanvas_cli.py <command> [...]
 | `qa visual` | Record render checks and explicit human visual approval |
 | `postflight` | Verify final hashes, provenance, and delivery gates |
 | `generate` | Run or resume the hash-bound plan-to-postflight pipeline |
+| `sync` | Preview or apply a conservative three-way repository semantic reconciliation |
 | `migrate v2-to-v3` | Write a separate canonical V3 model from a legacy V2 model |
 | `intent` | Infer a semantic view intent as an agent routing hint |
 | `contract` | Validate a persisted V2/V3 diagram contract or another supported contract |
@@ -119,6 +122,44 @@ new file must pass `contract diagram-model`, build, render, visual QA, and
 postflight before replacing a project's active model. See the
 [Semantic Model V3 reference](../references/semantic-model-v3.md).
 
+## Repository analysis and semantic sync
+
+Create a standalone analyzer snapshot:
+
+```bash
+nexcanvas analyze snapshot <repo-root> --output repository_snapshot.json
+nexcanvas analyze snapshot <repo-root> --previous repository_snapshot.json \
+  --output repository_snapshot.next.json
+nexcanvas analyze diff repository_snapshot.json repository_snapshot.next.json
+```
+
+The optional previous snapshot enables Git rename-aware stable IDs. Analysis is
+limited to tracked Python and TypeScript/JavaScript-family files and the pinned
+`HEAD`; dirty working-tree content is not silently analyzed. Repeat `--include`
+or `--exclude` to define a smaller scope, and use `--max-files` as an explicit
+repository-size guard.
+
+For a Diagram Model V3 project, always preview synchronization first:
+
+```bash
+nexcanvas sync <project-dir> --repo-root <repo-root> --dry-run
+nexcanvas sync <project-dir> --repo-root <repo-root> --apply
+```
+
+`--dry-run` does not modify the project unless `--output` explicitly requests a
+saved plan. Apply writes safe additions and source-only updates, preserves
+current values for same-field conflicts, and never removes a semantic record
+without a repeated `--confirm-removal <stable-id>` option. Existing presentation
+records are retained at the record level; new semantics receive minimal
+presentation records for later layout.
+
+A complete apply advances `<project>/repository_snapshot.json`. If conflicts or
+unconfirmed removals remain, the source candidate is written to
+`reports/repository_snapshot.candidate.json` while the applied baseline stays
+unchanged. Every apply writes `reports/semantic_sync.json`, updates analyzer facts
+in `source_model.json`, and refreshes `diagram_lock.json.sourceHash`. Run
+`generate --repo-root` afterwards to rebuild and visually verify the artifact.
+
 ## Compatibility
 
 The `python scripts/*.py` interfaces published in `v0.1.x` remain as thin
@@ -129,9 +170,10 @@ only after the documented deprecation window.
 The importable modules under `src/nexcanvas` are implementation details; the
 technical preview does not yet publish a stable Python API.
 
-Diagram model `2.0` remains readable throughout `v0.4.x`. New `init` output uses
+Diagram model `2.0` remains readable throughout `v0.5.x`. New `init` output uses
 diagram model `3.0`; source model and diagram lock remain schema `2.0`, while
-pipeline state remains schema `1.0`.
+pipeline state, repository snapshot, and semantic sync plan use independent
+schema `1.0` contracts. Incremental sync requires V3.
 
 ## Known limits
 
@@ -142,6 +184,8 @@ pipeline state remains schema `1.0`.
 - Semantic authoring and visual judgment remain agent/human responsibilities;
   `generate` orchestrates deterministic stages but does not invent architecture
   facts or automatically approve aesthetics.
-- The `v0.4.x` pipeline fingerprints the complete diagram-model file, so a
+- The `v0.5.x` pipeline fingerprints the complete diagram-model file, so a
   presentation-only edit conservatively reruns every delivery stage even though
   its semantics-only fingerprint remains stable.
+- Phase 5 analyzers expose module/import evidence only. They do not infer dynamic
+  runtime calls, framework routing, ownership, deployment, or production state.

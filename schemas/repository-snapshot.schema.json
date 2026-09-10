@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nexcanvas.dev/schemas/repository-snapshot.schema.json",
+  "title": "NexCanvas Repository Snapshot",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "analyzerVersion",
+    "createdAt",
+    "sourceBaseId",
+    "source",
+    "scope",
+    "files",
+    "facts",
+    "semanticProjection",
+    "diagnostics",
+    "fingerprint"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "1.0"},
+    "analyzerVersion": {"type": "string", "minLength": 1},
+    "createdAt": {"type": "string", "minLength": 1},
+    "sourceBaseId": {"type": "string", "minLength": 1},
+    "source": {
+      "type": "object",
+      "required": ["id", "type", "location", "snapshot", "repository"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "type": {"const": "repository"},
+        "location": {"type": "string", "minLength": 1},
+        "snapshot": {"type": "string", "pattern": "^[0-9a-fA-F]{40,64}$"},
+        "repository": {
+          "type": "object",
+          "required": ["remote", "revision", "dirty", "capturedAt"],
+          "properties": {
+            "remote": {"type": "string", "minLength": 1},
+            "revision": {"type": "string", "pattern": "^[0-9a-fA-F]{40,64}$"},
+            "dirty": {"type": "boolean"},
+            "capturedAt": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "scope": {
+      "type": "object",
+      "required": ["include", "exclude", "languages", "maxFiles"],
+      "properties": {
+        "include": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "exclude": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "languages": {"type": "array", "items": {"enum": ["python", "typescript", "javascript"]}},
+        "maxFiles": {"type": "integer", "minimum": 1}
+      },
+      "additionalProperties": false
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "language", "blob", "sha256", "lineCount", "entityId", "analysisConfidence", "symbols", "imports"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "language": {"enum": ["python", "typescript", "javascript"]},
+          "blob": {"type": "string", "pattern": "^[0-9a-fA-F]{40,64}$"},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "lineCount": {"type": "integer", "minimum": 1},
+          "entityId": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.:-]*$"},
+          "analysisConfidence": {"enum": ["confirmed", "unknown"]},
+          "symbols": {"type": "array", "items": {"type": "object"}},
+          "imports": {"type": "array", "items": {"type": "object"}}
+        },
+        "additionalProperties": false
+      }
+    },
+    "facts": {"type": "array", "items": {"type": "object"}},
+    "semanticProjection": {
+      "type": "object",
+      "required": ["groups", "entities", "relationships"],
+      "properties": {
+        "groups": {"type": "array", "items": {"type": "object"}},
+        "entities": {"type": "array", "items": {"type": "object"}},
+        "relationships": {"type": "array", "items": {"type": "object"}}
+      },
+      "additionalProperties": false
+    },
+    "diagnostics": {"type": "array", "items": {"type": "object"}},
+    "fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}

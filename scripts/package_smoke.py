@@ -49,6 +49,9 @@ def _assert_cli(environment: Path, outside: Path) -> tuple[str, dict[str, object
         _run([str(command), "asset", "search", "postgresql", "--limit", "1"], outside).stdout
     )
     _run([str(command), "generate", "--help"], outside)
+    _run([str(command), "analyze", "snapshot", "--help"], outside)
+    _run([str(command), "analyze", "diff", "--help"], outside)
+    _run([str(command), "sync", "--help"], outside)
     if not doctor["capabilities"]["authorNativeDrawio"] or catalog["count"] != 1:
         raise RuntimeError("Installed runtime data or core capability checks failed.")
     return version, doctor
@@ -129,6 +132,9 @@ def main() -> int:
         )
         if not state_contract["ok"]:
             raise RuntimeError("Packaged CLI created an invalid project pipeline state contract.")
+        for schema in ("repository-snapshot.schema.json", "semantic-sync-plan.schema.json"):
+            if not (Path(doctor["skillRoot"]) / "schemas" / schema).is_file():
+                raise RuntimeError(f"Packaged runtime is missing {schema}.")
         print(
             json.dumps(
                 {

@@ -81,6 +81,20 @@ nexcanvas analyze verify <project-dir>/source_model.json --repo-root <repo-root>
 
 Repository verification proves that cited bytes and ranges exist at the pinned revision. It does not prove a runtime deployment, business owner, or inferred behavior. Keep such claims as assumptions unless separately evidenced. A repository source without an explicit local `--repo-root` fails release QA; uncommitted work is never silently treated as part of the pinned commit.
 
+## Incremental repository analysis
+
+For an existing V3 project, do not rebuild semantics from scratch after the
+repository changes. Read [the repository-sync workflow](../workflows/sync-repository.md)
+and run `nexcanvas sync <project> --repo-root <repo> --dry-run` first. The Phase 5
+analyzers produce revision-pinned module/import evidence for Python and
+TypeScript/JavaScript. They do not replace intent-specific investigation and do
+not prove runtime behavior.
+
+The applied `repository_snapshot.json` is the analyzer baseline. Three-way sync
+compares it with a new repository snapshot and the current user-edited semantic
+model. Stable IDs survive Git-detected renames; manual presentation is preserved;
+ambiguous or unconfirmed removals remain in the model.
+
 ## Delivery invariants
 
 - `diagram_model.metadata.viewIntent` and `diagram_lock.viewIntent` must agree in V3.

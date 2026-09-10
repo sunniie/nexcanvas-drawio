@@ -18,6 +18,9 @@ represent architecture, workflow, sequence, data-flow, and lifecycle views.
 
 Repository-backed claims must cite verifiable source locations and revisions.
 Brief-only claims must be explicitly identified as user-supplied or assumed.
+Python and TypeScript/JavaScript repositories can also produce conservative
+module/import snapshots for semantic diff and three-way synchronization. Static
+analysis remains evidence input; it does not choose the diagram viewpoint.
 
 ## Non-goals
 

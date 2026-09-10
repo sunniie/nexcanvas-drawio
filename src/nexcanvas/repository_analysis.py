@@ -201,8 +201,9 @@ def analyze_repository(
     revision = _git(root, "rev-parse", "HEAD").strip()
     resolved_source_id = f"{source_id}-{revision[:12]}"
     source = inspect_repository(root, resolved_source_id)
+    source["location"] = "."
     include_patterns = include or list(DEFAULT_INCLUDE)
-    exclude_patterns = exclude or list(DEFAULT_EXCLUDE)
+    exclude_patterns = list(dict.fromkeys([*DEFAULT_EXCLUDE, *(exclude or [])]))
     paths = [
         path
         for path in _git(root, "ls-tree", "-r", "--name-only", revision).splitlines()
@@ -404,6 +405,14 @@ def _changed_fields(before: dict[str, Any], after: dict[str, Any]) -> list[str]:
 
 
 def diff_repository_snapshots(before: dict[str, Any], after: dict[str, Any]) -> dict[str, Any]:
+    before_source = before.get("source", {})
+    after_source = after.get("source", {})
+    before_remote = str(before_source.get("repository", {}).get("remote", "")).lower().removesuffix(".git").rstrip("/")
+    after_remote = str(after_source.get("repository", {}).get("remote", "")).lower().removesuffix(".git").rstrip("/")
+    if before_remote and after_remote and before_remote != after_remote:
+        raise ValueError("Repository snapshots must refer to the same normalized Git origin.")
+    if before.get("sourceBaseId") and after.get("sourceBaseId") and before.get("sourceBaseId") != after.get("sourceBaseId"):
+        raise ValueError("Repository snapshots must use the same sourceBaseId.")
     changes: dict[str, list[dict[str, Any]]] = {"groups": [], "entities": [], "relationships": []}
     diagnostics_by_path = {
         str(item.get("path"))

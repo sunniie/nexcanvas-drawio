@@ -106,6 +106,10 @@ class RepositoryAnalyzerTests(unittest.TestCase):
             diff = diff_repository_snapshots(before, after)
             entity_changes = {item["id"]: item["change"] for item in diff["changes"]["entities"]}
             self.assertEqual(entity_changes[old_store_id], "changed")
+            unrelated = copy.deepcopy(after)
+            unrelated["source"]["repository"]["remote"] = "https://github.com/example/other.git"
+            with self.assertRaisesRegex(ValueError, "same normalized Git origin"):
+                diff_repository_snapshots(before, unrelated)
 
     def test_parse_ambiguity_retains_last_known_module_semantics(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

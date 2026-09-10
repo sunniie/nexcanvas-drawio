@@ -8,13 +8,13 @@ dynamic = ["version"]
 description = "Portable agent skill and deterministic toolkit for editable, reference-grade Draw.io architecture diagrams."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "NexCanvas contributors" }]
 keywords = ["drawio", "architecture", "diagramming", "agent-skill", "mxgraph"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Environment :: Console",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.10",

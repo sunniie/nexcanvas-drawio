@@ -11,7 +11,7 @@ request branches and is marked complete only after its exit gates pass.
 - [x] Phase 2 - installable package and unified CLI
 - [x] Phase 3 - deterministic pipeline state and orchestration
 - [x] Phase 4 - canonical semantic model V3
-- [ ] Phase 5 - repository analysis and incremental semantic sync
+- [x] Phase 5 - repository analysis and incremental semantic sync
 - [ ] Phase 6 - cross-agent conformance
 - [ ] Phase 7 - extension ecosystem and visual benchmarks
 - [ ] Phase 8 - stable contracts and 1.0 hardening
@@ -288,7 +288,59 @@ Implementation evidence:
 - [`workflows/sync-repository.md`](workflows/sync-repository.md) and
   [`docs/cli.md`](docs/cli.md) document the portable Agent Skill and CLI flow.
 
-Target release: `v0.5.0`, preceded by alpha and release-candidate builds.
+Exit evidence:
+
+- [Pull request #16](https://github.com/sunniie/nexcanvas-drawio/pull/16)
+  introduced repository analysis and semantic synchronization after its full
+  [cross-platform Quality gate](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34456149519)
+  passed. The post-merge
+  [main CI run](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34456284978)
+  passed the same gate.
+- GitHub prereleases
+  [`v0.5.0-alpha.1`](https://github.com/sunniie/nexcanvas-drawio/releases/tag/v0.5.0-alpha.1)
+  and [`v0.5.0-rc.1`](https://github.com/sunniie/nexcanvas-drawio/releases/tag/v0.5.0-rc.1)
+  were built from short-lived release branches after their respective
+  [alpha](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34456764602)
+  and [release-candidate](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34457504933)
+  matrices passed on Linux, Windows, and macOS.
+- [Pull request #18](https://github.com/sunniie/nexcanvas-drawio/pull/18)
+  removed deprecated package metadata discovered by the alpha build; its
+  [Quality gate](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34457167661)
+  and post-merge
+  [main CI run](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34457309768)
+  passed before the release candidate was cut.
+- [Release pull request #17](https://github.com/sunniie/nexcanvas-drawio/pull/17)
+  records features, fixes, compatibility, and known limitations and passed its
+  [complete release matrix](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34457954570).
+  The final release
+  [main CI run](https://github.com/sunniie/nexcanvas-drawio/actions/runs/34458139545)
+  also passed every required job.
+- GitHub Release [`v0.5.0`](https://github.com/sunniie/nexcanvas-drawio/releases/tag/v0.5.0)
+  publishes the portable skill bundle, wheel, source distribution, and matching
+  SHA-256 checksums. The published wheel was installed outside the repository;
+  version `0.5.0`, full-tier `doctor`, sync command discovery, and both packaged
+  sync schemas were verified.
+- Release Please was rerun after the stable tag and produced no spurious release
+  proposal, confirming that the next release cycle starts after `v0.5.0`.
+
+Phase gate evaluation:
+
+- [x] Scope and public-contract impact were recorded in ADR 0008 before
+  implementation.
+- [x] Design, implementation, packaging repair, prereleases, and completion
+  evidence used reviewable commits and short-lived branches.
+- [x] New analyzer and reconciliation behavior has repository, contract, CLI,
+  conflict, preservation, removal-safety, and compatibility coverage.
+- [x] All 75 unit tests and 25 Draw.io QA regression tests pass.
+- [x] The repository-local and Agent Skill validators pass.
+- [x] All four tracked reference projects pass live postflight validation.
+- [x] Published wheel and portable ZIP checks pass outside the repository.
+- [x] User-visible behavior, V3 requirements, and known limits are documented.
+- [x] Feature, alpha, release-candidate, release, and final-main CI runs are green.
+- [x] Release notes cover features, fixes, compatibility, and known limits.
+
+Target release: `v0.5.0` (released 2026-09-10), preceded by alpha and
+release-candidate builds.
 
 ## Phase 6 - cross-agent conformance
 

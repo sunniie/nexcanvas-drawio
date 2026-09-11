@@ -371,6 +371,16 @@ can be marked complete.
 
 Objective: let contributors extend the project without editing compiler internals.
 
+Recorded scope and contract impact:
+
+- [`ADR 0010`](docs/adr/0010-versioned-extensions-and-visual-benchmarks.md)
+  defines explicit extension loading, component and protocol versioning,
+  executable-hook trust boundaries, real pipeline integration, and hash-bound
+  visual benchmark dimensions.
+- Extension manifest `1.0`, extension protocol `1.0`, benchmark suite `1.0`, and
+  benchmark result `1.0` are new public-preview contracts. Extensions remain
+  opt-in, so existing projects and Diagram Model V2/V3 require no migration.
+
 - [ ] Version analyzer, layout, route, asset-provider, QA-rule, and host adapters.
 - [ ] Add an extension authoring guide and isolated plugin tests.
 - [ ] Build sparse, dense, cloud, AI, sequence, data-flow, and lifecycle benchmarks.

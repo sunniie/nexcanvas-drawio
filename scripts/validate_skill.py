@@ -77,16 +77,22 @@ def validate() -> list[str]:
         "schemas/host-adapter.schema.json",
         "schemas/conformance-execution.schema.json",
         "schemas/conformance-result.schema.json",
+        "schemas/extension-manifest.schema.json",
+        "schemas/visual-benchmark-suite.schema.json",
+        "schemas/visual-benchmark-result.schema.json",
         "conformance/suite.json",
         "conformance/hosts/codex.json",
         "conformance/hosts/github-copilot.json",
         "conformance/hosts/claude-code.json",
         "docs/conformance.md",
         "docs/host-capability-matrix.md",
+        "docs/extensions.md",
+        "docs/visual-benchmarks.md",
         "docs/pipeline-state.md",
         "references/semantic-model-v3.md",
         "workflows/conformance.md",
         "workflows/sync-repository.md",
+        "benchmarks/suite.json",
         "version.txt",
         "release-please-config.json",
         ".release-please-manifest.json",
@@ -147,6 +153,8 @@ def validate() -> list[str]:
         "docs/conformance.md",
         "docs/host-capability-matrix.md",
         "workflows/conformance.md",
+        "docs/extensions.md",
+        "docs/visual-benchmarks.md",
     ]:
         path = ROOT / relative
         if path.is_file():
@@ -164,6 +172,15 @@ def validate() -> list[str]:
         load_adapters(ROOT)
     except (OSError, ValueError) as exc:
         issues.append(f"conformance contracts are invalid: {exc}")
+
+    try:
+        from nexcanvas.benchmarks import load_suite as load_benchmark_suite
+        from nexcanvas.extensions import load_extensions
+
+        load_benchmark_suite(ROOT)
+        load_extensions([ROOT / "tests" / "fixtures" / "extensions" / "complete"])
+    except (OSError, ValueError) as exc:
+        issues.append(f"extension or benchmark contracts are invalid: {exc}")
 
     return issues
 

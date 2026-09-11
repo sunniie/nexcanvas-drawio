@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "2.0",
+  "title": "Product telemetry data flow",
+  "showTitle": false,
+  "viewIntent": "data-flow",
+  "route": {"family": "data", "profile": "etl-elt"},
+  "audience": "data and platform engineers",
+  "deliveryTarget": "engineering-doc",
+  "language": "en",
+  "theme": "technical-editorial",
+  "visualArchetype": "technical-editorial",
+  "direction": "LR",
+  "canvas": {"width": 2500, "height": 480},
+  "boundaries": [
+    {"id": "collect", "label": "Collect", "kind": "stage", "order": 1},
+    {"id": "prepare", "label": "Prepare", "kind": "stage", "order": 2},
+    {"id": "serve", "label": "Serve", "kind": "stage", "order": 3}
+  ],
+  "nodes": [
+    {"id": "apps", "label": "Product applications", "kind": "source", "description": "Events and audit records", "boundary": "collect", "layout": {"x": 60, "y": 190, "width": 170}},
+    {"id": "collector", "label": "Telemetry collector", "kind": "service", "description": "Validates and batches", "boundary": "collect", "layout": {"x": 340, "y": 190, "width": 170}},
+    {"id": "stream", "label": "Event stream", "kind": "queue", "description": "Durable ordered events", "boundary": "collect", "layout": {"x": 620, "y": 190, "width": 170}},
+    {"id": "raw", "label": "Raw object storage", "kind": "storage", "description": "Immutable landing zone", "boundary": "prepare", "layout": {"x": 960, "y": 190, "width": 170}},
+    {"id": "transform", "label": "Transformation jobs", "kind": "process", "description": "Clean, join, and enrich", "boundary": "prepare", "layout": {"x": 1240, "y": 190, "width": 170}},
+    {"id": "warehouse", "label": "Analytics warehouse", "kind": "database", "description": "Curated business tables", "boundary": "prepare", "layout": {"x": 1520, "y": 190, "width": 170}},
+    {"id": "semantic", "label": "Semantic model", "kind": "service", "description": "Governed metrics", "boundary": "serve", "layout": {"x": 1880, "y": 190, "width": 170}},
+    {"id": "dashboards", "label": "Operational dashboards", "kind": "consumer", "description": "Near-real-time decisions", "boundary": "serve", "layout": {"x": 2160, "y": 190, "width": 170}}
+  ],
+  "edges": [
+    {"id": "emit", "source": "apps", "target": "collector", "kind": "data", "label": "JSON events", "importance": "primary", "step": 1, "labelPlacement": {"width": 90, "height": 32}},
+    {"id": "publish", "source": "collector", "target": "stream", "kind": "data", "label": "Validated events", "importance": "primary", "step": 2, "labelPlacement": {"width": 90, "height": 32}},
+    {"id": "land", "source": "stream", "target": "raw", "kind": "data", "label": "Partitioned batches", "importance": "primary", "step": 3, "labelPlacement": {"width": 100, "height": 32}},
+    {"id": "read", "source": "raw", "target": "transform", "kind": "data", "label": "Raw records", "importance": "primary", "step": 4, "labelPlacement": {"width": 90, "height": 32}},
+    {"id": "curate", "source": "transform", "target": "warehouse", "kind": "data", "label": "Curated tables", "importance": "primary", "step": 5, "labelPlacement": {"width": 90, "height": 32}},
+    {"id": "model", "source": "warehouse", "target": "semantic", "kind": "data", "label": "Metrics and dimensions", "importance": "primary", "step": 6, "labelPlacement": {"width": 110, "height": 32}},
+    {"id": "query", "source": "semantic", "target": "dashboards", "kind": "data", "label": "Aggregated results", "importance": "primary", "step": 7, "labelPlacement": {"width": 90, "height": 32}}
+  ],
+  "legend": [],
+  "assumptions": []
+}

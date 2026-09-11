@@ -5,12 +5,15 @@ import shutil
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Iterable
+from typing import TYPE_CHECKING, Any, Iterable
 
 from .common import load_json, portable_path, resource_root, sha256_file, sha256_json, utc_now, write_json
 from .contracts import validate_diagram_model, validate_lock, validate_manifest, validate_source_model
 from .model_v3 import normalize_diagram_model
 from .postflight import run_postflight
+
+if TYPE_CHECKING:
+    from .extensions import ExtensionSet
 
 
 DIMENSIONS = ("semantics", "evidence", "assets", "routing", "gates")
@@ -31,7 +34,7 @@ def load_suite(root: Path | None = None) -> dict[str, Any]:
     return suite
 
 
-def load_adapters(root: Path | None = None) -> list[dict[str, Any]]:
+def load_adapters(root: Path | None = None, extensions: "ExtensionSet | None" = None) -> list[dict[str, Any]]:
     adapters: list[dict[str, Any]] = []
     for path in sorted((_data_root(root) / "hosts").glob("*.json")):
         adapter = load_json(path)
@@ -40,6 +43,18 @@ def load_adapters(root: Path | None = None) -> list[dict[str, Any]]:
             raise ValueError(f"Invalid host adapter {path.name}: {errors[0]}")
         adapter["_path"] = path
         adapters.append(adapter)
+    if extensions is not None:
+        known = {str(adapter["id"]) for adapter in adapters}
+        for component in extensions.components("host-adapter"):
+            adapter = extensions.data("host-adapter", component.component_id)
+            errors = validate_adapter(adapter)
+            if errors:
+                raise ValueError(f"Invalid extension host adapter {component.component_id}: {errors[0]}")
+            if adapter["id"] in known:
+                raise ValueError(f"Extension host adapter cannot replace existing host: {adapter['id']}.")
+            known.add(str(adapter["id"]))
+            adapter["_path"] = component.root / str(component.definition["source"])
+            adapters.append(adapter)
     return adapters
 
 
@@ -147,9 +162,9 @@ def validate_result(result: Any) -> list[str]:
     return issues
 
 
-def host_capabilities(root: Path | None = None) -> dict[str, Any]:
+def host_capabilities(root: Path | None = None, extensions: "ExtensionSet | None" = None) -> dict[str, Any]:
     hosts = []
-    for adapter in load_adapters(root):
+    for adapter in load_adapters(root, extensions):
         executables = adapter.get("executableNames", [])
         resolved = {name: shutil.which(name) for name in executables}
         available = any(resolved.values()) if executables else False
@@ -168,11 +183,17 @@ def host_capabilities(root: Path | None = None) -> dict[str, Any]:
     return {"schemaVersion": "1.0", "checkedAt": utc_now(), "hosts": hosts}
 
 
-def prepare_run(case_id: str, host_id: str, output: Path, root: Path | None = None) -> dict[str, Any]:
+def prepare_run(
+    case_id: str,
+    host_id: str,
+    output: Path,
+    root: Path | None = None,
+    extensions: "ExtensionSet | None" = None,
+) -> dict[str, Any]:
     distribution = root or resource_root()
     suite = load_suite(distribution)
     cases = {case["id"]: case for case in suite["cases"]}
-    adapters = {adapter["id"]: adapter for adapter in load_adapters(distribution)}
+    adapters = {adapter["id"]: adapter for adapter in load_adapters(distribution, extensions)}
     if case_id not in cases:
         raise ValueError(f"Unknown conformance case: {case_id}")
     if host_id not in adapters:
@@ -311,7 +332,13 @@ def _asset_checks(project: Path, model: dict[str, Any], expected: dict[str, Any]
     return checks
 
 
-def _routing_checks(project: Path, model: dict[str, Any], lock: dict[str, Any], expected: dict[str, Any]) -> list[dict[str, Any]]:
+def _routing_checks(
+    project: Path,
+    model: dict[str, Any],
+    lock: dict[str, Any],
+    expected: dict[str, Any],
+    extensions: "ExtensionSet | None" = None,
+) -> list[dict[str, Any]]:
     projection = normalize_diagram_model(model)
     route = projection.get("route", {})
     route_key = f"{route.get('family')}/{route.get('profile')}"
@@ -319,8 +346,8 @@ def _routing_checks(project: Path, model: dict[str, Any], lock: dict[str, Any], 
     lock_route = lock.get("route", {})
     lock_route_key = f"{lock_route.get('family')}/{lock_route.get('profile')}"
     return [
-        _check("diagram-contract", not any(issue.severity == "error" for issue in validate_diagram_model(model)), "diagram_model.json"),
-        _check("lock-contract", not any(issue.severity == "error" for issue in validate_lock(lock)), "diagram_lock.json"),
+        _check("diagram-contract", not any(issue.severity == "error" for issue in validate_diagram_model(model, extensions=extensions)), "diagram_model.json"),
+        _check("lock-contract", not any(issue.severity == "error" for issue in validate_lock(lock, extensions=extensions)), "diagram_lock.json"),
         _check("view-intent", intent == expected["viewIntent"], f"{intent!r} == {expected['viewIntent']!r}"),
         _check("allowed-route", route_key in expected.get("allowedRoutes", []), route_key),
         _check("lock-alignment", lock.get("viewIntent") == intent and lock_route_key == route_key, lock_route_key),
@@ -328,7 +355,7 @@ def _routing_checks(project: Path, model: dict[str, Any], lock: dict[str, Any], 
     ]
 
 
-def _gate_checks(project: Path) -> list[dict[str, Any]]:
+def _gate_checks(project: Path, extensions: "ExtensionSet | None" = None) -> list[dict[str, Any]]:
     diagram_qa = load_json(project / "reports" / "diagram_qa.json") if (project / "reports" / "diagram_qa.json").is_file() else {}
     visual_qa = load_json(project / "reports" / "visual_qa.json") if (project / "reports" / "visual_qa.json").is_file() else {}
     # Postflight may promote already embedded assets to RenderVerified. Evaluate
@@ -336,7 +363,7 @@ def _gate_checks(project: Path) -> list[dict[str, Any]]:
     with tempfile.TemporaryDirectory(prefix="nexcanvas-conformance-") as directory:
         isolated = Path(directory) / "project"
         shutil.copytree(project, isolated)
-        postflight = run_postflight(isolated)
+        postflight = run_postflight(isolated, extensions=extensions)
     visual = visual_qa.get("manualReview", {})
     return [
         _check("editable-drawio", (project / "artifacts" / "diagram.drawio").is_file(), "artifacts/diagram.drawio"),
@@ -389,7 +416,15 @@ def _validate_observed_execution(execution: dict[str, Any], request: dict[str, A
     return issues
 
 
-def evaluate_run(request_path: Path, project: Path, *, mode: str, execution_path: Path | None = None, root: Path | None = None) -> dict[str, Any]:
+def evaluate_run(
+    request_path: Path,
+    project: Path,
+    *,
+    mode: str,
+    execution_path: Path | None = None,
+    root: Path | None = None,
+    extensions: "ExtensionSet | None" = None,
+) -> dict[str, Any]:
     if mode not in {"fixture", "observed"}:
         raise ValueError("mode must be fixture or observed.")
     request = load_json(request_path)
@@ -403,7 +438,7 @@ def evaluate_run(request_path: Path, project: Path, *, mode: str, execution_path
     expected_case_hash = sha256_json(case)
     if request.get("digests", {}).get("caseSha256") != expected_case_hash:
         raise ValueError("Request case digest is stale or invalid.")
-    adapter = next((item for item in load_adapters(distribution) if item["id"] == request.get("hostId")), None)
+    adapter = next((item for item in load_adapters(distribution, extensions) if item["id"] == request.get("hostId")), None)
     if adapter is None:
         raise ValueError(f"Request references unknown host: {request.get('hostId')}")
     current = {
@@ -433,8 +468,8 @@ def evaluate_run(request_path: Path, project: Path, *, mode: str, execution_path
         "semantics": _score(_semantic_checks(model, expected)),
         "evidence": _score(_evidence_checks(source, model)),
         "assets": _score(_asset_checks(project, model, expected)),
-        "routing": _score(_routing_checks(project, model, lock, expected)),
-        "gates": _score(_gate_checks(project)),
+        "routing": _score(_routing_checks(project, model, lock, expected, extensions)),
+        "gates": _score(_gate_checks(project, extensions)),
     }
     passed = all(dimensions[name]["score"] >= PASS_THRESHOLD for name in DIMENSIONS)
     artifacts = {}
@@ -459,13 +494,22 @@ def evaluate_run(request_path: Path, project: Path, *, mode: str, execution_path
     return result
 
 
-def build_matrix(results: list[dict[str, Any]], *, detect: bool = True, root: Path | None = None) -> dict[str, Any]:
+def build_matrix(
+    results: list[dict[str, Any]],
+    *,
+    detect: bool = True,
+    root: Path | None = None,
+    extensions: "ExtensionSet | None" = None,
+) -> dict[str, Any]:
     distribution = root or resource_root()
-    capabilities = host_capabilities(distribution)
+    capabilities = host_capabilities(distribution, extensions)
     suite = load_suite(distribution)
     case_hashes = {case["id"]: sha256_json(case) for case in suite["cases"]}
     skill_hash = sha256_file(distribution / "SKILL.md")
-    adapter_hashes = {adapter["id"]: sha256_file(Path(adapter["_path"])) for adapter in load_adapters(distribution)}
+    adapter_hashes = {
+        adapter["id"]: sha256_file(Path(adapter["_path"]))
+        for adapter in load_adapters(distribution, extensions)
+    }
     for index, result in enumerate(results):
         issues = validate_result(result)
         if issues:

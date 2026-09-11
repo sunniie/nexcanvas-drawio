@@ -381,10 +381,20 @@ Recorded scope and contract impact:
   benchmark result `1.0` are new public-preview contracts. Extensions remain
   opt-in, so existing projects and Diagram Model V2/V3 require no migration.
 
-- [ ] Version analyzer, layout, route, asset-provider, QA-rule, and host adapters.
-- [ ] Add an extension authoring guide and isolated plugin tests.
-- [ ] Build sparse, dense, cloud, AI, sequence, data-flow, and lifecycle benchmarks.
-- [ ] Combine geometry, perceptual, text-bound, and human visual review gates.
+- [x] Version analyzer, layout, route, asset-provider, QA-rule, and host adapters.
+- [x] Add an extension authoring guide and isolated plugin tests.
+- [x] Build sparse, dense, cloud, AI, sequence, data-flow, and lifecycle benchmarks.
+- [x] Combine geometry, perceptual, text-bound, and human visual review gates.
+
+Implementation checkpoint: all six extension kinds enter their real runtime
+boundaries through an explicit `--extension` option; extension manifests,
+declared hooks, and resources are hash-bound to resumable generation; isolated
+fixtures cover loading, confinement, routing, layout, QA, analysis, project
+initialization, and invalidation. The seven-class benchmark corpus has editable
+Draw.io files, rendered PNGs, zero geometry/text-bound findings, deterministic
+perceptual checks, and hash-current human approvals. Phase 7 remains unreleased
+until the `v0.6.0` release line is closed, the Phase 7 feature PR passes final
+CI, and the normal `v0.7.0` release gates complete.
 
 Target releases: `v0.7.x`.
 

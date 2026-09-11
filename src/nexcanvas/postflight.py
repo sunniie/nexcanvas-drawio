@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from .assets import load_manifest, mark_assets
 from .common import load_json, portable_path, sha256_file, sha256_json, utc_now
@@ -12,8 +12,16 @@ from .model_v3 import is_v3_model, normalize_diagram_model
 from .quality import validate_drawio_metadata
 from .repository import verify_repository_evidence
 
+if TYPE_CHECKING:
+    from .extensions import ExtensionSet
 
-def run_postflight(project_root: Path, root: Path | None = None, repo_root: Path | None = None) -> dict[str, Any]:
+
+def run_postflight(
+    project_root: Path,
+    root: Path | None = None,
+    repo_root: Path | None = None,
+    extensions: "ExtensionSet | None" = None,
+) -> dict[str, Any]:
     paths = {
         "source": project_root / "source_model.json",
         "lock": project_root / "diagram_lock.json",
@@ -37,9 +45,9 @@ def run_postflight(project_root: Path, root: Path | None = None, repo_root: Path
     visual = load_json(paths["visual"])
     manifest = load_manifest(project_root, root)
     issues.extend(validate_source_model(source))
-    issues.extend(validate_diagram_model(model, root))
+    issues.extend(validate_diagram_model(model, root, extensions))
     issues.extend(verify_repository_evidence(source, repo_root))
-    issues.extend(validate_lock(lock, root))
+    issues.extend(validate_lock(lock, root, extensions))
     issues.extend(validate_manifest(manifest, project_root))
     if source.get("status") != "confirmed":
         issues.append(Issue("error", "source-unconfirmed", "source_model.status must be confirmed before delivery.", "source_model.status"))

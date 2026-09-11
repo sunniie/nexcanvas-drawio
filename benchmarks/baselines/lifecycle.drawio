@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="NexCanvas Draw.io" agent="nexcanvas-drawio/2.0" version="2.0" type="device" modified="2026-09-11T01:05:05Z" nc-model-hash="6da88828432447df52d35b282a94aac4a18acebcbb3708c5324d80bcef1fce00" nc-model-schema-version="2.0" nc-route="behavior/state-machine" nc-view-intent="lifecycle" nc-visual-archetype="technical-editorial" nc-layout-strategy="auto" pageWidth="1820" pageHeight="880">
+  <diagram id="nexcanvas-page-1" name="Lifecycle">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1820" pageHeight="880" math="0" shadow="0" background="#F8FAFC">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="nc-background" value="" style="fillColor=#F8FAFC;strokeColor=none;pointerEvents=0;locked=1;" vertex="1" parent="1" nc-kind="background" tags="qa-background">
+          <mxGeometry x="0.0" y="0.0" width="1820.0" height="880.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-created" value="&lt;b&gt;Created&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;INITIAL STATE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Request accepted&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="1" nc-kind="node" nc-node-kind="initial-state" nc-model-id="created" nc-boundary="" nc-asset-ref="" qa-primary="false" tags="qa-icon-exempt">
+          <mxGeometry x="50.0" y="360.0" width="180.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-queued" value="&lt;b&gt;Queued&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;STATE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Waiting for capacity&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="1" nc-kind="node" nc-node-kind="state" nc-model-id="queued" nc-boundary="" nc-asset-ref="" qa-primary="false" tags="qa-icon-exempt">
+          <mxGeometry x="380.0" y="360.0" width="180.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-running" value="&lt;b&gt;Running&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;STATE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Agent executing&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="1" nc-kind="node" nc-node-kind="state" nc-model-id="running" nc-boundary="" nc-asset-ref="" qa-primary="false" tags="qa-icon-exempt">
+          <mxGeometry x="710.0" y="360.0" width="180.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-waiting" value="&lt;b&gt;Waiting for input&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;STATE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Human decision required&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="1" nc-kind="node" nc-node-kind="state" nc-model-id="waiting" nc-boundary="" nc-asset-ref="" qa-primary="false" tags="qa-icon-exempt">
+          <mxGeometry x="1120.0" y="160.0" width="180.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-retrying" value="&lt;b&gt;Retrying&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;STATE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Recoverable failure&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="1" nc-kind="node" nc-node-kind="state" nc-model-id="retrying" nc-boundary="" nc-asset-ref="" qa-primary="false" tags="qa-icon-exempt">
+          <mxGeometry x="1120.0" y="560.0" width="180.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-completed" value="&lt;b&gt;Completed&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;TERMINAL STATE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Verified result stored&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="1" nc-kind="node" nc-node-kind="terminal-state" nc-model-id="completed" nc-boundary="" nc-asset-ref="" qa-primary="false" tags="qa-icon-exempt">
+          <mxGeometry x="1460.0" y="100.0" width="180.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-failed" value="&lt;b&gt;Failed&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;TERMINAL STATE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Retry budget exhausted&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="1" nc-kind="node" nc-node-kind="terminal-state" nc-model-id="failed" nc-boundary="" nc-asset-ref="" qa-primary="false" tags="qa-icon-exempt">
+          <mxGeometry x="1460.0" y="400.0" width="180.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-cancelled" value="&lt;b&gt;Cancelled&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;TERMINAL STATE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Stopped by requester&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="1" nc-kind="node" nc-node-kind="terminal-state" nc-model-id="cancelled" nc-boundary="" nc-asset-ref="" qa-primary="false" tags="qa-icon-exempt">
+          <mxGeometry x="1460.0" y="680.0" width="180.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-enqueue" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="transition" nc-model-id="enqueue" nc-label-mode="offset" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow qa-labeled-flow" source="node-created" target="node-queued">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-start" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="transition" nc-model-id="start" nc-label-mode="offset" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow qa-labeled-flow" source="node-queued" target="node-running">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-request-input" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.25;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.75;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="transition" nc-model-id="request-input" nc-label-mode="callout" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-labeled-flow" source="node-running" target="node-waiting">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1060.0" y="380.5" />
+              <mxPoint x="1060.0" y="221.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-resume" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.0;exitY=0.25;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=1.0;entryY=0.55;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="transition" nc-model-id="resume" nc-label-mode="callout" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-labeled-flow" source="node-waiting" target="node-running">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="920.0" y="180.5" />
+              <mxPoint x="920.0" y="405.1" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-retry" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.75;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.25;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="transition" nc-model-id="retry" nc-label-mode="callout" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-labeled-flow" source="node-running" target="node-retrying">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1070.0" y="421.5" />
+              <mxPoint x="1070.0" y="580.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-retry-ready" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="transition" nc-model-id="retry-ready" nc-label-mode="callout" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-labeled-flow     qa-explicit-route" source="node-retrying" target="node-queued">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1210.0" y="800.0" />
+              <mxPoint x="470.0" y="800.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-finish" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="transition" nc-model-id="finish" nc-label-mode="callout" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow qa-labeled-flow     qa-explicit-route" source="node-running" target="node-completed">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="800.0" y="60.0" />
+              <mxPoint x="1400.0" y="60.0" />
+              <mxPoint x="1400.0" y="141.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-exhaust" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.75;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="transition" nc-model-id="exhaust" nc-label-mode="callout" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-labeled-flow" source="node-retrying" target="node-failed">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1380.0" y="601.0" />
+              <mxPoint x="1380.0" y="461.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-cancel" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=1.0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="transition" nc-model-id="cancel" nc-label-mode="callout" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-labeled-flow     qa-explicit-route" source="node-waiting" target="node-cancelled">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1720.0" y="201.0" />
+              <mxPoint x="1720.0" y="721.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-enqueue" value="enqueue" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=0;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-enqueue" nc-label-mode="offset" tags="qa-flow-label:edge-enqueue qa-edge-label qa-label-offset">
+          <mxGeometry x="278.0" y="367.0" width="54.0" height="20.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-start" value="worker available" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=0;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-start" nc-label-mode="offset" tags="qa-flow-label:edge-start qa-edge-label qa-label-offset">
+          <mxGeometry x="582.2" y="367.0" width="105.6" height="20.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-request-input" value="needs approval" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=4;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-request-input" nc-label-mode="callout" tags="qa-flow-label:edge-request-input qa-edge-label qa-label-callout">
+          <mxGeometry x="1009.3" y="312.3" width="101.4" height="22.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-resume" value="input received" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=4;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-resume" nc-label-mode="callout" tags="qa-flow-label:edge-resume qa-edge-label qa-label-callout">
+          <mxGeometry x="869.3" y="322.2" width="101.4" height="22.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-retry" value="transient error" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=4;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-retry" nc-label-mode="callout" tags="qa-flow-label:edge-retry qa-edge-label qa-label-callout">
+          <mxGeometry x="1016.2" y="512.3" width="107.5" height="22.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-retry-ready" value="backoff elapsed" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=4;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-retry-ready" nc-label-mode="callout" tags="qa-flow-label:edge-retry-ready qa-edge-label qa-label-callout">
+          <mxGeometry x="786.2" y="789.0" width="107.5" height="22.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-finish" value="checks passed" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=4;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-finish" nc-label-mode="callout" tags="qa-flow-label:edge-finish qa-edge-label qa-label-callout">
+          <mxGeometry x="1052.3" y="49.0" width="95.3" height="22.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-exhaust" value="budget exhausted" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=4;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-exhaust" nc-label-mode="callout" tags="qa-flow-label:edge-exhaust qa-edge-label qa-label-callout">
+          <mxGeometry x="1323.2" y="520.2" width="113.6" height="22.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-cancel" value="cancel requested" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=4;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-cancel" nc-label-mode="callout" tags="qa-flow-label:edge-cancel qa-edge-label qa-label-callout">
+          <mxGeometry x="1663.2" y="533.2" width="113.6" height="22.0" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

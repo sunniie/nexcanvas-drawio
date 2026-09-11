@@ -4,4 +4,6 @@ include version.txt
 recursive-include config *.json
 recursive-include assets/catalog *.json
 recursive-include schemas *.json
+recursive-include benchmarks *.json *.drawio *.png
+recursive-include examples *.json *.drawio *.png
 

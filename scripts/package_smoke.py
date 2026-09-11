@@ -56,10 +56,14 @@ def _assert_cli(environment: Path, outside: Path) -> tuple[str, dict[str, object
     _run([str(command), "conformance", "prepare", "--help"], outside)
     _run([str(command), "conformance", "evaluate", "--help"], outside)
     _run([str(command), "conformance", "report", "--no-discovery"], outside)
+    benchmark = json.loads(_run([str(command), "benchmark", "validate"], outside).stdout)
+    _run([str(command), "extension", "validate", "--help"], outside)
     if not doctor["capabilities"]["authorNativeDrawio"] or catalog["count"] != 1:
         raise RuntimeError("Installed runtime data or core capability checks failed.")
     if len(conformance.get("hosts", [])) < 4:
         raise RuntimeError("Installed runtime is missing conformance host adapters.")
+    if benchmark.get("cases") != 7:
+        raise RuntimeError("Installed runtime is missing the seven-class visual benchmark suite.")
     return version, doctor
 
 
@@ -145,6 +149,9 @@ def main() -> int:
             "host-adapter.schema.json",
             "conformance-execution.schema.json",
             "conformance-result.schema.json",
+            "extension-manifest.schema.json",
+            "visual-benchmark-suite.schema.json",
+            "visual-benchmark-result.schema.json",
         ):
             if not (Path(doctor["skillRoot"]) / "schemas" / schema).is_file():
                 raise RuntimeError(f"Packaged runtime is missing {schema}.")

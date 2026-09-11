@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "counts": {
+    "error": 0,
+    "warning": 2,
+    "info": 0
+  },
+  "issues": [
+    {
+      "severity": "warning",
+      "code": "source-model-missing",
+      "message": "No source_model was supplied; factual traceability is unverified.",
+      "location": "sourceModel"
+    }
+  ],
+  "schemaVersion": "2.0",
+  "checkedAt": "2026-09-11T00:51:12Z",
+  "geometry": {
+    "profile": "composition",
+    "errors": [],
+    "warnings": [
+      "Box node-stream 'Event stream QUEUE Durable ordered events' looks like a real service/component but does not use an image/mxgraph icon style."
+    ]
+  }
+}

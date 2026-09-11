@@ -89,10 +89,23 @@ jobs:
       - run: python scripts/validate_conformance.py
       - run: python scripts/nexcanvas_cli.py conformance report --no-discovery
 
+  visual-benchmarks:
+    name: Seven-class visual benchmark gate
+    env:
+      PYTHONPATH: ${{ github.workspace }}/src
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python scripts/nexcanvas_cli.py benchmark validate
+      - run: python scripts/nexcanvas_cli.py benchmark run
+
   quality-gate:
     name: Quality gate
     if: always()
-    needs: [core-tests, skill-validation, reference-validation, conformance-validation]
+    needs: [core-tests, skill-validation, reference-validation, conformance-validation, visual-benchmarks]
     runs-on: ubuntu-latest
     steps:
       - name: Require every validation job
@@ -101,6 +114,7 @@ jobs:
           SKILL_RESULT: ${{ needs.skill-validation.result }}
           REFERENCE_RESULT: ${{ needs.reference-validation.result }}
           CONFORMANCE_RESULT: ${{ needs.conformance-validation.result }}
+          BENCHMARK_RESULT: ${{ needs.visual-benchmarks.result }}
         run: |
           python - <<'PY'
           import os
@@ -111,6 +125,7 @@ jobs:
               "skill-validation": os.environ["SKILL_RESULT"],
               "reference-validation": os.environ["REFERENCE_RESULT"],
               "conformance-validation": os.environ["CONFORMANCE_RESULT"],
+              "visual-benchmarks": os.environ["BENCHMARK_RESULT"],
           }
           failed = {name: result for name, result in results.items() if result != "success"}
           if failed:

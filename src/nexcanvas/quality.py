@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from .assets import load_manifest
 from .archetypes import resolve_archetype
@@ -12,6 +12,9 @@ from .intents import resolve_view_intent
 from .model_v3 import is_v3_model, normalize_diagram_model, semantic_fingerprint
 from .repository import verify_repository_evidence
 from .registry import resolve_route, resolve_theme
+
+if TYPE_CHECKING:
+    from .extensions import ExtensionSet
 
 
 def _kinds(model: dict[str, Any]) -> set[str]:
@@ -438,13 +441,14 @@ def run_quality(
     drawio_path: Path | None = None,
     root: Path | None = None,
     repo_root: Path | None = None,
+    extensions: "ExtensionSet | None" = None,
 ) -> list[Issue]:
     canonical_model = model
-    issues = validate_diagram_model(canonical_model, root)
+    issues = validate_diagram_model(canonical_model, root, extensions)
     if any(issue.severity == "error" for issue in issues):
         return issues
     model = normalize_diagram_model(canonical_model)
-    route = resolve_route(model["route"]["family"], model["route"]["profile"], root)
+    route = resolve_route(model["route"]["family"], model["route"]["profile"], root, extensions)
     issues.extend(_intent_checks(model))
     issues.extend(_profile_checks(model))
     issues.extend(_source_evidence_checks(model, source_model))
@@ -462,6 +466,36 @@ def run_quality(
     for rule in route.get("requiredChecks", []):
         if rule == "evidence" and source_model is None:
             issues.append(Issue("error", "profile-evidence", "This route requires a confirmed source_model.", "sourceModel"))
+    if extensions is not None:
+        for component in extensions.components("qa-rule"):
+            result = extensions.run_hook(
+                "qa-rule",
+                component.component_id,
+                {
+                    "model": canonical_model,
+                    "sourceModel": source_model,
+                    "projectRoot": str(project_root.resolve()) if project_root else None,
+                    "drawioPath": str(drawio_path.resolve()) if drawio_path else None,
+                    "repoRoot": str(repo_root.resolve()) if repo_root else None,
+                },
+            )
+            extension_issues = result.get("issues")
+            if not isinstance(extension_issues, list):
+                raise ValueError(f"QA extension {component.component_id} must return an issues array.")
+            for index, value in enumerate(extension_issues):
+                if not isinstance(value, dict):
+                    raise ValueError(f"QA extension {component.component_id} issue {index} must be an object.")
+                severity = value.get("severity")
+                code = value.get("code")
+                message = value.get("message")
+                location = value.get("location", "")
+                if severity not in {"error", "warning", "info"}:
+                    raise ValueError(f"QA extension {component.component_id} issue {index} has invalid severity.")
+                if not isinstance(code, str) or not code or not isinstance(message, str) or not message:
+                    raise ValueError(f"QA extension {component.component_id} issue {index} requires code and message.")
+                if not isinstance(location, str):
+                    raise ValueError(f"QA extension {component.component_id} issue {index} location must be a string.")
+                issues.append(Issue(severity, f"extension:{component.component_id}:{code}", message, location))
     return issues
 
 

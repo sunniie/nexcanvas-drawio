@@ -23,6 +23,11 @@ When measuring whether this skill behaves consistently in another agent host,
 read [workflows/conformance.md](workflows/conformance.md). Conformance is an
 evaluation workflow, not a substitute for one of the drawing workflows above.
 
+When authoring a trusted extension or changing visual baselines, read
+[docs/extensions.md](docs/extensions.md) or
+[docs/visual-benchmarks.md](docs/visual-benchmarks.md), respectively. Extension
+and benchmark maintenance are contributor workflows, not drawing intake steps.
+
 Always read:
 
 - [references/intake-and-discovery.md](references/intake-and-discovery.md)
@@ -156,6 +161,11 @@ instead of overwriting user edits.
 
 If Draw.io Desktop is unavailable, produce and structurally validate the editable
 `.drawio`, leave visual approval pending, and state the limitation explicitly.
+
+Trusted extension directories are never discovered implicitly. Pass each one
+explicitly with `--extension` on the supported command and validate it first with
+`nexcanvas extension validate <extension-dir>`. Never load third-party executable
+hooks without stating that they run with local developer-tool authority.
 
 ## Delivery contract
 

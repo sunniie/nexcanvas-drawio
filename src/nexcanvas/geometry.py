@@ -203,6 +203,15 @@ def load_cells(path: Path) -> tuple[list[Box], list[Edge], float, float]:
             if geom is not None:
                 parent_id = cell.attrib.get("parent")
                 parent_x, parent_y = absolute_origin(parent_id) if parent_id else (0.0, 0.0)
+                source_point = geom.find("./mxPoint[@as='sourcePoint']")
+                target_point = geom.find("./mxPoint[@as='targetPoint']")
+                if cell.attrib.get("source") is None and source_point is not None:
+                    points.append(
+                        (
+                            parent_x + parse_float(source_point.attrib.get("x")),
+                            parent_y + parse_float(source_point.attrib.get("y")),
+                        )
+                    )
                 waypoint_nodes = geom.findall("./Array[@as='points']/mxPoint")
                 if not waypoint_nodes:
                     waypoint_nodes = [
@@ -215,6 +224,13 @@ def load_cells(path: Path) -> tuple[list[Box], list[Edge], float, float]:
                         (
                             parent_x + parse_float(point.attrib.get("x")),
                             parent_y + parse_float(point.attrib.get("y")),
+                        )
+                    )
+                if cell.attrib.get("target") is None and target_point is not None:
+                    points.append(
+                        (
+                            parent_x + parse_float(target_point.attrib.get("x")),
+                            parent_y + parse_float(target_point.attrib.get("y")),
                         )
                     )
             edges.append(
@@ -567,12 +583,14 @@ def near_any(point: tuple[float, float], candidates: Iterable[tuple[float, float
 
 
 def maybe_plain_icon_box(box: Box) -> bool:
-    if box.is_container or is_step_badge(box) or "qa-icon-exempt" in box.tags:
+    if box.is_container or is_step_badge(box) or is_flow_label(box) or "qa-icon-exempt" in box.tags:
         return False
     text = box.label.lower()
     if not any(keyword in text for keyword in ICON_KEYWORDS):
         return False
     style = box.style.lower()
+    if any(shape in style for shape in ("shape=hexagon", "shape=cylinder", "shape=rhombus", "shape=ellipse")):
+        return False
     return not any(hint in style for hint in ICON_STYLE_HINTS)
 
 
@@ -795,6 +813,8 @@ def run_checks(path: Path, padding: float, qa_profile: str = "baseline") -> tupl
                 )
 
     for edge in edges:
+        if edge.kind == "lifeline":
+            continue
         polyline = edge_polyline(edge, boxes_by_id)
         if len(polyline) < 2:
             warnings.append(f"Edge {edge.cell_id} has no usable source/target/points.")

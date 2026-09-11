@@ -9,6 +9,8 @@ NexCanvas uses separate version domains:
 | Product | `0.1.0` | Skill, CLI, compiler, documentation, and QA behavior |
 | Contract schema | diagram `3.0`, source/lock `2.0`, repository snapshot/sync plan `1.0` | Persisted JSON structure and validation rules |
 | Provider pack | `V24` | Upstream icon-pack identity |
+| Extension API/protocol | `1.0` | Manifest compatibility and hook request/response envelope |
+| Visual benchmark | suite/result `1.0` | Corpus membership, measurements, and review evidence |
 | Generated artifact | hashes | Exact inputs and outputs for one project build |
 
 A schema version must never be used as the product release version.

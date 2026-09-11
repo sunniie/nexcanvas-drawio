@@ -64,6 +64,11 @@ The CLI will provide extension validation and inspection, plus explicit
 extension options on commands that execute extension behavior. Core behavior is
 unchanged when no extension is supplied.
 
+Repository snapshot `1.0` remains backward compatible but permits extension
+language IDs and an optional `extensionFingerprint`. When present, that digest
+participates in the snapshot fingerprint so changed analyzer code cannot be
+mistaken for the same analysis input.
+
 ### A hash-bound visual benchmark suite
 
 Benchmark suite and result schema `1.0` will cover seven visual classes:
@@ -105,4 +110,3 @@ protocol requires a new protocol major and a documented transition path.
 - Phase 7 cannot be marked complete from XML validation, fixtures, or automated
   image proxies alone; real renders must be inspected and hash-bound approvals
   must be current.
-

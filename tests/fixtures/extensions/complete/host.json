@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0",
+  "id": "fixture-agent",
+  "displayName": "Fixture Agent",
+  "sharedSkill": "SKILL.md",
+  "docsUrl": "https://example.invalid/agent",
+  "discoveryPaths": [".agents/skills/nexcanvas-drawio"],
+  "executableNames": [],
+  "execution": "manual-export",
+  "evidence": ["fixture transcript"],
+  "limitations": ["Test-only adapter."]
+}

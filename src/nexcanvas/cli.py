@@ -9,9 +9,11 @@ from typing import Any, Callable
 from . import __version__
 from .assets import load_catalog, search_catalog, sync_catalog_asset, sync_provider_asset, sync_user_asset
 from .builder import build_drawio
+from .benchmarks import load_suite as load_benchmark_suite, run_benchmarks
 from .common import load_json, utc_now, write_json
 from .conformance import build_matrix, evaluate_run, host_capabilities, matrix_markdown, prepare_run
 from .contracts import validate_file, validate_repository_snapshot
+from .extensions import load_extensions
 from .geometry import run_checks as run_geometry_checks
 from .intents import DEFAULT_ROUTES, VIEW_INTENTS, classify_brief
 from .model_v3 import migrate_file
@@ -38,6 +40,20 @@ def _emit(value: dict[str, Any], output: Path | None = None) -> None:
     print(json.dumps(value, ensure_ascii=False, indent=2))
 
 
+def _extension_set(args: argparse.Namespace):
+    return load_extensions(getattr(args, "extension", None))
+
+
+def _add_extensions(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--extension",
+        action="append",
+        type=Path,
+        default=[],
+        help="Explicit extension directory; repeat to load more than one trusted extension.",
+    )
+
+
 def _doctor(args: argparse.Namespace) -> int:
     report = inspect_runtime()
     _emit(report, args.output)
@@ -45,7 +61,7 @@ def _doctor(args: argparse.Namespace) -> int:
 
 
 def _init(args: argparse.Namespace) -> int:
-    _emit(init_project(args))
+    _emit(init_project(args, _extension_set(args)))
     return 0
 
 
@@ -92,6 +108,7 @@ def _analyze_snapshot(args: argparse.Namespace) -> int:
         include=args.include,
         exclude=args.exclude,
         max_files=args.max_files,
+        extensions=_extension_set(args),
     )
     _emit(snapshot, args.output)
     return 0
@@ -119,6 +136,7 @@ def _build(args: argparse.Namespace) -> int:
         args.model.resolve(),
         args.output.resolve(),
         project_root=args.project_root.resolve() if args.project_root else None,
+        extensions=_extension_set(args),
     )
     if args.proof:
         write_json(args.proof.resolve(), result)
@@ -145,12 +163,15 @@ def _qa_diagram(args: argparse.Namespace) -> int:
         args.project_root.resolve() if args.project_root else None,
         drawio,
         repo_root=args.repo_root.resolve() if args.repo_root else None,
+        extensions=_extension_set(args),
     )
     report = summarize(issues)
     report["schemaVersion"] = "2.0"
     report["checkedAt"] = utc_now()
     if drawio and drawio.is_file():
-        route = resolve_route(model["route"]["family"], model["route"]["profile"])
+        route = resolve_route(
+            model["route"]["family"], model["route"]["profile"], extensions=_extension_set(args)
+        )
         errors, warnings = run_geometry_checks(drawio, args.padding, str(route["geometryQa"]))
         report["geometry"] = {"profile": route["geometryQa"], "errors": errors, "warnings": warnings}
         report["counts"]["error"] += len(errors)
@@ -179,7 +200,9 @@ def _qa_visual(args: argparse.Namespace) -> int:
 
 def _postflight(args: argparse.Namespace) -> int:
     report = run_postflight(
-        args.project_root.resolve(), repo_root=args.repo_root.resolve() if args.repo_root else None
+        args.project_root.resolve(),
+        repo_root=args.repo_root.resolve() if args.repo_root else None,
+        extensions=_extension_set(args),
     )
     _emit(report, args.output)
     return 0 if report["ok"] else 1
@@ -199,6 +222,7 @@ def _generate(args: argparse.Namespace) -> int:
         padding=args.padding,
         fail_on_warning=not args.allow_warnings,
         restart=args.restart,
+        extensions=_extension_set(args),
     )
     _emit(result)
     return int(result["exitCode"])
@@ -215,6 +239,7 @@ def _sync(args: argparse.Namespace) -> int:
         max_files=args.max_files,
         confirmed_removals=set(args.confirm_removal or []),
         output=args.output,
+        extensions=_extension_set(args),
     )
     _emit(result)
     return 0 if args.dry_run or result["complete"] else 1
@@ -247,6 +272,7 @@ def _contract(args: argparse.Namespace) -> int:
         args.path.resolve(),
         args.kind,
         project_root=args.project_root.resolve() if args.project_root else None,
+        extensions=_extension_set(args),
     )
     report = {
         "ok": not any(issue.severity == "error" for issue in issues),
@@ -257,12 +283,12 @@ def _contract(args: argparse.Namespace) -> int:
 
 
 def _conformance_doctor(args: argparse.Namespace) -> int:
-    _emit(host_capabilities(), args.output)
+    _emit(host_capabilities(extensions=_extension_set(args)), args.output)
     return 0
 
 
 def _conformance_prepare(args: argparse.Namespace) -> int:
-    _emit(prepare_run(args.case, args.host, args.output.resolve()))
+    _emit(prepare_run(args.case, args.host, args.output.resolve(), extensions=_extension_set(args)))
     return 0
 
 
@@ -272,6 +298,7 @@ def _conformance_evaluate(args: argparse.Namespace) -> int:
         args.project.resolve(),
         mode=args.mode,
         execution_path=args.execution.resolve() if args.execution else None,
+        extensions=_extension_set(args),
     )
     _emit(result, args.output)
     return 0 if result["passed"] else 1
@@ -279,7 +306,7 @@ def _conformance_evaluate(args: argparse.Namespace) -> int:
 
 def _conformance_report(args: argparse.Namespace) -> int:
     results = [load_json(path.resolve()) for path in args.results]
-    matrix = build_matrix(results, detect=not args.no_discovery)
+    matrix = build_matrix(results, detect=not args.no_discovery, extensions=_extension_set(args))
     if args.markdown:
         markdown = matrix_markdown(matrix)
         args.markdown.resolve().parent.mkdir(parents=True, exist_ok=True)
@@ -305,6 +332,7 @@ def _asset_sync(args: argparse.Namespace) -> int:
             args.query,
             source_archive=args.source_archive.resolve() if args.source_archive else None,
             accept_terms=args.accept_terms,
+            extensions=_extension_set(args),
         )
     else:
         result = sync_catalog_asset(
@@ -312,6 +340,25 @@ def _asset_sync(args: argparse.Namespace) -> int:
         )
     _emit(result)
     return 2 if result.get("state") == "NeedsManual" else 0
+
+
+def _extension_validate(args: argparse.Namespace) -> int:
+    runtime = load_extensions(args.paths)
+    _emit({"ok": True, **runtime.describe()}, args.output)
+    return 0
+
+
+def _benchmark_validate(args: argparse.Namespace) -> int:
+    suite = load_benchmark_suite()
+    _emit({"ok": True, "schemaVersion": suite["schemaVersion"], "suiteId": suite["suiteId"], "cases": len(suite["cases"])}, args.output)
+    return 0
+
+
+def _benchmark_run(args: argparse.Namespace) -> int:
+    result = run_benchmarks(output=args.output, automated_only=args.automated_only)
+    _emit(result)
+    expected = result["automatedPassed"] if args.automated_only else result["passed"]
+    return 0 if expected else 1
 
 
 def _set_handler(parser: argparse.ArgumentParser, handler: Handler) -> None:
@@ -351,6 +398,7 @@ def build_parser() -> argparse.ArgumentParser:
     init.add_argument("--width", type=int, default=1600)
     init.add_argument("--height", type=int, default=900)
     init.add_argument("--force", action="store_true")
+    _add_extensions(init)
     _set_handler(init, _init)
 
     analyze = commands.add_parser("analyze", help="Capture or verify revision-pinned repository evidence.")
@@ -374,6 +422,7 @@ def build_parser() -> argparse.ArgumentParser:
     snapshot.add_argument("--exclude", action="append", help="Git-style path pattern; repeat to add exclusions.")
     snapshot.add_argument("--max-files", type=int, default=500)
     snapshot.add_argument("--output", "-o", type=Path)
+    _add_extensions(snapshot)
     _set_handler(snapshot, _analyze_snapshot)
     diff = analyze_commands.add_parser("diff", help="Compare two repository snapshots by stable semantic ID.")
     diff.add_argument("before", type=Path)
@@ -391,6 +440,7 @@ def build_parser() -> argparse.ArgumentParser:
     build.add_argument("--output", "-o", type=Path, required=True)
     build.add_argument("--project-root", type=Path)
     build.add_argument("--proof", type=Path)
+    _add_extensions(build)
     _set_handler(build, _build)
 
     render = commands.add_parser("render", help="Render a Draw.io artifact to PNG, SVG, or PDF.")
@@ -412,6 +462,7 @@ def build_parser() -> argparse.ArgumentParser:
     diagram.add_argument("--padding", type=float, default=10.0)
     diagram.add_argument("--output", type=Path)
     diagram.add_argument("--fail-on-warning", action="store_true")
+    _add_extensions(diagram)
     _set_handler(diagram, _qa_diagram)
     visual = qa_commands.add_parser("visual", help="Record rendered-image checks and explicit approval.")
     visual.add_argument("artifact", type=Path)
@@ -427,6 +478,7 @@ def build_parser() -> argparse.ArgumentParser:
     postflight.add_argument("project_root", type=Path)
     postflight.add_argument("--repo-root", type=Path)
     postflight.add_argument("--output", type=Path)
+    _add_extensions(postflight)
     _set_handler(postflight, _postflight)
 
     generate = commands.add_parser("generate", help="Run or safely resume the hash-bound delivery pipeline.")
@@ -442,6 +494,7 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--padding", type=float, default=10.0)
     generate.add_argument("--allow-warnings", action="store_true")
     generate.add_argument("--restart", action="store_true")
+    _add_extensions(generate)
     _set_handler(generate, _generate)
 
     sync = commands.add_parser("sync", help="Three-way reconcile repository semantics with a Diagram Model V3 project.")
@@ -456,6 +509,7 @@ def build_parser() -> argparse.ArgumentParser:
     sync.add_argument("--max-files", type=int)
     sync.add_argument("--confirm-removal", action="append", default=[], help="Stable semantic ID approved for removal; repeat per ID.")
     sync.add_argument("--output", type=Path, help="Optional plan/report path.")
+    _add_extensions(sync)
     _set_handler(sync, _sync)
 
     migrate = commands.add_parser("migrate", help="Migrate persisted NexCanvas contracts without rewriting the source.")
@@ -477,17 +531,20 @@ def build_parser() -> argparse.ArgumentParser:
     )
     contract.add_argument("path", type=Path)
     contract.add_argument("--project-root", type=Path)
+    _add_extensions(contract)
     _set_handler(contract, _contract)
 
     conformance = commands.add_parser("conformance", help="Prepare, evaluate, and report evidence-based host conformance.")
     conformance_commands = conformance.add_subparsers(dest="conformance_command", required=True)
     conformance_doctor = conformance_commands.add_parser("doctor", help="Inspect local host adapter availability.")
     conformance_doctor.add_argument("--output", type=Path)
+    _add_extensions(conformance_doctor)
     _set_handler(conformance_doctor, _conformance_doctor)
     conformance_prepare = conformance_commands.add_parser("prepare", help="Create a hash-bound host run pack for one corpus case.")
     conformance_prepare.add_argument("case")
     conformance_prepare.add_argument("--host", required=True)
     conformance_prepare.add_argument("--output", type=Path, required=True)
+    _add_extensions(conformance_prepare)
     _set_handler(conformance_prepare, _conformance_prepare)
     conformance_evaluate = conformance_commands.add_parser("evaluate", help="Score one completed conformance project.")
     conformance_evaluate.add_argument("request", type=Path)
@@ -495,12 +552,14 @@ def build_parser() -> argparse.ArgumentParser:
     conformance_evaluate.add_argument("--mode", choices=["fixture", "observed"], required=True)
     conformance_evaluate.add_argument("--execution", type=Path)
     conformance_evaluate.add_argument("--output", type=Path)
+    _add_extensions(conformance_evaluate)
     _set_handler(conformance_evaluate, _conformance_evaluate)
     conformance_report = conformance_commands.add_parser("report", help="Aggregate observed results into a host matrix.")
     conformance_report.add_argument("results", type=Path, nargs="*")
     conformance_report.add_argument("--no-discovery", action="store_true", help="Report not-run instead of machine-local unavailable.")
     conformance_report.add_argument("--output", type=Path)
     conformance_report.add_argument("--markdown", type=Path)
+    _add_extensions(conformance_report)
     _set_handler(conformance_report, _conformance_report)
 
     asset = commands.add_parser("asset", help="Search or sync verified diagram assets.")
@@ -519,7 +578,25 @@ def build_parser() -> argparse.ArgumentParser:
     sync.add_argument("--accept-terms", action="store_true")
     sync.add_argument("--offline", action="store_true")
     sync.add_argument("--generic-fallback", action="store_true")
+    _add_extensions(sync)
     _set_handler(sync, _asset_sync)
+
+    extension = commands.add_parser("extension", help="Validate and inspect trusted, explicitly loaded extensions.")
+    extension_commands = extension.add_subparsers(dest="extension_command", required=True)
+    extension_validate = extension_commands.add_parser("validate", help="Validate extension manifests and component resources.")
+    extension_validate.add_argument("paths", type=Path, nargs="+")
+    extension_validate.add_argument("--output", type=Path)
+    _set_handler(extension_validate, _extension_validate)
+
+    benchmark = commands.add_parser("benchmark", help="Validate and evaluate hash-bound visual benchmark baselines.")
+    benchmark_commands = benchmark.add_subparsers(dest="benchmark_command", required=True)
+    benchmark_validate = benchmark_commands.add_parser("validate", help="Validate the seven-class benchmark corpus contract.")
+    benchmark_validate.add_argument("--output", type=Path)
+    _set_handler(benchmark_validate, _benchmark_validate)
+    benchmark_run = benchmark_commands.add_parser("run", help="Evaluate geometry, text bounds, image proxies, and human review evidence.")
+    benchmark_run.add_argument("--automated-only", action="store_true", help="Require automated gates but report human review as non-authoritative.")
+    benchmark_run.add_argument("--output", type=Path)
+    _set_handler(benchmark_run, _benchmark_run)
 
     return parser
 

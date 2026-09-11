@@ -4,6 +4,8 @@ import copy
 from pathlib import Path
 from typing import Any
 
+from .extensions import ExtensionSet
+
 from .common import load_json, sha256_json, utc_now, write_json
 from .contracts import (
     validate_diagram_model,
@@ -306,6 +308,7 @@ def build_sync_plan(
     exclude: list[str] | None = None,
     max_files: int | None = None,
     confirmed_removals: set[str] | None = None,
+    extensions: ExtensionSet | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:
     project = project_root.resolve()
     current_model = load_json(project / "diagram_model.json")
@@ -313,9 +316,9 @@ def build_sync_plan(
         raise ValueError("Incremental semantic sync requires Diagram Model schemaVersion '3.0'. Migrate V2 before syncing.")
     source_model = load_json(project / "source_model.json")
     lock = load_json(project / "diagram_lock.json")
-    _require_valid("diagram_model.json", validate_diagram_model(current_model))
+    _require_valid("diagram_model.json", validate_diagram_model(current_model, extensions=extensions))
     _require_valid("source_model.json", validate_source_model(source_model))
-    _require_valid("diagram_lock.json", validate_lock(lock))
+    _require_valid("diagram_lock.json", validate_lock(lock, extensions=extensions))
     snapshot_path = project / "repository_snapshot.json"
     baseline = load_json(snapshot_path) if snapshot_path.is_file() else _empty_snapshot(source_id)
     if snapshot_path.is_file():
@@ -331,6 +334,7 @@ def build_sync_plan(
         include=effective_include,
         exclude=effective_exclude,
         max_files=effective_max,
+        extensions=extensions,
     )
     _require_valid("incoming repository snapshot", validate_repository_snapshot(incoming))
     diff = diff_repository_snapshots(baseline, incoming)
@@ -387,9 +391,9 @@ def build_sync_plan(
         "pendingRemovals": pending,
         "diff": diff,
     }
-    _require_valid("merged diagram model", validate_diagram_model(merged_model))
+    _require_valid("merged diagram model", validate_diagram_model(merged_model, extensions=extensions))
     _require_valid("merged source model", validate_source_model(merged_source))
-    _require_valid("merged diagram lock", validate_lock(merged_lock))
+    _require_valid("merged diagram lock", validate_lock(merged_lock, extensions=extensions))
     _require_valid("semantic sync plan", validate_sync_plan(report))
     return report, incoming, merged_model, {"source": merged_source, "lock": merged_lock}
 
@@ -405,6 +409,7 @@ def sync_project(
     max_files: int | None = None,
     confirmed_removals: set[str] | None = None,
     output: Path | None = None,
+    extensions: ExtensionSet | None = None,
 ) -> dict[str, Any]:
     project = project_root.resolve()
     report, incoming, merged_model, companions = build_sync_plan(
@@ -415,6 +420,7 @@ def sync_project(
         exclude=exclude,
         max_files=max_files,
         confirmed_removals=confirmed_removals,
+        extensions=extensions,
     )
     report["mode"] = "dry-run" if dry_run else "apply"
     report["projectModified"] = False

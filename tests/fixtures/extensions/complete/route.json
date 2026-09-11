@@ -1,0 +1,11 @@
+{
+  "family": "extension-fixture",
+  "profile": "linear",
+  "definition": {
+    "notation": "fixture",
+    "layout": "fixture-layout",
+    "geometryQa": "baseline",
+    "defaultViewIntent": "architecture",
+    "viewIntents": ["architecture"]
+  }
+}

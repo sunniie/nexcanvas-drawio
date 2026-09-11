@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import TYPE_CHECKING, Any, Iterable
 
 from .common import load_json, sha256_json
 from .archetypes import resolve_archetype
@@ -11,6 +11,9 @@ from .layout import PRESENTATION_MIN_SIZES
 from .intents import VIEW_INTENTS, compatible_view_intents, resolve_view_intent
 from .model_v3 import CONFIDENCE_VALUES, normalize_diagram_model
 from .registry import SUPPORTED_LAYOUTS, resolve_route, resolve_theme
+
+if TYPE_CHECKING:
+    from .extensions import ExtensionSet
 
 
 ID_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_.:-]*$")
@@ -58,7 +61,11 @@ def _unique_ids(items: Iterable[dict[str, Any]], kind: str, issues: list[Issue])
     return seen
 
 
-def _validate_v2_diagram_model(model: dict[str, Any], root: Path | None = None) -> list[Issue]:
+def _validate_v2_diagram_model(
+    model: dict[str, Any],
+    root: Path | None = None,
+    extensions: "ExtensionSet | None" = None,
+) -> list[Issue]:
     issues: list[Issue] = []
     if model.get("schemaVersion") != "2.0":
         issues.append(Issue("error", "schema-version", "diagram_model schemaVersion must be 2.0.", "schemaVersion"))
@@ -69,14 +76,25 @@ def _validate_v2_diagram_model(model: dict[str, Any], root: Path | None = None) 
 
     route = model.get("route") if isinstance(model.get("route"), dict) else {}
     try:
-        route_entry = resolve_route(str(route.get("family", "")), str(route.get("profile", "")), root)
-        if route_entry.get("layout") not in SUPPORTED_LAYOUTS:
+        route_entry = resolve_route(str(route.get("family", "")), str(route.get("profile", "")), root, extensions)
+        layout_id = str(route_entry.get("layout", ""))
+        extension_layout = extensions is not None and extensions.get("layout", layout_id) is not None
+        if layout_id not in SUPPORTED_LAYOUTS and not extension_layout:
             issues.append(Issue("error", "layout-adapter", f"Route uses unsupported layout {route_entry.get('layout')!r}.", "route"))
-        view_intent = resolve_view_intent(model)
+        view_intent = str(model.get("viewIntent", "")).strip() or str(route_entry.get("defaultViewIntent", ""))
+        if not view_intent:
+            view_intent = resolve_view_intent(model)
         if view_intent not in VIEW_INTENTS:
             issues.append(Issue("error", "view-intent", f"Unsupported viewIntent: {view_intent!r}.", "viewIntent"))
-        elif view_intent not in compatible_view_intents(str(route.get("family", "")), str(route.get("profile", ""))):
-            supported = ", ".join(sorted(compatible_view_intents(str(route.get("family", "")), str(route.get("profile", "")))))
+        else:
+            declared_intents = route_entry.get("viewIntents")
+            supported_intents = (
+                set(str(item) for item in declared_intents)
+                if isinstance(declared_intents, list)
+                else compatible_view_intents(str(route.get("family", "")), str(route.get("profile", "")))
+            )
+        if view_intent in VIEW_INTENTS and view_intent not in supported_intents:
+            supported = ", ".join(sorted(supported_intents))
             issues.append(Issue("error", "view-intent-route", f"viewIntent={view_intent!r} is not compatible with route {route.get('family')}/{route.get('profile')}; supported: {supported}.", "viewIntent"))
     except KeyError as exc:
         issues.append(Issue("error", "route", str(exc), "route"))
@@ -303,7 +321,11 @@ def _presentation_records(
     return records
 
 
-def _validate_v3_diagram_model(model: dict[str, Any], root: Path | None = None) -> list[Issue]:
+def _validate_v3_diagram_model(
+    model: dict[str, Any],
+    root: Path | None = None,
+    extensions: "ExtensionSet | None" = None,
+) -> list[Issue]:
     issues: list[Issue] = []
     allowed_root = {"schemaVersion", "metadata", "semantics", "presentation"}
     extra_root = set(model) - allowed_root
@@ -442,17 +464,21 @@ def _validate_v3_diagram_model(model: dict[str, Any], root: Path | None = None) 
         except ValueError as exc:
             issues.append(Issue("error", "v3-normalization", str(exc), "diagram_model"))
         else:
-            for issue in _validate_v2_diagram_model(projection, root):
+            for issue in _validate_v2_diagram_model(projection, root, extensions):
                 issues.append(Issue(issue.severity, issue.code, issue.message, f"projection.{issue.location}"))
     return issues
 
 
-def validate_diagram_model(model: dict[str, Any], root: Path | None = None) -> list[Issue]:
+def validate_diagram_model(
+    model: dict[str, Any],
+    root: Path | None = None,
+    extensions: "ExtensionSet | None" = None,
+) -> list[Issue]:
     version = model.get("schemaVersion")
     if version == "2.0":
-        return _validate_v2_diagram_model(model, root)
+        return _validate_v2_diagram_model(model, root, extensions)
     if version == "3.0":
-        return _validate_v3_diagram_model(model, root)
+        return _validate_v3_diagram_model(model, root, extensions)
     return [
         Issue(
             "error",
@@ -543,7 +569,11 @@ def validate_source_model(model: dict[str, Any]) -> list[Issue]:
     return issues
 
 
-def validate_lock(lock: dict[str, Any], root: Path | None = None) -> list[Issue]:
+def validate_lock(
+    lock: dict[str, Any],
+    root: Path | None = None,
+    extensions: "ExtensionSet | None" = None,
+) -> list[Issue]:
     issues: list[Issue] = []
     if lock.get("schemaVersion") != "2.0":
         issues.append(Issue("error", "schema-version", "diagram_lock schemaVersion must be 2.0.", "schemaVersion"))
@@ -551,12 +581,20 @@ def validate_lock(lock: dict[str, Any], root: Path | None = None) -> list[Issue]
         issues.append(Issue("error", "status", "diagram_lock status must be draft or confirmed.", "status"))
     route = lock.get("route") if isinstance(lock.get("route"), dict) else {}
     try:
-        resolve_route(str(route.get("family", "")), str(route.get("profile", "")), root)
+        route_entry = resolve_route(
+            str(route.get("family", "")), str(route.get("profile", "")), root, extensions
+        )
         intent_model: dict[str, Any] = {"route": route}
         if lock.get("viewIntent"):
             intent_model["viewIntent"] = lock.get("viewIntent")
         view_intent = resolve_view_intent(intent_model)
-        if view_intent not in compatible_view_intents(str(route.get("family", "")), str(route.get("profile", ""))):
+        declared_intents = route_entry.get("viewIntents")
+        supported_intents = (
+            set(str(item) for item in declared_intents)
+            if isinstance(declared_intents, list)
+            else compatible_view_intents(str(route.get("family", "")), str(route.get("profile", "")))
+        )
+        if view_intent not in supported_intents:
             issues.append(Issue("error", "view-intent-route", f"Lock viewIntent={view_intent!r} is incompatible with its route.", "viewIntent"))
     except KeyError as exc:
         issues.append(Issue("error", "route", str(exc), "route"))
@@ -728,6 +766,12 @@ def validate_repository_snapshot(snapshot: dict[str, Any]) -> list[Issue]:
         "facts": snapshot.get("facts", []),
         "diagnostics": snapshot.get("diagnostics", []),
     }
+    extension_fingerprint = snapshot.get("extensionFingerprint")
+    if extension_fingerprint is not None:
+        if not isinstance(extension_fingerprint, str) or not re.fullmatch(r"[0-9a-f]{64}", extension_fingerprint):
+            issues.append(Issue("error", "snapshot-extension-fingerprint", "extensionFingerprint must be a lowercase SHA-256 hash.", "extensionFingerprint"))
+        else:
+            expected_input["extensionFingerprint"] = extension_fingerprint
     if snapshot.get("fingerprint") != sha256_json(expected_input):
         issues.append(Issue("error", "snapshot-fingerprint", "Repository snapshot fingerprint does not match its canonical content.", "fingerprint"))
     return issues
@@ -764,16 +808,22 @@ def validate_sync_plan(plan: dict[str, Any]) -> list[Issue]:
     return issues
 
 
-def validate_file(path: Path, kind: str, root: Path | None = None, project_root: Path | None = None) -> list[Issue]:
+def validate_file(
+    path: Path,
+    kind: str,
+    root: Path | None = None,
+    project_root: Path | None = None,
+    extensions: "ExtensionSet | None" = None,
+) -> list[Issue]:
     value = load_json(path)
     if not isinstance(value, dict):
         return [Issue("error", "document-type", f"{kind} document must be a JSON object.", str(path))]
     if kind == "diagram-model":
-        return validate_diagram_model(value, root)
+        return validate_diagram_model(value, root, extensions)
     if kind == "source-model":
         return validate_source_model(value)
     if kind == "diagram-lock":
-        return validate_lock(value, root)
+        return validate_lock(value, root, extensions)
     if kind == "asset-manifest":
         return validate_manifest(value, project_root)
     if kind == "project-state":

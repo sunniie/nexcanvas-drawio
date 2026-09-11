@@ -71,6 +71,8 @@ as a generic component inventory.
 | Collision QA | Rejects node, icon, label, step-badge, connector-lane, and visible boundary-outline collisions |
 | Visual proof | Renders through Draw.io Desktop, requires human/agent image inspection, then seals hashes at postflight |
 | Cross-agent conformance | Uses one shared skill, hash-bound host run packs, five-dimensional scoring, and explicit verified/not-run/unavailable/failed states |
+| Extension API | Loads versioned analyzer, layout, route, asset-provider, QA-rule, and host adapters only from explicitly trusted directories |
+| Visual benchmarks | Gates sparse, dense, cloud, AI, sequence, data-flow, and lifecycle baselines across geometry, text bounds, image proxies, and hash-bound human review |
 
 ## Agent-guided intake
 
@@ -427,8 +429,47 @@ examples/v2-rag-reference/       compact phase reference
 examples/v3-dense-industrial-ai/ dense industrial AI reference
 examples/v4-hub-spoke-industrial/ hub-and-spoke reference
 examples/v5-multi-agent-workflow/ multi-agent orchestration workflow
+benchmarks/                       seven-class visual corpus and hash-bound baselines
 nexcanvas-output/                documented default generated-output root
 ```
+
+## Extension ecosystem
+
+Extensions use one manifest/API contract and enter the actual compiler boundary;
+they are not prompt snippets or registry labels with no runtime effect. The six
+component kinds cover repository analyzers, layouts, routes, asset providers, QA
+rules, and agent-host adapters.
+
+```bash
+nexcanvas extension validate ./my-extension
+nexcanvas init ./project --name "Service map" --family custom --profile service-map --extension ./my-extension
+nexcanvas analyze snapshot ./repo --extension ./my-extension
+nexcanvas build diagram_model.json -o diagram.drawio --extension ./my-extension
+nexcanvas generate ./project --extension ./my-extension
+```
+
+Loading is always explicit. Executable hooks use a versioned JSON stdin/stdout
+protocol, bounded timeout, `shell=False`, confined resource paths, and validated
+responses. The resumable pipeline fingerprints the manifest and every declared
+hook/resource, so an extension change invalidates affected generated stages.
+Hooks are trusted local code, not sandboxed code. Read the
+[extension authoring guide](docs/extensions.md) before loading or publishing an
+extension.
+
+## Visual benchmark suite
+
+The tracked benchmark corpus covers sparse, dense, cloud, AI, sequence,
+data-flow, and lifecycle diagrams. It separates geometry failures, text-bound
+collisions, deterministic PNG proxies, and human visual approval:
+
+```bash
+nexcanvas benchmark validate
+nexcanvas benchmark run
+```
+
+Each approval is bound to the rendered PNG hash. `--automated-only` is suitable
+for CI diagnostics but intentionally cannot claim a release-grade visual pass.
+See the [benchmark contract and review policy](docs/visual-benchmarks.md).
 
 ## Development and validation
 
@@ -437,6 +478,7 @@ python -m pip install -e .
 python -m unittest discover -s tests -v
 python scripts/test_drawio_qa.py -v
 python scripts/validate_conformance.py
+nexcanvas benchmark run
 nexcanvas doctor
 python scripts/package_smoke.py
 ```

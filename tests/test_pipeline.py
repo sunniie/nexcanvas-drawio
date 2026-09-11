@@ -17,10 +17,12 @@ from nexcanvas.contracts import validate_project_state
 from nexcanvas.cli import main
 from nexcanvas.pipeline import STAGES, run_generate
 from nexcanvas.model_v3 import migrate_v2_model
+from nexcanvas.extensions import load_extensions
 
 
 ROOT = Path(__file__).resolve().parents[1]
 REFERENCE = ROOT / "examples" / "v5-multi-agent-workflow"
+EXTENSION_FIXTURE = ROOT / "tests" / "fixtures" / "extensions" / "complete"
 
 
 def _png(width: int, height: int) -> bytes:
@@ -218,6 +220,30 @@ class PipelineTests(unittest.TestCase):
             self.assertEqual(result["exitCode"], 3)
             self.assertEqual(result["outcome"], "awaiting-review")
             self.assertFalse(result["complete"])
+
+    def test_extension_content_change_invalidates_build_and_downstream_stages(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            project = self._project(directory)
+            extension_root = Path(directory) / "extension"
+            shutil.copytree(EXTENSION_FIXTURE, extension_root)
+            extensions = load_extensions([extension_root])
+            with patch("nexcanvas.pipeline.render_drawio", side_effect=_fake_render):
+                run_generate(project, extensions=extensions)
+                run_generate(
+                    project,
+                    approve_visual=True,
+                    reviewer="pipeline-test",
+                    notes="Approved extension-backed render after enlarged inspection.",
+                    extensions=extensions,
+                )
+                hook = extension_root / "hook.py"
+                hook.write_text(hook.read_text(encoding="utf-8") + "\n# extension revision\n", encoding="utf-8")
+                changed = run_generate(project, extensions=load_extensions([extension_root]))
+            self.assertIn({"stage": "plan", "action": "reused", "status": "complete"}, changed["events"])
+            self.assertTrue(
+                any(event["stage"] == "build" and event["action"] == "invalidated" for event in changed["events"])
+            )
+            self.assertEqual(changed["outcome"], "awaiting-review")
 
 
 if __name__ == "__main__":

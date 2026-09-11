@@ -8,10 +8,13 @@ import posixpath
 import re
 import subprocess
 from pathlib import Path, PurePosixPath
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from .common import sha256_json, utc_now
 from .repository import inspect_repository
+
+if TYPE_CHECKING:
+    from .extensions import ExtensionSet
 
 
 SNAPSHOT_SCHEMA_VERSION = "1.0"
@@ -194,6 +197,7 @@ def analyze_repository(
     include: list[str] | None = None,
     exclude: list[str] | None = None,
     max_files: int = 500,
+    extensions: "ExtensionSet | None" = None,
 ) -> dict[str, Any]:
     if max_files < 1:
         raise ValueError("--max-files must be at least 1.")
@@ -202,12 +206,22 @@ def analyze_repository(
     resolved_source_id = f"{source_id}-{revision[:12]}"
     source = inspect_repository(root, resolved_source_id)
     source["location"] = "."
-    include_patterns = include or list(DEFAULT_INCLUDE)
+    extension_analyzers: dict[str, str] = {}
+    if extensions is not None:
+        for component in extensions.components("analyzer"):
+            for suffix in component.definition.get("fileSuffixes", []):
+                normalized = str(suffix).lower()
+                if normalized in SUPPORTED_SUFFIXES or normalized in extension_analyzers:
+                    raise ValueError(f"Extension analyzer cannot replace an existing file suffix: {normalized}.")
+                extension_analyzers[normalized] = component.component_id
+    supported_suffixes = {**SUPPORTED_SUFFIXES, **extension_analyzers}
+    extension_patterns = [f"**/*{suffix}" for suffix in extension_analyzers] + [f"*{suffix}" for suffix in extension_analyzers]
+    include_patterns = include or [*DEFAULT_INCLUDE, *extension_patterns]
     exclude_patterns = list(dict.fromkeys([*DEFAULT_EXCLUDE, *(exclude or [])]))
     paths = [
         path
         for path in _git(root, "ls-tree", "-r", "--name-only", revision).splitlines()
-        if PurePosixPath(path).suffix.lower() in SUPPORTED_SUFFIXES
+        if PurePosixPath(path).suffix.lower() in supported_suffixes
         and _matches(path, include_patterns)
         and not _matches(path, exclude_patterns)
     ]
@@ -226,11 +240,33 @@ def analyze_repository(
     for path in sorted(paths):
         content = _git(root, "show", f"{revision}:{path}")
         blob = _git(root, "rev-parse", f"{revision}:{path}").strip()
-        language = SUPPORTED_SUFFIXES[PurePosixPath(path).suffix.lower()]
+        suffix = PurePosixPath(path).suffix.lower()
+        language = supported_suffixes[suffix]
         if language == "python":
             symbols, imports, parser_diagnostics = _parse_python(content, path)
-        else:
+        elif language in {"javascript", "typescript"}:
             symbols, imports, parser_diagnostics = _parse_typescript(content, path)
+        else:
+            if extensions is None:
+                raise ValueError(f"No extension runtime is available for analyzer {language}.")
+            result = extensions.run_hook(
+                "analyzer",
+                language,
+                {
+                    "path": path,
+                    "suffix": suffix,
+                    "content": content,
+                    "revision": revision,
+                    "blob": blob,
+                },
+            )
+            symbols = result.get("symbols", [])
+            imports = result.get("imports", [])
+            parser_diagnostics = result.get("diagnostics", [])
+            if not all(isinstance(value, list) for value in (symbols, imports, parser_diagnostics)):
+                raise ValueError(f"Analyzer extension {language} must return symbols, imports, and diagnostics arrays.")
+            if any(not isinstance(item, dict) for item in [*symbols, *imports, *parser_diagnostics]):
+                raise ValueError(f"Analyzer extension {language} returned a non-object array item.")
         diagnostics.extend(parser_diagnostics)
         previous_path = renames.get(path, path)
         if parser_diagnostics and previous_path in previous_files:
@@ -260,10 +296,14 @@ def analyze_repository(
     by_path = {item["path"]: item for item in files}
     for item in files:
         for imported in item["imports"]:
-            if item["language"] == "python":
+            if isinstance(imported.get("targetPath"), str):
+                target = imported["targetPath"] if imported["targetPath"] in tracked else None
+            elif item["language"] == "python":
                 target = _python_target(item["path"], imported["specifier"], python_modules)
-            else:
+            elif item["language"] in {"javascript", "typescript"}:
                 target = _typescript_target(item["path"], imported["specifier"], tracked)
+            else:
+                target = None
             if target:
                 imported["targetPath"] = target
 
@@ -366,6 +406,9 @@ def analyze_repository(
             )
 
     projection = {"groups": [], "entities": entities, "relationships": relationships}
+    extension_fingerprint = (
+        extensions.fingerprint() if extensions is not None and extensions.manifests else None
+    )
     fingerprint_input = {
         "source": {"remote": source["repository"]["remote"], "revision": revision},
         "scope": {"include": include_patterns, "exclude": exclude_patterns},
@@ -374,7 +417,9 @@ def analyze_repository(
         "facts": facts,
         "diagnostics": diagnostics,
     }
-    return {
+    if extension_fingerprint:
+        fingerprint_input["extensionFingerprint"] = extension_fingerprint
+    result = {
         "schemaVersion": SNAPSHOT_SCHEMA_VERSION,
         "analyzerVersion": ANALYZER_VERSION,
         "createdAt": utc_now(),
@@ -392,6 +437,9 @@ def analyze_repository(
         "diagnostics": diagnostics,
         "fingerprint": sha256_json(fingerprint_input),
     }
+    if extension_fingerprint:
+        result["extensionFingerprint"] = extension_fingerprint
+    return result
 
 
 def _record_map(snapshot: dict[str, Any], collection: str) -> dict[str, dict[str, Any]]:

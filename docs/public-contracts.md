@@ -18,7 +18,8 @@ The following are public contracts:
 - repository snapshot `1.0` and semantic sync-plan `1.0`;
 - conformance suite `1.0`, host adapter `1.0`, execution record `1.0`, and
   conformance result `1.0`;
-- extension manifests and plugin interfaces once published;
+- extension manifest `1.0`, extension API `1.0`, and JSON hook protocol `1.0`;
+- visual benchmark suite `1.0` and benchmark result `1.0`;
 - the delivery definition for editable, rendered, and verified artifacts.
 
 The `nexcanvas` command and its documented subcommands are public preview
@@ -51,6 +52,9 @@ Repository snapshot and semantic sync-plan schema `1.0` are introduced in
 product `v0.5.0`. They do not change Diagram Model V3, Source Model `2.0`,
 Diagram Lock `2.0`, or pipeline-state `1.0`. Incremental sync is rejected for V2
 models rather than guessing how to preserve mixed semantic/presentation fields.
+Product `v0.7.x` widens repository snapshot `1.0` to permit extension-defined
+language IDs and an optional hash-bound `extensionFingerprint`; existing
+snapshots remain valid.
 
 ## Deprecation policy
 
@@ -70,3 +74,15 @@ Conformance fixtures validate the deterministic evaluator only. A host is marked
 `verified` only from an observed run whose execution record binds the host,
 adapter, skill, corpus case, project artifacts, and timestamps by digest. Results
 become stale when any of those versioned inputs changes.
+
+## Extension and benchmark contracts
+
+Extensions are public preview in product `v0.7.x`. Loading is explicit and
+opt-in; built-in IDs cannot be replaced. Manifest compatibility is checked
+before execution, relative resources are confined to the extension root, and
+hook processes use versioned JSON stdin/stdout with bounded timeouts. Hooks are
+trusted local code, not a security sandbox.
+
+The visual benchmark result separates semantic/contract checks, geometry and
+text bounds, deterministic PNG proxies, and hash-current human review. An
+automated-only run cannot claim a release-grade visual pass.

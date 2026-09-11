@@ -10,6 +10,7 @@ from .assets import load_manifest
 from .builder import build_drawio
 from .common import load_json, safe_project_path, sha256_file, sha256_json, utc_now, write_json
 from .contracts import validate_project_state
+from .extensions import ExtensionSet
 from .geometry import run_checks as run_geometry_checks
 from .model_v3 import normalize_diagram_model
 from .planning import brainstorm_layout
@@ -176,6 +177,9 @@ def _input_descriptor(
     virtual_inputs: dict[str, str] = {
         "pipelineVersion": sha256_json(__version__),
     }
+    extensions: ExtensionSet = options["extensions"]
+    if stage != "plan":
+        virtual_inputs["extensions"] = extensions.fingerprint()
     required: tuple[str, ...]
     if stage == "plan":
         required = ("diagram_model.json",)
@@ -322,6 +326,7 @@ def _run_stage(
             model_path,
             project_root / "artifacts" / "diagram.drawio",
             project_root=project_root,
+            extensions=options["extensions"],
         )
         write_json(project_root / "reports" / "build.json", result)
         return "complete", {"ok": True, "nodes": result["nodes"], "edges": result["edges"]}
@@ -336,11 +341,14 @@ def _run_stage(
             project_root,
             drawio,
             repo_root=options.get("repoRoot"),
+            extensions=options["extensions"],
         )
         report = summarize(issues)
         report["schemaVersion"] = "2.0"
         report["checkedAt"] = utc_now()
-        route = resolve_route(model["route"]["family"], model["route"]["profile"])
+        route = resolve_route(
+            model["route"]["family"], model["route"]["profile"], extensions=options["extensions"]
+        )
         errors, warnings = run_geometry_checks(drawio, options["padding"], str(route["geometryQa"]))
         report["geometry"] = {"profile": route["geometryQa"], "errors": errors, "warnings": warnings}
         report["counts"]["error"] += len(errors)
@@ -391,7 +399,9 @@ def _run_stage(
         }
 
     if stage == "postflight":
-        report = run_postflight(project_root, repo_root=options.get("repoRoot"))
+        report = run_postflight(
+            project_root, repo_root=options.get("repoRoot"), extensions=options["extensions"]
+        )
         write_json(project_root / "reports" / "postflight.json", report)
         return ("complete" if report["ok"] else "failed"), {
             "ok": report["ok"],
@@ -440,6 +450,7 @@ def run_generate(
     padding: float = 10.0,
     fail_on_warning: bool = True,
     restart: bool = False,
+    extensions: ExtensionSet | None = None,
 ) -> dict[str, Any]:
     project_root = project_root.resolve()
     if render_format not in {"png", "svg", "pdf"}:
@@ -471,6 +482,7 @@ def run_generate(
         "padding": padding,
         "failOnWarning": fail_on_warning,
         "previewRelative": preview_relative,
+        "extensions": extensions or ExtensionSet.empty(),
     }
     state = load_project_state(project_root)
     events: list[dict[str, Any]] = []

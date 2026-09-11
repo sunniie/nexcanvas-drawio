@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from .extensions import ExtensionSet
 
 
 PRESENTATION_MIN_SIZES: dict[str, tuple[float, float]] = {
@@ -611,9 +614,10 @@ def _edge_route(
 ) -> EdgeRoute:
     edge_layout = edge_layout or {}
     if sequence_y is not None:
-        start_y = source.bottom + 18.0
-        target_y = target.bottom + 18.0
-        points = ((source.cx, start_y), (source.cx, sequence_y), (target.cx, sequence_y), (target.cx, target_y))
+        # Sequence messages connect lifelines at one event row. The builder emits
+        # these as absolute edges so they do not create misleading vertical
+        # segments back to the participant header cards.
+        points = ((source.cx, sequence_y), (target.cx, sequence_y))
         return EdgeRoute(points, 0.5, 1.0, 0.5, 1.0)
     if edge_layout.get("sourcePort") is not None or edge_layout.get("targetPort") is not None:
         source_point, exit_x, exit_y = _explicit_port_attachment(
@@ -833,7 +837,70 @@ def _custom_route(source: Rect, target: Rect, edge_layout: dict[str, Any]) -> Ed
     return EdgeRoute((source_point, *waypoints, target_point), exit_x, exit_y, entry_x, entry_y)
 
 
-def layout_model(model: dict[str, Any], adapter: str) -> LayoutResult:
+def _extension_layout(model: dict[str, Any], adapter: str, extensions: "ExtensionSet") -> LayoutResult:
+    result = extensions.run_hook("layout", adapter, {"model": model, "adapter": adapter})
+
+    def rectangles(field: str, required: set[str]) -> dict[str, Rect]:
+        values = result.get(field)
+        if not isinstance(values, dict):
+            raise ValueError(f"Layout extension {adapter} must return a {field} object.")
+        parsed: dict[str, Rect] = {}
+        for item_id, value in values.items():
+            if not isinstance(item_id, str) or not isinstance(value, dict):
+                raise ValueError(f"Layout extension {adapter} returned an invalid {field} entry.")
+            coordinates = [value.get(key) for key in ("x", "y", "w", "h")]
+            if not all(isinstance(item, (int, float)) and not isinstance(item, bool) and math.isfinite(float(item)) for item in coordinates):
+                raise ValueError(f"Layout extension {adapter} returned non-finite geometry for {item_id}.")
+            rect = Rect(*(float(item) for item in coordinates))
+            if rect.w <= 0 or rect.h <= 0:
+                raise ValueError(f"Layout extension {adapter} returned a non-positive rectangle for {item_id}.")
+            parsed[item_id] = rect
+        missing = required - set(parsed)
+        extra = set(parsed) - required
+        if missing or extra:
+            raise ValueError(
+                f"Layout extension {adapter} {field} coverage mismatch; "
+                f"missing={sorted(missing)}, extra={sorted(extra)}."
+            )
+        return parsed
+
+    node_ids = {str(node["id"]) for node in model.get("nodes", [])}
+    boundary_ids = {str(boundary["id"]) for boundary in model.get("boundaries", [])}
+    nodes = rectangles("nodes", node_ids)
+    boundaries = rectangles("boundaries", boundary_ids)
+    raw_edges = result.get("edges")
+    if not isinstance(raw_edges, dict):
+        raise ValueError(f"Layout extension {adapter} must return an edges object.")
+    edges: dict[str, EdgeRoute] = {}
+    expected_edges = {str(edge["id"]) for edge in model.get("edges", [])}
+    for edge_id, value in raw_edges.items():
+        if not isinstance(edge_id, str) or not isinstance(value, dict):
+            raise ValueError(f"Layout extension {adapter} returned an invalid edge entry.")
+        raw_points = value.get("points")
+        if not isinstance(raw_points, list) or len(raw_points) < 2:
+            raise ValueError(f"Layout extension {adapter} edge {edge_id} requires at least two points.")
+        points: list[tuple[float, float]] = []
+        for point in raw_points:
+            if not isinstance(point, list) or len(point) != 2 or not all(
+                isinstance(item, (int, float)) and not isinstance(item, bool) and math.isfinite(float(item)) for item in point
+            ):
+                raise ValueError(f"Layout extension {adapter} edge {edge_id} has an invalid point.")
+            points.append((float(point[0]), float(point[1])))
+        ports = [value.get(key) for key in ("exitX", "exitY", "entryX", "entryY")]
+        if not all(isinstance(item, (int, float)) and not isinstance(item, bool) and 0 <= float(item) <= 1 for item in ports):
+            raise ValueError(f"Layout extension {adapter} edge {edge_id} requires normalized entry and exit ports.")
+        edges[edge_id] = EdgeRoute(tuple(points), *(float(item) for item in ports))
+    if set(edges) != expected_edges:
+        raise ValueError(
+            f"Layout extension {adapter} edge coverage mismatch; "
+            f"missing={sorted(expected_edges - set(edges))}, extra={sorted(set(edges) - expected_edges)}."
+        )
+    return LayoutResult(nodes, boundaries, edges, adapter)
+
+
+def layout_model(model: dict[str, Any], adapter: str, extensions: "ExtensionSet | None" = None) -> LayoutResult:
+    if extensions is not None and extensions.get("layout", adapter) is not None:
+        return _extension_layout(model, adapter, extensions)
     canvas = model["canvas"]
     width = float(canvas["width"])
     height = float(canvas["height"])
@@ -862,6 +929,20 @@ def layout_model(model: dict[str, Any], adapter: str) -> LayoutResult:
         node_rects = _grid_positions(nodes, content, columns=columns)
     else:
         raise ValueError(f"Unsupported layout adapter: {adapter}")
+
+    for node in nodes:
+        node_id = str(node["id"])
+        current = node_rects.get(node_id)
+        override = node.get("layout") if isinstance(node.get("layout"), dict) else {}
+        if current is None or override.get("x") is None or override.get("y") is None:
+            continue
+        try:
+            x = float(override["x"])
+            y = float(override["y"])
+        except (TypeError, ValueError):
+            continue
+        if math.isfinite(x) and math.isfinite(y):
+            node_rects[node_id] = Rect(x, y, current.w, current.h)
 
     if boundaries and not boundary_rects:
         boundary_rects = _derived_boundary_rects(node_rects, nodes, boundaries)

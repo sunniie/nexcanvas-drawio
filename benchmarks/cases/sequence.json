@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "2.0",
+  "title": "Checkout authorization request trace",
+  "showTitle": false,
+  "viewIntent": "sequence",
+  "route": {"family": "behavior", "profile": "sequence"},
+  "audience": "software engineers",
+  "deliveryTarget": "engineering-doc",
+  "language": "en",
+  "theme": "technical-editorial",
+  "visualArchetype": "technical-editorial",
+  "direction": "LR",
+  "canvas": {"width": 1500, "height": 840},
+  "boundaries": [],
+  "nodes": [
+    {"id": "client", "label": "Web client", "kind": "actor", "description": "Submits checkout", "layout": {"order": 1}},
+    {"id": "gateway", "label": "API gateway", "kind": "service", "description": "Authenticates request", "layout": {"order": 2}},
+    {"id": "orders", "label": "Order service", "kind": "service", "description": "Coordinates purchase", "layout": {"order": 3}},
+    {"id": "payments", "label": "Payment provider", "kind": "external", "description": "Authorizes funds", "layout": {"order": 4}},
+    {"id": "store", "label": "Order database", "kind": "database", "description": "Persists approved order", "layout": {"order": 5}}
+  ],
+  "edges": [
+    {"id": "request", "source": "client", "target": "gateway", "kind": "request", "label": "POST /checkout", "step": 1, "importance": "primary", "layout": {"order": 1}},
+    {"id": "dispatch", "source": "gateway", "target": "orders", "kind": "request", "label": "Validated command", "step": 2, "importance": "primary", "layout": {"order": 2}},
+    {"id": "authorize", "source": "orders", "target": "payments", "kind": "request", "label": "Authorize payment", "step": 3, "importance": "primary", "layout": {"order": 3}},
+    {"id": "save", "source": "orders", "target": "store", "kind": "data", "label": "Write order", "step": 4, "importance": "primary", "layout": {"order": 4}},
+    {"id": "response", "source": "orders", "target": "client", "kind": "response", "label": "201 Created", "step": 5, "importance": "primary", "layout": {"order": 5}}
+  ],
+  "legend": [],
+  "assumptions": []
+}

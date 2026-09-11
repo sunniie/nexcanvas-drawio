@@ -3,7 +3,7 @@ from __future__ import annotations
 import html
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from .assets import load_manifest, mark_assets, svg_data_uri
 from .archetypes import resolve_archetype
@@ -13,6 +13,9 @@ from .intents import resolve_view_intent
 from .layout import EdgeRoute, Rect, layout_model
 from .model_v3 import is_v3_model, normalize_diagram_model, semantic_fingerprint
 from .registry import resolve_route, resolve_theme
+
+if TYPE_CHECKING:
+    from .extensions import ExtensionSet
 
 
 NODE_ACCENTS = {
@@ -433,7 +436,7 @@ def _geometry(cell: ET.Element, rect: Rect) -> None:
     )
 
 
-def _edge_geometry(cell: ET.Element, route: EdgeRoute, edge: dict[str, Any]) -> None:
+def _edge_geometry(cell: ET.Element, route: EdgeRoute, edge: dict[str, Any], absolute: bool = False) -> None:
     geometry = ET.SubElement(
         cell,
         "mxGeometry",
@@ -442,6 +445,9 @@ def _edge_geometry(cell: ET.Element, route: EdgeRoute, edge: dict[str, Any]) -> 
             "as": "geometry",
         },
     )
+    if absolute:
+        ET.SubElement(geometry, "mxPoint", {"x": f"{route.points[0][0]:.1f}", "y": f"{route.points[0][1]:.1f}", "as": "sourcePoint"})
+        ET.SubElement(geometry, "mxPoint", {"x": f"{route.points[-1][0]:.1f}", "y": f"{route.points[-1][1]:.1f}", "as": "targetPoint"})
     if len(route.points) > 2:
         points = ET.SubElement(geometry, "Array", {"as": "points"})
         for x, y in route.points[1:-1]:
@@ -582,18 +588,23 @@ def _append_flow_label(
     _geometry(cell, rect)
 
 
-def build_tree(model: dict[str, Any], project_root: Path | None = None, root: Path | None = None) -> tuple[ET.ElementTree, set[str]]:
+def build_tree(
+    model: dict[str, Any],
+    project_root: Path | None = None,
+    root: Path | None = None,
+    extensions: "ExtensionSet | None" = None,
+) -> tuple[ET.ElementTree, set[str]]:
     canonical_model = model
-    issues = validate_diagram_model(canonical_model, root)
+    issues = validate_diagram_model(canonical_model, root, extensions)
     errors = [issue for issue in issues if issue.severity == "error"]
     if errors:
         raise ValueError("Invalid diagram model:\n" + "\n".join(f"- {issue.location}: {issue.message}" for issue in errors))
     model = normalize_diagram_model(canonical_model)
-    route = resolve_route(model["route"]["family"], model["route"]["profile"], root)
+    route = resolve_route(model["route"]["family"], model["route"]["profile"], root, extensions)
     theme = resolve_theme(model["theme"], root)
     archetype = resolve_archetype(str(model.get("visualArchetype", "")) or None, root)
     layout_adapter = str(archetype.get("layoutAdapter") or route["layout"])
-    layout = layout_model(model, layout_adapter)
+    layout = layout_model(model, layout_adapter, extensions)
     canvas = model["canvas"]
     view_intent = resolve_view_intent(model)
 
@@ -763,6 +774,13 @@ def build_tree(model: dict[str, Any], project_root: Path | None = None, root: Pa
         style, embedded = _node_style(node, theme, manifest_assets.get(asset_key), project_root, archetype)
         if embedded:
             embedded_keys.add(asset_key)
+        node_tags: list[str] = []
+        if node.get("importance") == "primary":
+            node_tags.append("qa-primary")
+        elif node.get("importance") == "support":
+            node_tags.append("qa-support")
+        if str(node.get("kind", "")).lower() in {"state", "initial-state", "terminal-state"}:
+            node_tags.append("qa-icon-exempt")
         cell = ET.SubElement(
             graph_root,
             "mxCell",
@@ -778,7 +796,7 @@ def build_tree(model: dict[str, Any], project_root: Path | None = None, root: Pa
                 "nc-boundary": str(node.get("boundary", "")),
                 "nc-asset-ref": asset_key,
                 "qa-primary": "true" if node.get("importance") == "primary" else "false",
-                "tags": "qa-primary" if node.get("importance") == "primary" else ("qa-support" if node.get("importance") == "support" else ""),
+                "tags": " ".join(node_tags),
             },
         )
         _geometry(cell, local_rect)
@@ -813,40 +831,42 @@ def build_tree(model: dict[str, Any], project_root: Path | None = None, root: Pa
         rendered_label = _edge_label(edge, archetype.get("edgePresentation") == "neutral-orthogonal")
         label_mode = _edge_label_mode(edge, rendered_label)
         has_visible_label = bool(rendered_label and label_mode != "none")
+        attributes = {
+            "id": f"edge-{edge_id}",
+            "value": "",
+            "style": _edge_style(edge, theme, route_geometry, archetype),
+            "edge": "1",
+            "parent": "1",
+            "nc-kind": "edge",
+            "nc-edge-kind": str(edge.get("kind", "sync")),
+            "nc-model-id": edge_id,
+            "nc-label-mode": label_mode,
+            "nc-bus-id": str(edge.get("busId", "")),
+            "nc-lane-id": str(edge.get("laneId", "")),
+            "nc-allow-crossing": "true" if edge.get("allowCrossing") else "false",
+            "nc-trust-crossing": "true" if edge.get("trustCrossing") else "false",
+            "qa-edge": "true",
+            "tags": " ".join(
+                [
+                    "qa-primary-flow" if edge.get("importance") == "primary" else "",
+                    "qa-labeled-flow" if has_visible_label else "",
+                    "qa-response-flow" if str(edge.get("kind", "")).lower() == "response" else "",
+                    "qa-data-flow" if str(edge.get("kind", "")).lower() in {"data", "read", "write", "lineage", "retrieval"} else "",
+                    "qa-error-flow" if str(edge.get("kind", "")).lower() in {"risk", "deny", "failure", "threat"} else "",
+                    "qa-rail-flow" if isinstance(edge.get("layout"), dict) and edge["layout"].get("rail") is not None else "",
+                    "qa-explicit-route" if isinstance(edge.get("layout"), dict) and edge["layout"].get("waypoints") else "",
+                ]
+            ).strip(),
+        }
+        if layout.adapter != "sequence":
+            attributes["source"] = f"node-{edge['source']}"
+            attributes["target"] = f"node-{edge['target']}"
         cell = ET.SubElement(
             graph_root,
             "mxCell",
-            {
-                "id": f"edge-{edge_id}",
-                "value": "",
-                "style": _edge_style(edge, theme, route_geometry, archetype),
-                "edge": "1",
-                "parent": "1",
-                "source": f"node-{edge['source']}",
-                "target": f"node-{edge['target']}",
-                "nc-kind": "edge",
-                "nc-edge-kind": str(edge.get("kind", "sync")),
-                "nc-model-id": edge_id,
-                "nc-label-mode": label_mode,
-                "nc-bus-id": str(edge.get("busId", "")),
-                "nc-lane-id": str(edge.get("laneId", "")),
-                "nc-allow-crossing": "true" if edge.get("allowCrossing") else "false",
-                "nc-trust-crossing": "true" if edge.get("trustCrossing") else "false",
-                "qa-edge": "true",
-                "tags": " ".join(
-                    [
-                        "qa-primary-flow" if edge.get("importance") == "primary" else "",
-                        "qa-labeled-flow" if has_visible_label else "",
-                        "qa-response-flow" if str(edge.get("kind", "")).lower() == "response" else "",
-                        "qa-data-flow" if str(edge.get("kind", "")).lower() in {"data", "read", "write", "lineage", "retrieval"} else "",
-                        "qa-error-flow" if str(edge.get("kind", "")).lower() in {"risk", "deny", "failure", "threat"} else "",
-                        "qa-rail-flow" if isinstance(edge.get("layout"), dict) and edge["layout"].get("rail") is not None else "",
-                        "qa-explicit-route" if isinstance(edge.get("layout"), dict) and edge["layout"].get("waypoints") else "",
-                    ]
-                ).strip(),
-            },
+            attributes,
         )
-        _edge_geometry(cell, route_geometry, edge)
+        _edge_geometry(cell, route_geometry, edge, absolute=layout.adapter == "sequence")
         if has_visible_label:
             flow_label_specs.append((edge, route_geometry, rendered_label, label_mode))
 
@@ -927,12 +947,18 @@ def build_tree(model: dict[str, Any], project_root: Path | None = None, root: Pa
     return ET.ElementTree(mxfile), embedded_keys
 
 
-def build_drawio(model_path: Path, output_path: Path, project_root: Path | None = None, root: Path | None = None) -> dict[str, Any]:
+def build_drawio(
+    model_path: Path,
+    output_path: Path,
+    project_root: Path | None = None,
+    root: Path | None = None,
+    extensions: "ExtensionSet | None" = None,
+) -> dict[str, Any]:
     canonical_model = load_json(model_path)
     if not isinstance(canonical_model, dict):
         raise ValueError("diagram model must be a JSON object")
     model = normalize_diagram_model(canonical_model)
-    tree, embedded_keys = build_tree(canonical_model, project_root, root)
+    tree, embedded_keys = build_tree(canonical_model, project_root, root, extensions)
     ET.indent(tree, space="  ")
     output_path.parent.mkdir(parents=True, exist_ok=True)
     tree.write(output_path, encoding="utf-8", xml_declaration=True, short_empty_elements=True)

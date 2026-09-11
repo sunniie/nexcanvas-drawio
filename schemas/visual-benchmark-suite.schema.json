@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sunniie/nexcanvas-drawio/schemas/visual-benchmark-suite.schema.json",
+  "title": "NexCanvas Visual Benchmark Suite",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "suiteId", "cases"],
+  "properties": {
+    "schemaVersion": {"const": "1.0"},
+    "suiteId": {"type": "string", "minLength": 1},
+    "cases": {
+      "type": "array",
+      "minItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "class", "model", "drawio", "artifact", "visualReview", "expectations"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "class": {"enum": ["sparse", "dense", "cloud", "ai", "sequence", "data-flow", "lifecycle"]},
+          "model": {"type": "string", "minLength": 1},
+          "drawio": {"type": "string", "minLength": 1},
+          "artifact": {"type": "string", "minLength": 1},
+          "visualReview": {"type": "string", "minLength": 1},
+          "expectations": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["viewIntent", "minNodes", "maxNodes", "minEdges"],
+            "properties": {
+              "viewIntent": {"enum": ["architecture", "workflow", "sequence", "data-flow", "lifecycle"]},
+              "minNodes": {"type": "integer", "minimum": 0},
+              "maxNodes": {"type": "integer", "minimum": 0},
+              "minEdges": {"type": "integer", "minimum": 0}
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="NexCanvas Draw.io" agent="nexcanvas-drawio/2.0" version="2.0" type="device" modified="2026-09-11T00:51:09Z" nc-model-hash="1432b24d673904ee516af936a9de3401324c200af8d0f066be3e812ff3c41d8f" nc-model-schema-version="2.0" nc-route="data/etl-elt" nc-view-intent="data-flow" nc-visual-archetype="technical-editorial" nc-layout-strategy="auto" pageWidth="2500" pageHeight="480">
+  <diagram id="nexcanvas-page-1" name="Data Flow">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2500" pageHeight="480" math="0" shadow="0" background="#F8FAFC">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="nc-background" value="" style="fillColor=#F8FAFC;strokeColor=none;pointerEvents=0;locked=1;" vertex="1" parent="1" nc-kind="background" tags="qa-background">
+          <mxGeometry x="0.0" y="0.0" width="2500.0" height="480.0" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary-collect" value="Collect" style="swimlane;html=1;whiteSpace=wrap;horizontal=1;startSize=34;rounded=1;arcSize=16;fillColor=#EFF6FF;swimlaneFillColor=#FFFFFF;strokeColor=#94A3B8;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontStyle=1;fontSize=13;dashed=0;shadow=0;collapsible=0;" vertex="1" parent="1" nc-kind="boundary" nc-boundary-kind="stage" nc-model-id="collect" qa-container="true" tags="qa-container">
+          <mxGeometry x="32.0" y="136.0" width="786.0" height="162.0" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary-prepare" value="Prepare" style="swimlane;html=1;whiteSpace=wrap;horizontal=1;startSize=34;rounded=1;arcSize=16;fillColor=#EFF6FF;swimlaneFillColor=#FFFFFF;strokeColor=#94A3B8;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontStyle=1;fontSize=13;dashed=0;shadow=0;collapsible=0;" vertex="1" parent="1" nc-kind="boundary" nc-boundary-kind="stage" nc-model-id="prepare" qa-container="true" tags="qa-container">
+          <mxGeometry x="932.0" y="136.0" width="786.0" height="162.0" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary-serve" value="Serve" style="swimlane;html=1;whiteSpace=wrap;horizontal=1;startSize=34;rounded=1;arcSize=16;fillColor=#EFF6FF;swimlaneFillColor=#FFFFFF;strokeColor=#94A3B8;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontStyle=1;fontSize=13;dashed=0;shadow=0;collapsible=0;" vertex="1" parent="1" nc-kind="boundary" nc-boundary-kind="stage" nc-model-id="serve" qa-container="true" tags="qa-container">
+          <mxGeometry x="1852.0" y="136.0" width="506.0" height="162.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-apps" value="&lt;b&gt;Product applications&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;SOURCE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Events and audit records&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="boundary-collect" nc-kind="node" nc-node-kind="source" nc-model-id="apps" nc-boundary="collect" nc-asset-ref="" qa-primary="false" tags="">
+          <mxGeometry x="28.0" y="54.0" width="170.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-collector" value="&lt;b&gt;Telemetry collector&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;SERVICE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Validates and batches&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="boundary-collect" nc-kind="node" nc-node-kind="service" nc-model-id="collector" nc-boundary="collect" nc-asset-ref="" qa-primary="false" tags="">
+          <mxGeometry x="308.0" y="54.0" width="170.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-stream" value="&lt;b&gt;Event stream&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;QUEUE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Durable ordered events&lt;/font&gt;" style="shape=hexagon;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="boundary-collect" nc-kind="node" nc-node-kind="queue" nc-model-id="stream" nc-boundary="collect" nc-asset-ref="" qa-primary="false" tags="">
+          <mxGeometry x="588.0" y="54.0" width="170.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-raw" value="&lt;b&gt;Raw object storage&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;STORAGE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Immutable landing zone&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="boundary-prepare" nc-kind="node" nc-node-kind="storage" nc-model-id="raw" nc-boundary="prepare" nc-asset-ref="" qa-primary="false" tags="">
+          <mxGeometry x="28.0" y="54.0" width="170.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-transform" value="&lt;b&gt;Transformation jobs&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;PROCESS&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Clean, join, and enrich&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="boundary-prepare" nc-kind="node" nc-node-kind="process" nc-model-id="transform" nc-boundary="prepare" nc-asset-ref="" qa-primary="false" tags="">
+          <mxGeometry x="308.0" y="54.0" width="170.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-warehouse" value="&lt;b&gt;Analytics warehouse&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;DATABASE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Curated business tables&lt;/font&gt;" style="shape=cylinder3;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#059669;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;size=12;" vertex="1" parent="boundary-prepare" nc-kind="node" nc-node-kind="database" nc-model-id="warehouse" nc-boundary="prepare" nc-asset-ref="" qa-primary="false" tags="">
+          <mxGeometry x="588.0" y="54.0" width="170.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-semantic" value="&lt;b&gt;Semantic model&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;SERVICE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Governed metrics&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="boundary-serve" nc-kind="node" nc-node-kind="service" nc-model-id="semantic" nc-boundary="serve" nc-asset-ref="" qa-primary="false" tags="">
+          <mxGeometry x="28.0" y="54.0" width="170.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-dashboards" value="&lt;b&gt;Operational dashboards&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;CONSUMER&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Near-real-time decisions&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="boundary-serve" nc-kind="node" nc-node-kind="consumer" nc-model-id="dashboards" nc-boundary="serve" nc-asset-ref="" qa-primary="false" tags="">
+          <mxGeometry x="308.0" y="54.0" width="170.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-emit" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="data" nc-model-id="emit" nc-label-mode="offset" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow qa-labeled-flow  qa-data-flow" source="node-apps" target="node-collector">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-publish" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="data" nc-model-id="publish" nc-label-mode="offset" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow qa-labeled-flow  qa-data-flow" source="node-collector" target="node-stream">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-land" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="data" nc-model-id="land" nc-label-mode="offset" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow qa-labeled-flow  qa-data-flow" source="node-stream" target="node-raw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-read" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="data" nc-model-id="read" nc-label-mode="offset" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow qa-labeled-flow  qa-data-flow" source="node-raw" target="node-transform">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-curate" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="data" nc-model-id="curate" nc-label-mode="offset" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow qa-labeled-flow  qa-data-flow" source="node-transform" target="node-warehouse">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-model" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="data" nc-model-id="model" nc-label-mode="offset" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow qa-labeled-flow  qa-data-flow" source="node-warehouse" target="node-semantic">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-query" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="data" nc-model-id="query" nc-label-mode="offset" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow qa-labeled-flow  qa-data-flow" source="node-semantic" target="node-dashboards">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-emit" value="JSON events" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=0;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-emit" nc-label-mode="offset" tags="qa-flow-label:edge-emit qa-edge-label qa-label-offset">
+          <mxGeometry x="240.0" y="191.0" width="90.0" height="32.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-publish" value="Validated events" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=0;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-publish" nc-label-mode="offset" tags="qa-flow-label:edge-publish qa-edge-label qa-label-offset">
+          <mxGeometry x="520.0" y="191.0" width="90.0" height="32.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-land" value="Partitioned batches" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=0;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-land" nc-label-mode="offset" tags="qa-flow-label:edge-land qa-edge-label qa-label-offset">
+          <mxGeometry x="825.0" y="191.0" width="100.0" height="32.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-read" value="Raw records" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=0;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-read" nc-label-mode="offset" tags="qa-flow-label:edge-read qa-edge-label qa-label-offset">
+          <mxGeometry x="1140.0" y="191.0" width="90.0" height="32.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-curate" value="Curated tables" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=0;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-curate" nc-label-mode="offset" tags="qa-flow-label:edge-curate qa-edge-label qa-label-offset">
+          <mxGeometry x="1420.0" y="191.0" width="90.0" height="32.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-model" value="Metrics and dimensions" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=0;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-model" nc-label-mode="offset" tags="qa-flow-label:edge-model qa-edge-label qa-label-offset">
+          <mxGeometry x="1730.0" y="191.0" width="110.0" height="32.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-query" value="Aggregated results" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=0;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-query" nc-label-mode="offset" tags="qa-flow-label:edge-query qa-edge-label qa-label-offset">
+          <mxGeometry x="2060.0" y="191.0" width="90.0" height="32.0" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

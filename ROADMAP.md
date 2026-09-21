@@ -416,6 +416,15 @@ Exit evidence:
   assets were rebuilt from that exact tag, downloaded, checksum-verified, and
   smoke-tested; this closeout adds explicit `GH_REPO` context so future release
   runs continue into checkout, build, and upload automatically.
+- Maintenance release [`v0.7.1`](https://github.com/sunniie/nexcanvas-drawio/releases/tag/v0.7.1)
+  verified that repair end to end: the
+  [release workflow](https://github.com/sunniie/nexcanvas-drawio/actions/runs/35614765923)
+  normalized the title, checked out the tag, built all distributions, generated
+  checksums, and uploaded every artifact without intervention. Its
+  [main CI run](https://github.com/sunniie/nexcanvas-drawio/actions/runs/35614765587)
+  passed, and the downloaded artifacts matched every published checksum; the
+  isolated wheel reported `nexcanvas 0.7.1`, passed full-tier `doctor`, and
+  passed all seven packaged release benchmarks.
 - The prerequisite `v0.6.0` release line closed on 2026-09-21. Its pending
   observed cross-host comparison remains an explicitly independent Phase 6
   roadmap item and does not establish a cross-host claim for Phase 7.
@@ -439,7 +448,8 @@ Phase gate evaluation:
 - [x] Seven-class baselines have current rendered, geometry, text-bound,
   perceptual, and human-review evidence.
 
-Target release: `v0.7.0` (released 2026-09-21).
+Target release: `v0.7.0` (released 2026-09-21), followed by maintenance patch
+`v0.7.1` on the same date.
 
 ## Phase 8 - stable contracts and 1.0 hardening
 

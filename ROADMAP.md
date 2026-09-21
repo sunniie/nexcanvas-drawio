@@ -393,8 +393,10 @@ fixtures cover loading, confinement, routing, layout, QA, analysis, project
 initialization, and invalidation. The seven-class benchmark corpus has editable
 Draw.io files, rendered PNGs, zero geometry/text-bound findings, deterministic
 perceptual checks, and hash-current human approvals. Phase 7 remains unreleased
-until the `v0.6.0` release line is closed, the Phase 7 feature PR passes final
-CI, and the normal `v0.7.0` release gates complete.
+until the Phase 7 feature PR passes final CI and the normal `v0.7.0` release
+gates complete. The prerequisite `v0.6.0` release line closed on 2026-09-21;
+its pending observed cross-host comparison remains an explicitly independent
+Phase 6 roadmap item and does not establish a cross-host claim for Phase 7.
 
 Target releases: `v0.7.x`.
 

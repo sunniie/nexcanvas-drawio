@@ -1,7 +1,8 @@
-# NexCanvas v0.7.0 release notes (draft)
+# NexCanvas v0.7.0 release notes
 
-This draft records the intended Phase 7 release surface. It is not a published
-release and must be reconciled with the final changelog before tagging.
+NexCanvas v0.7.0 adds a versioned extension ecosystem and a release-grade
+visual benchmark framework while preserving editable Draw.io output and the
+existing Diagram Model V2/V3 contracts.
 
 ## Features
 
@@ -35,5 +36,6 @@ release and must be reconciled with the final changelog before tagging.
   security sandbox.
 - PNG metrics detect broken or implausible renders, not aesthetic quality;
   release approval still requires visual inspection.
-- Phase 6 observed cross-host runs must be completed before the `v0.7.0` release
-  sequence begins.
+- Phase 6 observed cross-host comparison remains open as an independent roadmap
+  item. This does not change the Phase 7 extension or benchmark contracts and
+  no cross-host equivalence is claimed by this release.

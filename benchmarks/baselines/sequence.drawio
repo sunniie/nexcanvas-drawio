@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="NexCanvas Draw.io" agent="nexcanvas-drawio/2.0" version="2.0" type="device" modified="2026-09-11T00:49:55Z" nc-model-hash="1269ccbc456d91119720db401ffee4f73c0b519d3dd23a368c5d75ddf21b6afd" nc-model-schema-version="2.0" nc-route="behavior/sequence" nc-view-intent="sequence" nc-visual-archetype="technical-editorial" nc-layout-strategy="auto" pageWidth="1500" pageHeight="840">
+  <diagram id="nexcanvas-page-1" name="Sequence">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="840" math="0" shadow="0" background="#F8FAFC">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="nc-background" value="" style="fillColor=#F8FAFC;strokeColor=none;pointerEvents=0;locked=1;" vertex="1" parent="1" nc-kind="background" tags="qa-background">
+          <mxGeometry x="0.0" y="0.0" width="1500.0" height="840.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-client" value="&lt;b&gt;Web client&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;ACTOR&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Submits checkout&lt;/font&gt;" style="shape=mxgraph.basic.user;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="1" nc-kind="node" nc-node-kind="actor" nc-model-id="client" nc-boundary="" nc-asset-ref="" qa-primary="false" tags="">
+          <mxGeometry x="121.4" y="66.0" width="150.0" height="78.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-gateway" value="&lt;b&gt;API gateway&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;SERVICE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Authenticates request&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="1" nc-kind="node" nc-node-kind="service" nc-model-id="gateway" nc-boundary="" nc-asset-ref="" qa-primary="false" tags="">
+          <mxGeometry x="375.2" y="66.0" width="196.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-orders" value="&lt;b&gt;Order service&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;SERVICE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Coordinates purchase&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="1" nc-kind="node" nc-node-kind="service" nc-model-id="orders" nc-boundary="" nc-asset-ref="" qa-primary="false" tags="">
+          <mxGeometry x="652.0" y="66.0" width="196.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-payments" value="&lt;b&gt;Payment provider&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;EXTERNAL&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Authorizes funds&lt;/font&gt;" style="shape=roundRect;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;" vertex="1" parent="1" nc-kind="node" nc-node-kind="external" nc-model-id="payments" nc-boundary="" nc-asset-ref="" qa-primary="false" tags="">
+          <mxGeometry x="928.8" y="66.0" width="196.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="node-store" value="&lt;b&gt;Order database&lt;/b&gt;&lt;br&gt;&lt;font color='#64748B' size='2'&gt;DATABASE&lt;/font&gt;&lt;br&gt;&lt;font size='2'&gt;Persists approved order&lt;/font&gt;" style="shape=cylinder3;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;rounded=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#059669;strokeWidth=2;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=13;shadow=0;spacing=8;size=12;" vertex="1" parent="1" nc-kind="node" nc-node-kind="database" nc-model-id="store" nc-boundary="" nc-asset-ref="" qa-primary="false" tags="">
+          <mxGeometry x="1205.6" y="66.0" width="196.0" height="82.0" as="geometry" />
+        </mxCell>
+        <mxCell id="lifeline-client" value="" style="edgeStyle=none;html=1;dashed=1;dashPattern=4 4;strokeColor=#94A3B8;endArrow=none;startArrow=none;" edge="1" parent="1" nc-kind="lifeline">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="196.4" y="144.0" as="sourcePoint" />
+            <mxPoint x="196.4" y="720.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lifeline-gateway" value="" style="edgeStyle=none;html=1;dashed=1;dashPattern=4 4;strokeColor=#94A3B8;endArrow=none;startArrow=none;" edge="1" parent="1" nc-kind="lifeline">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="473.2" y="148.0" as="sourcePoint" />
+            <mxPoint x="473.2" y="720.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lifeline-orders" value="" style="edgeStyle=none;html=1;dashed=1;dashPattern=4 4;strokeColor=#94A3B8;endArrow=none;startArrow=none;" edge="1" parent="1" nc-kind="lifeline">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="750.0" y="148.0" as="sourcePoint" />
+            <mxPoint x="750.0" y="720.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lifeline-payments" value="" style="edgeStyle=none;html=1;dashed=1;dashPattern=4 4;strokeColor=#94A3B8;endArrow=none;startArrow=none;" edge="1" parent="1" nc-kind="lifeline">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1026.8" y="148.0" as="sourcePoint" />
+            <mxPoint x="1026.8" y="720.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lifeline-store" value="" style="edgeStyle=none;html=1;dashed=1;dashPattern=4 4;strokeColor=#94A3B8;endArrow=none;startArrow=none;" edge="1" parent="1" nc-kind="lifeline">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1303.6" y="148.0" as="sourcePoint" />
+            <mxPoint x="1303.6" y="720.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-request" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="request" nc-model-id="request" nc-label-mode="offset" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow qa-labeled-flow">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="196.4" y="272.0" as="sourcePoint" />
+            <mxPoint x="473.2" y="272.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-dispatch" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="request" nc-model-id="dispatch" nc-label-mode="offset" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow qa-labeled-flow">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="473.2" y="326.0" as="sourcePoint" />
+            <mxPoint x="750.0" y="326.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-authorize" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="request" nc-model-id="authorize" nc-label-mode="offset" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow qa-labeled-flow">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="750.0" y="380.0" as="sourcePoint" />
+            <mxPoint x="1026.8" y="380.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-save" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="data" nc-model-id="save" nc-label-mode="offset" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow qa-labeled-flow  qa-data-flow">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="750.0" y="434.0" as="sourcePoint" />
+            <mxPoint x="1303.6" y="434.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-response" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;dashed=0;endArrow=block;endFill=1;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;labelBackgroundColor=none;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;exitPerimeter=1;sourcePerimeterSpacing=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;entryPerimeter=1;targetPerimeterSpacing=0;" edge="1" parent="1" nc-kind="edge" nc-edge-kind="response" nc-model-id="response" nc-label-mode="offset" nc-bus-id="" nc-lane-id="" nc-allow-crossing="false" nc-trust-crossing="false" qa-edge="true" tags="qa-primary-flow qa-labeled-flow qa-response-flow">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="750.0" y="488.0" as="sourcePoint" />
+            <mxPoint x="196.4" y="488.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-request" value="POST /checkout" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=0;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-request" nc-label-mode="offset" tags="qa-flow-label:edge-request qa-edge-label qa-label-offset">
+          <mxGeometry x="288.1" y="244.0" width="93.4" height="20.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-dispatch" value="Validated command" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=0;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-dispatch" nc-label-mode="offset" tags="qa-flow-label:edge-dispatch qa-edge-label qa-label-offset">
+          <mxGeometry x="555.8" y="298.0" width="111.7" height="20.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-authorize" value="Authorize payment" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=0;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-authorize" nc-label-mode="offset" tags="qa-flow-label:edge-authorize qa-edge-label qa-label-offset">
+          <mxGeometry x="832.6" y="352.0" width="111.7" height="20.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-save" value="Write order" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=0;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-save" nc-label-mode="offset" tags="qa-flow-label:edge-save qa-edge-label qa-label-offset">
+          <mxGeometry x="989.3" y="406.0" width="75.1" height="20.0" as="geometry" />
+        </mxCell>
+        <mxCell id="label-response" value="201 Created" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#0F172A;fontFamily=Aptos,Arial,sans-serif;fontSize=11;fontStyle=0;spacing=0;rounded=0;shadow=0;" vertex="1" parent="1" nc-kind="flow-label" nc-edge-id="edge-response" nc-label-mode="offset" tags="qa-flow-label:edge-response qa-edge-label qa-label-offset">
+          <mxGeometry x="435.6" y="460.0" width="75.1" height="20.0" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

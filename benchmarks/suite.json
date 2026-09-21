@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "1.0",
+  "suiteId": "nexcanvas-visual-reference-v1",
+  "cases": [
+    {
+      "id": "sparse-rag-reference",
+      "class": "sparse",
+      "model": "examples/v2-rag-reference/diagram_model.json",
+      "drawio": "examples/v2-rag-reference/artifacts/diagram.drawio",
+      "artifact": "examples/v2-rag-reference/artifacts/diagram.drawio.png",
+      "visualReview": "examples/v2-rag-reference/reports/visual_qa.json",
+      "expectations": {"viewIntent": "architecture", "minNodes": 8, "maxNodes": 16, "minEdges": 6}
+    },
+    {
+      "id": "dense-industrial-ai",
+      "class": "dense",
+      "model": "examples/v3-dense-industrial-ai/diagram_model.json",
+      "drawio": "examples/v3-dense-industrial-ai/artifacts/diagram.drawio",
+      "artifact": "examples/v3-dense-industrial-ai/artifacts/diagram.drawio.png",
+      "visualReview": "examples/v3-dense-industrial-ai/reports/visual_qa.json",
+      "expectations": {"viewIntent": "architecture", "minNodes": 24, "maxNodes": 36, "minEdges": 20}
+    },
+    {
+      "id": "cloud-hub-spoke",
+      "class": "cloud",
+      "model": "examples/v4-hub-spoke-industrial/diagram_model.json",
+      "drawio": "examples/v4-hub-spoke-industrial/artifacts/diagram.drawio",
+      "artifact": "examples/v4-hub-spoke-industrial/artifacts/diagram.drawio.png",
+      "visualReview": "examples/v4-hub-spoke-industrial/reports/visual_qa.json",
+      "expectations": {"viewIntent": "architecture", "minNodes": 14, "maxNodes": 24, "minEdges": 12}
+    },
+    {
+      "id": "ai-multi-agent-workflow",
+      "class": "ai",
+      "model": "examples/v5-multi-agent-workflow/diagram_model.json",
+      "drawio": "examples/v5-multi-agent-workflow/artifacts/diagram.drawio",
+      "artifact": "examples/v5-multi-agent-workflow/artifacts/diagram.drawio.png",
+      "visualReview": "examples/v5-multi-agent-workflow/reports/visual_qa.json",
+      "expectations": {"viewIntent": "workflow", "minNodes": 12, "maxNodes": 22, "minEdges": 12}
+    },
+    {
+      "id": "checkout-sequence",
+      "class": "sequence",
+      "model": "benchmarks/cases/sequence.json",
+      "drawio": "benchmarks/baselines/sequence.drawio",
+      "artifact": "benchmarks/baselines/sequence.png",
+      "visualReview": "benchmarks/baselines/sequence.visual.json",
+      "expectations": {"viewIntent": "sequence", "minNodes": 4, "maxNodes": 8, "minEdges": 4}
+    },
+    {
+      "id": "telemetry-data-flow",
+      "class": "data-flow",
+      "model": "benchmarks/cases/data-flow.json",
+      "drawio": "benchmarks/baselines/data-flow.drawio",
+      "artifact": "benchmarks/baselines/data-flow.png",
+      "visualReview": "benchmarks/baselines/data-flow.visual.json",
+      "expectations": {"viewIntent": "data-flow", "minNodes": 7, "maxNodes": 12, "minEdges": 6}
+    },
+    {
+      "id": "agent-task-lifecycle",
+      "class": "lifecycle",
+      "model": "benchmarks/cases/lifecycle.json",
+      "drawio": "benchmarks/baselines/lifecycle.drawio",
+      "artifact": "benchmarks/baselines/lifecycle.png",
+      "visualReview": "benchmarks/baselines/lifecycle.visual.json",
+      "expectations": {"viewIntent": "lifecycle", "minNodes": 7, "maxNodes": 12, "minEdges": 8}
+    }
+  ]
+}

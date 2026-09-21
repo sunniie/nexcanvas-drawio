@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "2.0",
+  "title": "Durable agent task lifecycle",
+  "showTitle": false,
+  "viewIntent": "lifecycle",
+  "route": {"family": "behavior", "profile": "state-machine"},
+  "audience": "agent platform engineers",
+  "deliveryTarget": "engineering-doc",
+  "language": "en",
+  "theme": "technical-editorial",
+  "visualArchetype": "technical-editorial",
+  "direction": "LR",
+  "canvas": {"width": 1820, "height": 880},
+  "boundaries": [],
+  "nodes": [
+    {"id": "created", "label": "Created", "kind": "initial-state", "description": "Request accepted", "layout": {"x": 50, "y": 360, "width": 180}},
+    {"id": "queued", "label": "Queued", "kind": "state", "description": "Waiting for capacity", "layout": {"x": 380, "y": 360, "width": 180}},
+    {"id": "running", "label": "Running", "kind": "state", "description": "Agent executing", "layout": {"x": 710, "y": 360, "width": 180}},
+    {"id": "waiting", "label": "Waiting for input", "kind": "state", "description": "Human decision required", "layout": {"x": 1120, "y": 160, "width": 180}},
+    {"id": "retrying", "label": "Retrying", "kind": "state", "description": "Recoverable failure", "layout": {"x": 1120, "y": 560, "width": 180}},
+    {"id": "completed", "label": "Completed", "kind": "terminal-state", "description": "Verified result stored", "layout": {"x": 1460, "y": 100, "width": 180}},
+    {"id": "failed", "label": "Failed", "kind": "terminal-state", "description": "Retry budget exhausted", "layout": {"x": 1460, "y": 400, "width": 180}},
+    {"id": "cancelled", "label": "Cancelled", "kind": "terminal-state", "description": "Stopped by requester", "layout": {"x": 1460, "y": 680, "width": 180}}
+  ],
+  "edges": [
+    {"id": "enqueue", "source": "created", "target": "queued", "kind": "transition", "label": "enqueue", "importance": "primary", "labelPlacement": {"side": "above", "offset": 14}},
+    {"id": "start", "source": "queued", "target": "running", "kind": "transition", "label": "worker available", "importance": "primary", "labelPlacement": {"side": "above", "offset": 14}},
+    {"id": "request-input", "source": "running", "target": "waiting", "kind": "transition", "label": "needs approval", "labelMode": "callout", "layout": {"sourcePort": [1, 0.25], "targetPort": [0, 0.75], "midX": 1060}, "labelPlacement": {"segment": 1, "side": "center", "t": 0.36}},
+    {"id": "resume", "source": "waiting", "target": "running", "kind": "transition", "label": "input received", "labelMode": "callout", "layout": {"sourcePort": [0, 0.25], "targetPort": [1, 0.55], "midX": 920}, "labelPlacement": {"segment": 1, "side": "center", "t": 0.68}},
+    {"id": "retry", "source": "running", "target": "retrying", "kind": "transition", "label": "transient error", "labelMode": "callout", "layout": {"sourcePort": [1, 0.75], "targetPort": [0, 0.25], "midX": 1070}, "labelPlacement": {"segment": 1, "side": "center", "t": 0.64}},
+    {"id": "retry-ready", "source": "retrying", "target": "queued", "kind": "transition", "label": "backoff elapsed", "labelMode": "callout", "layout": {"sourcePort": [0.5, 1], "targetPort": [0.5, 1], "waypoints": [[1210, 800], [470, 800]]}, "labelPlacement": {"segment": 1, "side": "center"}},
+    {"id": "finish", "source": "running", "target": "completed", "kind": "transition", "label": "checks passed", "importance": "primary", "labelMode": "callout", "layout": {"sourcePort": [0.5, 0], "targetPort": [0, 0.5], "waypoints": [[800, 60], [1400, 60], [1400, 141]]}, "labelPlacement": {"segment": 1, "side": "center"}},
+    {"id": "exhaust", "source": "retrying", "target": "failed", "kind": "transition", "label": "budget exhausted", "labelMode": "callout", "layout": {"sourcePort": [1, 0.5], "targetPort": [0, 0.75], "midX": 1380}, "labelPlacement": {"segment": 1, "side": "center"}},
+    {"id": "cancel", "source": "waiting", "target": "cancelled", "kind": "transition", "label": "cancel requested", "labelMode": "callout", "layout": {"sourcePort": [1, 0.5], "targetPort": [1, 0.5], "waypoints": [[1720, 201], [1720, 721]]}, "labelPlacement": {"segment": 1, "side": "center", "t": 0.66}}
+  ],
+  "legend": [],
+  "assumptions": []
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sunniie/nexcanvas-drawio/schemas/visual-benchmark-result.schema.json",
+  "title": "NexCanvas Visual Benchmark Result",
+  "type": "object",
+  "required": ["schemaVersion", "suiteId", "evaluatedAt", "mode", "passed", "automatedPassed", "suiteSha256", "cases"],
+  "properties": {
+    "schemaVersion": {"const": "1.0"},
+    "suiteId": {"type": "string"},
+    "evaluatedAt": {"type": "string"},
+    "mode": {"enum": ["automated-only", "release"]},
+    "passed": {"type": "boolean"},
+    "automatedPassed": {"type": "boolean"},
+    "suiteSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "cases": {"type": "array", "minItems": 7}
+  }
+}

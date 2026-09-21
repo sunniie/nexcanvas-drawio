@@ -1,0 +1,12 @@
+{
+  "key": "fixture-icons",
+  "definition": {
+    "label": "Fixture icon pack",
+    "version": "1.0",
+    "termsUrl": "https://example.invalid/terms",
+    "license": "Test-only fixture",
+    "archiveType": "directory",
+    "destination": "assets/icons/fixture-icons",
+    "entries": {}
+  }
+}

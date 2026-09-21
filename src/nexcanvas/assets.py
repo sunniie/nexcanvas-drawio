@@ -9,10 +9,13 @@ from io import BytesIO
 from urllib.parse import quote
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from .common import load_json, safe_project_path, sha256_file, skill_root, utc_now, write_json
 from .archetypes import resolve_provider_pack
+
+if TYPE_CHECKING:
+    from .extensions import ExtensionSet
 
 
 def catalog_path(root: Path | None = None) -> Path:
@@ -180,9 +183,10 @@ def sync_provider_asset(
     root: Path | None = None,
     source_archive: Path | None = None,
     accept_terms: bool = False,
+    extensions: "ExtensionSet | None" = None,
 ) -> dict[str, Any]:
     resolved_root = root or skill_root()
-    pack = resolve_provider_pack(provider, resolved_root)
+    pack = resolve_provider_pack(provider, resolved_root, extensions)
     manifest = load_manifest(project_root, resolved_root)
     matched = _provider_entry(pack, query)
     if matched is None and source_archive:

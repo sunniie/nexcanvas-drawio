@@ -188,6 +188,55 @@ nexcanvas conformance evaluate <run-pack>/request.json \
 `fixture`, even when every dimension passes. `conformance report` ignores fixture
 results when determining host status. See [cross-agent conformance](conformance.md).
 
+## Extensions
+
+Validate one or more explicitly trusted extension roots:
+
+```bash
+nexcanvas extension validate ./my-extension [./another-extension]
+```
+
+Commands that expose an extension boundary accept repeatable `--extension`
+options. The option is local to the subcommand and must appear after that
+subcommand's arguments:
+
+```bash
+nexcanvas init ./project --name "Service map" --family custom --profile service-map --extension ./my-extension
+nexcanvas analyze snapshot ./repo --extension ./my-extension
+nexcanvas build diagram_model.json -o diagram.drawio --extension ./my-extension
+nexcanvas qa diagram diagram_model.json --drawio diagram.drawio --extension ./my-extension
+nexcanvas generate ./project --extension ./my-extension
+nexcanvas sync ./project --repo-root ./repo --dry-run --extension ./my-extension
+nexcanvas postflight ./project --extension ./my-extension
+nexcanvas contract diagram-model ./project/diagram_model.json --extension ./my-extension
+nexcanvas asset sync ./project service-name --provider custom-pack --extension ./my-extension
+nexcanvas conformance doctor --extension ./my-extension
+```
+
+Invalid manifests, incompatible API ranges, duplicate IDs, path traversal,
+hook timeout, process failure, and malformed responses return exit code `2`.
+Executable hooks are trusted local developer tools, not sandboxed code. See
+[extension authoring](extensions.md).
+
+Extension paths are never discovered or persisted. Repeat the same explicit
+set for each command. `generate` fingerprints the extension manifest and all
+declared files, so changed hook or resource content invalidates stale pipeline
+stages and visual approval.
+
+## Visual benchmarks
+
+```bash
+nexcanvas benchmark validate
+nexcanvas benchmark run [--output benchmark-result.json]
+nexcanvas benchmark run --automated-only
+```
+
+The release profile exits `0` only when all seven cases pass geometry,
+text-bound, PNG-proxy, and current hash-bound human-review gates.
+`--automated-only` exits `0` when automated checks pass but always emits
+`passed: false`; it cannot establish aesthetic approval. See
+[visual benchmarks](visual-benchmarks.md).
+
 ## Compatibility
 
 The `python scripts/*.py` interfaces published in `v0.1.x` remain as thin

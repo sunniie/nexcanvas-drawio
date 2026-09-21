@@ -13,9 +13,11 @@ from nexcanvas.registry import resolve_route, resolve_theme
 from nexcanvas.archetypes import resolve_archetype
 from nexcanvas.runtime import inspect_runtime
 from nexcanvas.pipeline import initialize_project_state
+from nexcanvas.extensions import ExtensionSet, load_extensions
 
 
-def init_project(args: argparse.Namespace) -> dict[str, object]:
+def init_project(args: argparse.Namespace, extensions: ExtensionSet | None = None) -> dict[str, object]:
+    extensions = extensions or ExtensionSet.empty()
     slug = slugify(args.name)
     explicit_root = getattr(args, "project_root", None)
     output_root = getattr(args, "output_root", Path("nexcanvas-output"))
@@ -32,14 +34,24 @@ def init_project(args: argparse.Namespace) -> dict[str, object]:
     brief = str(getattr(args, "brief", "") or "").strip()
     if family_arg and profile_arg:
         family, profile = str(family_arg), str(profile_arg)
-        view_intent = default_view_intent(family, profile) if requested_intent == "auto" else requested_intent
+        route = resolve_route(family, profile, extensions=extensions)
+        if requested_intent == "auto":
+            view_intent = str(route.get("defaultViewIntent", "")) or default_view_intent(family, profile)
+        else:
+            view_intent = requested_intent
     else:
         view_intent = classify_brief(brief)["viewIntent"] if requested_intent == "auto" and brief else ("architecture" if requested_intent == "auto" else requested_intent)
         family, profile = DEFAULT_ROUTES[view_intent]
-    if view_intent not in compatible_view_intents(family, profile):
-        supported = ", ".join(sorted(compatible_view_intents(family, profile)))
+        route = resolve_route(family, profile, extensions=extensions)
+    declared_intents = route.get("viewIntents")
+    supported_intents = (
+        set(str(item) for item in declared_intents)
+        if isinstance(declared_intents, list)
+        else compatible_view_intents(family, profile)
+    )
+    if view_intent not in supported_intents:
+        supported = ", ".join(sorted(supported_intents))
         raise ValueError(f"view intent {view_intent!r} is incompatible with {family}/{profile}; supported: {supported}")
-    route = resolve_route(family, profile)
     resolve_theme(args.theme)
     archetype = resolve_archetype(args.visual_archetype)
     for relative in ("assets", "artifacts", "reports"):
@@ -142,9 +154,10 @@ def main() -> int:
     init.add_argument("--width", type=int, default=1600)
     init.add_argument("--height", type=int, default=900)
     init.add_argument("--force", action="store_true")
+    init.add_argument("--extension", action="append", type=Path, default=[])
     args = parser.parse_args()
     try:
-        result = init_project(args)
+        result = init_project(args, load_extensions(args.extension))
     except (FileExistsError, KeyError, ValueError) as exc:
         parser.error(str(exc))
     print(json.dumps(result, ensure_ascii=False, indent=2))

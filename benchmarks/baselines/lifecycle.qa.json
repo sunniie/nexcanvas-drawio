@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "counts": {
+    "error": 0,
+    "warning": 1,
+    "info": 0
+  },
+  "issues": [
+    {
+      "severity": "warning",
+      "code": "source-model-missing",
+      "message": "No source_model was supplied; factual traceability is unverified.",
+      "location": "sourceModel"
+    }
+  ],
+  "schemaVersion": "2.0",
+  "checkedAt": "2026-09-11T01:05:08Z",
+  "geometry": {
+    "profile": "interaction",
+    "errors": [],
+    "warnings": []
+  }
+}

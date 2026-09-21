@@ -13,7 +13,7 @@ request branches and is marked complete only after its exit gates pass.
 - [x] Phase 4 - canonical semantic model V3
 - [x] Phase 5 - repository analysis and incremental semantic sync
 - [ ] Phase 6 - cross-agent conformance
-- [ ] Phase 7 - extension ecosystem and visual benchmarks
+- [x] Phase 7 - extension ecosystem and visual benchmarks
 - [ ] Phase 8 - stable contracts and 1.0 hardening
 
 ## Mandatory phase gate
@@ -392,13 +392,54 @@ declared hooks, and resources are hash-bound to resumable generation; isolated
 fixtures cover loading, confinement, routing, layout, QA, analysis, project
 initialization, and invalidation. The seven-class benchmark corpus has editable
 Draw.io files, rendered PNGs, zero geometry/text-bound findings, deterministic
-perceptual checks, and hash-current human approvals. Phase 7 remains unreleased
-until the Phase 7 feature PR passes final CI and the normal `v0.7.0` release
-gates complete. The prerequisite `v0.6.0` release line closed on 2026-09-21;
-its pending observed cross-host comparison remains an explicitly independent
-Phase 6 roadmap item and does not establish a cross-host claim for Phase 7.
+perceptual checks, and hash-current human approvals.
 
-Target releases: `v0.7.x`.
+Exit evidence:
+
+- [Pull request #26](https://github.com/sunniie/nexcanvas-drawio/pull/26)
+  delivered the extension and benchmark implementation after its complete
+  [cross-platform Quality gate](https://github.com/sunniie/nexcanvas-drawio/actions/runs/35612306135)
+  passed, including the seven-class visual benchmark job.
+- [Release pull request #28](https://github.com/sunniie/nexcanvas-drawio/pull/28)
+  passed its full
+  [release matrix](https://github.com/sunniie/nexcanvas-drawio/actions/runs/35612671303).
+  The tagged release commit then passed the final
+  [main CI run](https://github.com/sunniie/nexcanvas-drawio/actions/runs/35613009731)
+  on Linux, Windows, and macOS.
+- GitHub Release [`v0.7.0`](https://github.com/sunniie/nexcanvas-drawio/releases/tag/v0.7.0)
+  publishes the editable skill bundle, wheel, source distribution, and matching
+  SHA-256 checksums. The downloaded wheel reported `nexcanvas 0.7.0`, passed a
+  full-tier `doctor`, and passed the packaged release benchmark for all seven
+  visual classes outside the repository.
+- The release workflow created the correct immutable tag but its post-create
+  packaging run lacked repository context while normalizing the title. The
+  assets were rebuilt from that exact tag, downloaded, checksum-verified, and
+  smoke-tested; this closeout adds explicit `GH_REPO` context so future release
+  runs continue into checkout, build, and upload automatically.
+- The prerequisite `v0.6.0` release line closed on 2026-09-21. Its pending
+  observed cross-host comparison remains an explicitly independent Phase 6
+  roadmap item and does not establish a cross-host claim for Phase 7.
+
+Phase gate evaluation:
+
+- [x] Scope and public-contract impact were recorded in ADR 0010 before
+  implementation.
+- [x] Design, implementation, release, repair, and completion evidence used
+  reviewable commits and short-lived branches.
+- [x] New extension and benchmark behavior has contract, runtime integration,
+  confinement, invalidation, CLI, packaging, and visual-gate coverage.
+- [x] All 99 unit tests and 25 Draw.io QA regression tests pass.
+- [x] The repository-local and Agent Skill validators pass.
+- [x] All four tracked reference projects pass live postflight validation.
+- [x] Published wheel and portable ZIP checks pass outside the repository.
+- [x] User-visible behavior, compatibility, trust boundaries, and known limits
+  are documented.
+- [x] Feature, release, and final-main CI quality gates are green.
+- [x] Release notes cover features, fixes, compatibility, and known limits.
+- [x] Seven-class baselines have current rendered, geometry, text-bound,
+  perceptual, and human-review evidence.
+
+Target release: `v0.7.0` (released 2026-09-21).
 
 ## Phase 8 - stable contracts and 1.0 hardening
 

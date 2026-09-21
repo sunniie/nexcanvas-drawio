@@ -4,6 +4,13 @@ All notable changes to NexCanvas are documented in this file. Releases follow
 [Semantic Versioning](https://semver.org/), while persisted schemas are versioned
 independently.
 
+## [0.7.1](https://github.com/sunniie/nexcanvas-drawio/compare/v0.7.0...v0.7.1) (2026-09-21)
+
+
+### Bug Fixes
+
+* **release:** preserve post-tag asset pipeline ([#29](https://github.com/sunniie/nexcanvas-drawio/issues/29)) ([33b3fc0](https://github.com/sunniie/nexcanvas-drawio/commit/33b3fc0f84391baa29bd79a12f235e62eeccc192))
+
 ## [0.7.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.6.0...v0.7.0) (2026-09-21)
 
 

@@ -4,6 +4,13 @@ All notable changes to NexCanvas are documented in this file. Releases follow
 [Semantic Versioning](https://semver.org/), while persisted schemas are versioned
 independently.
 
+## [0.6.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.5.0...v0.6.0) (2026-09-11)
+
+
+### Features
+
+* **conformance:** add evidence-based host evaluation ([#23](https://github.com/sunniie/nexcanvas-drawio/issues/23)) ([50b2812](https://github.com/sunniie/nexcanvas-drawio/commit/50b281271261982ea4415c62905a9328427a3fe0))
+
 ## [0.5.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.4.0...v0.5.0) (2026-09-10)
 
 

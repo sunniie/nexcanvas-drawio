@@ -4,6 +4,22 @@ All notable changes to NexCanvas are documented in this file. Releases follow
 [Semantic Versioning](https://semver.org/), while persisted schemas are versioned
 independently.
 
+## [1.0.0](https://github.com/sunniie/nexcanvas-drawio/compare/v0.7.1...v1.0.0) (2026-09-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* **stability:** establish stable 1.0 contract set
+
+### Features
+
+* **stability:** establish stable 1.0 contract set ([89fd9b4](https://github.com/sunniie/nexcanvas-drawio/commit/89fd9b4028b94b3a4bee9b18285525018ab653ea))
+
+
+### Bug Fixes
+
+* **extensions:** admit stable 1.x compatibility ([#34](https://github.com/sunniie/nexcanvas-drawio/issues/34)) ([2d5e47b](https://github.com/sunniie/nexcanvas-drawio/commit/2d5e47b17587d5f8cb3c5c0c0d6a2781c3ca64f5))
+
 ## [0.7.1](https://github.com/sunniie/nexcanvas-drawio/compare/v0.7.0...v0.7.1) (2026-09-21)
 
 

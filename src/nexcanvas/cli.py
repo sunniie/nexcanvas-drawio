@@ -16,7 +16,7 @@ from .contracts import validate_file, validate_repository_snapshot
 from .extensions import load_extensions
 from .geometry import run_checks as run_geometry_checks
 from .intents import DEFAULT_ROUTES, VIEW_INTENTS, classify_brief
-from .model_v3 import migrate_file
+from .model_v3 import migrate_file, normalize_diagram_model
 from .planning import brainstorm_layout
 from .pipeline import run_generate
 from .postflight import run_postflight
@@ -28,6 +28,7 @@ from .repository import inspect_repository, verify_repository_evidence
 from .repository_analysis import analyze_repository, diff_repository_snapshots
 from .runtime import inspect_runtime
 from .semantic_sync import sync_project
+from .stability import check_project_compatibility, compatibility_report
 from .visual import create_visual_report
 
 
@@ -169,8 +170,11 @@ def _qa_diagram(args: argparse.Namespace) -> int:
     report["schemaVersion"] = "2.0"
     report["checkedAt"] = utc_now()
     if drawio and drawio.is_file():
+        normalized_model = normalize_diagram_model(model)
         route = resolve_route(
-            model["route"]["family"], model["route"]["profile"], extensions=_extension_set(args)
+            normalized_model["route"]["family"],
+            normalized_model["route"]["profile"],
+            extensions=_extension_set(args),
         )
         errors, warnings = run_geometry_checks(drawio, args.padding, str(route["geometryQa"]))
         report["geometry"] = {"profile": route["geometryQa"], "errors": errors, "warnings": warnings}
@@ -280,6 +284,17 @@ def _contract(args: argparse.Namespace) -> int:
     }
     _emit(report)
     return 0 if report["ok"] else 1
+
+
+def _compatibility_report(args: argparse.Namespace) -> int:
+    _emit(compatibility_report(), args.output)
+    return 0
+
+
+def _compatibility_check(args: argparse.Namespace) -> int:
+    report = check_project_compatibility(args.project_root)
+    _emit(report, args.output)
+    return 0 if report["compatible"] else 1
 
 
 def _conformance_doctor(args: argparse.Namespace) -> int:
@@ -527,12 +542,34 @@ def build_parser() -> argparse.ArgumentParser:
 
     contract = commands.add_parser("contract", help="Validate one persisted NexCanvas contract.")
     contract.add_argument(
-        "kind", choices=["source-model", "diagram-lock", "diagram-model", "asset-manifest", "project-state", "repository-snapshot", "sync-plan"]
+        "kind",
+        choices=[
+            "source-model",
+            "diagram-lock",
+            "diagram-model",
+            "asset-manifest",
+            "project-state",
+            "repository-snapshot",
+            "sync-plan",
+            "diagram-qa",
+            "visual-qa",
+            "postflight",
+        ],
     )
     contract.add_argument("path", type=Path)
     contract.add_argument("--project-root", type=Path)
     _add_extensions(contract)
     _set_handler(contract, _contract)
+
+    compatibility = commands.add_parser("compatibility", help="Inspect the stable contract set or check an existing project.")
+    compatibility_commands = compatibility.add_subparsers(dest="compatibility_command", required=True)
+    compatibility_report_parser = compatibility_commands.add_parser("report", help="Report installed platform and public-contract support.")
+    compatibility_report_parser.add_argument("--output", type=Path)
+    _set_handler(compatibility_report_parser, _compatibility_report)
+    compatibility_check = compatibility_commands.add_parser("check", help="Validate project compatibility without modifying it.")
+    compatibility_check.add_argument("project_root", type=Path)
+    compatibility_check.add_argument("--output", type=Path)
+    _set_handler(compatibility_check, _compatibility_check)
 
     conformance = commands.add_parser("conformance", help="Prepare, evaluate, and report evidence-based host conformance.")
     conformance_commands = conformance.add_subparsers(dest="conformance_command", required=True)

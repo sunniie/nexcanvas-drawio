@@ -6,7 +6,7 @@ NexCanvas uses separate version domains:
 
 | Domain | Example | Meaning |
 |---|---|---|
-| Product | `0.1.0` | Skill, CLI, compiler, documentation, and QA behavior |
+| Product | `1.0.0` | Skill, CLI, compiler, documentation, and QA behavior |
 | Contract schema | diagram `3.0`, source/lock `2.0`, repository snapshot/sync plan `1.0` | Persisted JSON structure and validation rules |
 | Provider pack | `V24` | Upstream icon-pack identity |
 | Extension API/protocol | `1.0` | Manifest compatibility and hook request/response envelope |
@@ -23,8 +23,9 @@ Product releases follow Semantic Versioning:
 - minor: backward-compatible capabilities;
 - major: incompatible public-contract changes.
 
-Versions below `1.0.0` are technical previews. Breaking changes still require
-clear release notes and migration support for persisted user projects.
+Versions below `1.0.0` are technical previews. From `1.0.0`, the public CLI and
+registered persisted contracts follow the compatibility policy in
+[`public-contracts.md`](public-contracts.md).
 
 Pre-releases use `alpha`, `beta`, and `rc`, for example `0.5.0-alpha.1`.
 
@@ -58,8 +59,8 @@ created with the fallback `GITHUB_TOKEN` may not trigger another workflow run. I
 that case, a maintainer must run the `CI` workflow manually against the release
 branch before merge; the required quality gate is never bypassed.
 
-The initial `v0.1.0` release is a technical-preview baseline. `version.txt`, the
-Python `__version__`, the release manifest, tag, and GitHub Release must agree.
+`version.txt`, Python `__version__`, the release manifest, tag, and GitHub Release
+must agree. Product `v1.0.0` is the first stable contract-set release.
 
 ## Commit and pull-request titles
 

@@ -31,7 +31,7 @@ NexCanvas is not:
 - a promise to infer deployed infrastructure or runtime behavior from source alone;
 - a prompt collection whose correctness depends only on one agent following prose;
 - a reason to substitute an approximate vendor logo for an unverified exact asset;
-- a hosted service or telemetry platform in the current technical-preview phase.
+- a hosted service or telemetry platform.
 
 ## Responsibility boundary
 

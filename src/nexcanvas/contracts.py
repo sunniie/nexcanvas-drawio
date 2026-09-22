@@ -808,6 +808,144 @@ def validate_sync_plan(plan: dict[str, Any]) -> list[Issue]:
     return issues
 
 
+def _validate_report_issues(value: Any, location: str = "issues") -> list[Issue]:
+    issues: list[Issue] = []
+    if not isinstance(value, list):
+        return [Issue("error", "report-issues", f"{location} must be an array.", location)]
+    for index, item in enumerate(value):
+        item_location = f"{location}[{index}]"
+        if not isinstance(item, dict):
+            issues.append(Issue("error", "report-issue-type", "Report issue must be an object.", item_location))
+            continue
+        if item.get("severity") not in {"error", "warning", "info"}:
+            issues.append(Issue("error", "report-issue-severity", "Report issue severity is invalid.", f"{item_location}.severity"))
+        _required_string(item.get("code"), f"{item_location}.code", issues)
+        _required_string(item.get("message"), f"{item_location}.message", issues)
+        if not isinstance(item.get("location", ""), str):
+            issues.append(Issue("error", "report-issue-location", "Report issue location must be a string.", f"{item_location}.location"))
+    return issues
+
+
+def _validate_counts(value: Any, fields: tuple[str, ...], location: str = "counts") -> list[Issue]:
+    if not isinstance(value, dict):
+        return [Issue("error", "report-counts", f"{location} must be an object.", location)]
+    issues: list[Issue] = []
+    for field in fields:
+        count = value.get(field)
+        if not isinstance(count, int) or isinstance(count, bool) or count < 0:
+            issues.append(Issue("error", "report-count", f"{location}.{field} must be an integer >= 0.", f"{location}.{field}"))
+    return issues
+
+
+def validate_diagram_qa(report: dict[str, Any]) -> list[Issue]:
+    issues: list[Issue] = []
+    if report.get("schemaVersion") != "2.0":
+        issues.append(Issue("error", "schema-version", "diagram QA schemaVersion must be 2.0.", "schemaVersion"))
+    if not isinstance(report.get("ok"), bool):
+        issues.append(Issue("error", "report-ok", "diagram QA ok must be a boolean.", "ok"))
+    _required_string(report.get("checkedAt"), "checkedAt", issues)
+    issues.extend(_validate_counts(report.get("counts"), ("error", "warning", "info")))
+    issues.extend(_validate_report_issues(report.get("issues")))
+    counts = report.get("counts") if isinstance(report.get("counts"), dict) else {}
+    if report.get("ok") is True and counts.get("error") != 0:
+        issues.append(Issue("error", "report-false-pass", "A passing diagram QA report must have zero errors.", "ok"))
+    geometry = report.get("geometry")
+    if geometry is not None:
+        if not isinstance(geometry, dict):
+            issues.append(Issue("error", "geometry-report", "geometry must be an object.", "geometry"))
+        else:
+            _required_string(geometry.get("profile"), "geometry.profile", issues)
+            for field in ("errors", "warnings"):
+                value = geometry.get(field)
+                if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+                    issues.append(Issue("error", "geometry-report", f"geometry.{field} must be an array of strings.", f"geometry.{field}"))
+    return issues
+
+
+def validate_visual_qa(report: dict[str, Any]) -> list[Issue]:
+    issues: list[Issue] = []
+    if report.get("schemaVersion") != "2.0":
+        issues.append(Issue("error", "schema-version", "visual QA schemaVersion must be 2.0.", "schemaVersion"))
+    for field in ("reviewedAt", "artifact"):
+        _required_string(report.get(field), field, issues)
+    digest = report.get("sha256")
+    if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+        issues.append(Issue("error", "visual-hash", "visual QA sha256 must be a lowercase SHA-256 hash.", "sha256"))
+    dimensions = report.get("dimensions")
+    if dimensions is not None:
+        if not isinstance(dimensions, dict):
+            issues.append(Issue("error", "visual-dimensions", "dimensions must be an object or null.", "dimensions"))
+        else:
+            for field in ("width", "height"):
+                value = dimensions.get(field)
+                if not isinstance(value, int) or isinstance(value, bool) or value < 1:
+                    issues.append(Issue("error", "visual-dimensions", f"dimensions.{field} must be an integer >= 1.", f"dimensions.{field}"))
+    checks = report.get("automatedChecks")
+    if not isinstance(checks, list):
+        issues.append(Issue("error", "visual-checks", "automatedChecks must be an array.", "automatedChecks"))
+        checks = []
+    for index, check in enumerate(checks):
+        location = f"automatedChecks[{index}]"
+        if not isinstance(check, dict):
+            issues.append(Issue("error", "visual-check", "Automated check must be an object.", location))
+            continue
+        _required_string(check.get("name"), f"{location}.name", issues)
+        if not isinstance(check.get("ok"), bool):
+            issues.append(Issue("error", "visual-check", "Automated check ok must be a boolean.", f"{location}.ok"))
+        if not isinstance(check.get("detail"), str):
+            issues.append(Issue("error", "visual-check", "Automated check detail must be a string.", f"{location}.detail"))
+    review = report.get("manualReview")
+    if not isinstance(review, dict):
+        issues.append(Issue("error", "visual-review", "manualReview must be an object.", "manualReview"))
+        review = {}
+    if review.get("status") not in {"pending-review", "approved", "rejected"}:
+        issues.append(Issue("error", "visual-review-status", "manualReview.status is invalid.", "manualReview.status"))
+    for field in ("reviewer", "notes"):
+        if not isinstance(review.get(field), str):
+            issues.append(Issue("error", "visual-review", f"manualReview.{field} must be a string.", f"manualReview.{field}"))
+    criteria = review.get("requiredCriteria")
+    if not isinstance(criteria, list) or not all(isinstance(item, str) and item for item in criteria):
+        issues.append(Issue("error", "visual-review", "manualReview.requiredCriteria must be a non-empty string array.", "manualReview.requiredCriteria"))
+    if not isinstance(report.get("ok"), bool):
+        issues.append(Issue("error", "report-ok", "visual QA ok must be a boolean.", "ok"))
+    if report.get("ok") is True and (review.get("status") != "approved" or any(check.get("ok") is not True for check in checks if isinstance(check, dict))):
+        issues.append(Issue("error", "report-false-pass", "A passing visual QA report requires approved manual review and passing automated checks.", "ok"))
+    return issues
+
+
+def validate_postflight(report: dict[str, Any]) -> list[Issue]:
+    issues: list[Issue] = []
+    if report.get("schemaVersion") != "2.0":
+        issues.append(Issue("error", "schema-version", "postflight schemaVersion must be 2.0.", "schemaVersion"))
+    _required_string(report.get("checkedAt"), "checkedAt", issues)
+    if report.get("projectRoot") != ".":
+        issues.append(Issue("error", "project-root", "postflight projectRoot must be '.'.", "projectRoot"))
+    if not isinstance(report.get("ok"), bool):
+        issues.append(Issue("error", "report-ok", "postflight ok must be a boolean.", "ok"))
+    issues.extend(_validate_counts(report.get("counts"), ("error", "warning")))
+    issues.extend(_validate_report_issues(report.get("issues")))
+    artifacts = report.get("artifacts")
+    if not isinstance(artifacts, dict):
+        issues.append(Issue("error", "postflight-artifacts", "artifacts must be an object.", "artifacts"))
+        artifacts = {}
+    for name, artifact in artifacts.items():
+        location = f"artifacts.{name}"
+        if not isinstance(artifact, dict):
+            issues.append(Issue("error", "postflight-artifact", "Artifact record must be an object.", location))
+            continue
+        _required_string(artifact.get("path"), f"{location}.path", issues)
+        digest = artifact.get("sha256")
+        if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+            issues.append(Issue("error", "postflight-hash", "Artifact sha256 must be a lowercase SHA-256 hash.", f"{location}.sha256"))
+        size = artifact.get("bytes")
+        if not isinstance(size, int) or isinstance(size, bool) or size < 0:
+            issues.append(Issue("error", "postflight-size", "Artifact bytes must be an integer >= 0.", f"{location}.bytes"))
+    counts = report.get("counts") if isinstance(report.get("counts"), dict) else {}
+    if report.get("ok") is True and counts.get("error") != 0:
+        issues.append(Issue("error", "report-false-pass", "A passing postflight report must have zero errors.", "ok"))
+    return issues
+
+
 def validate_file(
     path: Path,
     kind: str,
@@ -832,4 +970,10 @@ def validate_file(
         return validate_repository_snapshot(value)
     if kind == "sync-plan":
         return validate_sync_plan(value)
+    if kind == "diagram-qa":
+        return validate_diagram_qa(value)
+    if kind == "visual-qa":
+        return validate_visual_qa(value)
+    if kind == "postflight":
+        return validate_postflight(value)
     raise ValueError(f"Unknown contract kind: {kind}")

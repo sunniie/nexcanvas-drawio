@@ -5,7 +5,7 @@
 ### A portable AI agent skill and diagramming toolkit for polished, editable, reference-grade technical diagrams
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-2563EB.svg)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB.svg)](https://www.python.org/)
+[![Python 3.10-3.13](https://img.shields.io/badge/python-3.10--3.13-3776AB.svg)](https://www.python.org/)
 [![Format: Draw.io](https://img.shields.io/badge/format-editable%20Draw.io-F08705.svg)](https://www.drawio.com/)
 [![Agent Skill](https://img.shields.io/badge/standard-Agent%20Skills-111827.svg)](SKILL.md)
 [![CI](https://github.com/sunniie/nexcanvas-drawio/actions/workflows/ci.yml/badge.svg)](https://github.com/sunniie/nexcanvas-drawio/actions/workflows/ci.yml)
@@ -73,6 +73,7 @@ as a generic component inventory.
 | Cross-agent conformance | Uses one shared skill, hash-bound host run packs, five-dimensional scoring, and explicit verified/not-run/unavailable/failed states |
 | Extension API | Loads versioned analyzer, layout, route, asset-provider, QA-rule, and host adapters only from explicitly trusted directories |
 | Visual benchmarks | Gates sparse, dense, cloud, AI, sequence, data-flow, and lifecycle baselines across geometry, text bounds, image proxies, and hash-bound human review |
+| Stable contracts | Publishes a machine-readable CLI/schema/platform manifest and read-only compatibility checks for existing projects |
 
 ## Agent-guided intake
 
@@ -223,7 +224,7 @@ clear of icons, step badges, and container outlines. Render and verify it.
 
 Requirements:
 
-- Python 3.10 or newer for authoring and structural QA;
+- Python 3.10 through 3.13 for authoring and structural QA;
 - Draw.io Desktop for deterministic PNG/SVG/PDF export and complete visual QA;
 - network access only when an icon must be synced and is not already local.
 
@@ -259,8 +260,8 @@ Or choose an explicit directory:
 nexcanvas init docs/architecture --name "My architecture" --family software --profile c4-container
 ```
 
-`init` creates a canonical V3 diagram model. Existing V2 projects remain readable
-in `v0.6.x`, but incremental repository sync requires V3. To migrate without
+`init` creates a canonical V3 diagram model. Existing V2 projects remain readable,
+validatable, buildable, and migratable throughout `v1.x`, but incremental repository sync requires V3. To migrate without
 overwriting the original:
 
 ```bash
@@ -488,7 +489,13 @@ layout, build, and QA pipeline. This keeps the same skill usable by Codex,
 GitHub Copilot, Claude Code, and other hosts that implement Agent Skills.
 
 The complete command surface, exit-code contract, installation behavior, and
-compatibility window are documented in the [CLI reference](docs/cli.md).
+compatibility window are documented in the [CLI reference](docs/cli.md). Inspect
+the installed stable contract set or check a project without modifying it:
+
+```bash
+nexcanvas compatibility report
+nexcanvas compatibility check ./nexcanvas-output/my-project
+```
 
 ## Cross-agent conformance
 
@@ -516,6 +523,8 @@ Semantic Versioning with separate versioning for persisted JSON schemas.
 - [Roadmap and phase gates](ROADMAP.md)
 - [Project scope](docs/project-scope.md)
 - [Public contracts](docs/public-contracts.md)
+- [Compatibility matrix](docs/compatibility.md)
+- [Migration and rollback](docs/migration-and-rollback.md)
 - [Versioning and releases](docs/versioning.md)
 - [Contributing](CONTRIBUTING.md)
 - [Support](SUPPORT.md)

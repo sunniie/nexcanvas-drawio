@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nexcanvas.dev/schemas/visual-qa.schema.json",
+  "title": "NexCanvas Visual QA Report",
+  "type": "object",
+  "required": ["schemaVersion", "reviewedAt", "artifact", "sha256", "dimensions", "automatedChecks", "manualReview", "ok"],
+  "properties": {
+    "schemaVersion": {"const": "2.0"},
+    "reviewedAt": {"type": "string", "minLength": 1},
+    "artifact": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "dimensions": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "required": ["width", "height"],
+          "properties": {
+            "width": {"type": "integer", "minimum": 1},
+            "height": {"type": "integer", "minimum": 1}
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "automatedChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "ok", "detail"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1},
+          "ok": {"type": "boolean"},
+          "detail": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "manualReview": {
+      "type": "object",
+      "required": ["status", "reviewer", "notes", "requiredCriteria"],
+      "properties": {
+        "status": {"enum": ["pending-review", "approved", "rejected"]},
+        "reviewer": {"type": "string"},
+        "notes": {"type": "string"},
+        "requiredCriteria": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      },
+      "additionalProperties": false
+    },
+    "ok": {"type": "boolean"}
+  },
+  "additionalProperties": false
+}

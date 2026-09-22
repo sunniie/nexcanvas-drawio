@@ -1,9 +1,9 @@
 # Unified command-line interface
 
-The `nexcanvas` command is the supported automation surface for the technical
-preview. Product `v0.6.x` creates canonical diagram model `3.0`, reads legacy
-diagram model `2.0`, and keeps source, lock, asset, pipeline-state, and editable
-Draw.io contracts at their existing versions. Repository sync requires V3.
+The `nexcanvas` command is the stable automation surface from product `v1.0.0`.
+It creates canonical diagram model `3.0`, reads legacy diagram model `2.0`, and
+keeps source, lock, asset, QA, pipeline-state, and editable Draw.io contracts at
+their registered versions. Repository sync requires V3.
 
 ## Installation
 
@@ -19,8 +19,9 @@ From an unpacked release bundle:
 python -m pip install .
 ```
 
-GitHub releases also attach a wheel and source distribution with checksums. A
-public package-index publication is not claimed in the technical preview.
+GitHub releases also attach a wheel and source distribution with checksums.
+Checksummed GitHub Releases are the authoritative distribution channel; a public
+package-index publication is not claimed.
 
 The wheel installs its immutable registries, schemas, and pinned generic icon
 catalog under the Python installation's data directory. Project outputs always
@@ -55,6 +56,8 @@ python <skill-root>/scripts/nexcanvas_cli.py <command> [...]
 | `migrate v2-to-v3` | Write a separate canonical V3 model from a legacy V2 model |
 | `intent` | Infer a semantic view intent as an agent routing hint |
 | `contract` | Validate a persisted V2/V3 diagram contract or another supported contract |
+| `compatibility report` | Report the installed stable contract set and runtime support |
+| `compatibility check` | Validate an existing project without modifying it |
 | `conformance doctor` | Detect locally available host adapters without claiming a passing run |
 | `conformance prepare` | Create a host/case run pack bound to the skill, adapter, and corpus digests |
 | `conformance evaluate` | Score a fixture or observed project across the five conformance dimensions |
@@ -239,18 +242,22 @@ text-bound, PNG-proxy, and current hash-bound human-review gates.
 
 ## Compatibility
 
-The `python scripts/*.py` interfaces published in `v0.1.x` remain as thin
-source-checkout wrappers during the technical preview. New automation must use
-the unified CLI. The wrappers are not installed into wheels and may be removed
-only after the documented deprecation window.
+The `python scripts/*.py` interfaces published in `v0.1.x` remain deprecated thin
+source-checkout wrappers throughout `v1.x`. New automation must use the unified
+CLI. The wrappers are not installed into wheels and are not expanded with new
+features.
 
-The importable modules under `src/nexcanvas` are implementation details; the
-technical preview does not yet publish a stable Python API.
+The importable modules under `src/nexcanvas` are implementation details. Product
+`v1.0.0` stabilizes the CLI and persisted contracts, not an import-level Python
+API.
 
-Diagram model `2.0` remains readable throughout `v0.6.x`. New `init` output uses
-diagram model `3.0`; source model and diagram lock remain schema `2.0`, while
-pipeline state, repository snapshot, and semantic sync plan use independent
-schema `1.0` contracts. Incremental sync requires V3.
+Diagram model `2.0` remains readable, validatable, buildable, and migratable
+throughout `v1.x`. New `init` output uses diagram model `3.0`; source model,
+diagram lock, asset manifest, and QA reports remain schema `2.0`, while pipeline
+state, repository snapshot, and semantic sync plan use independent schema `1.0`
+contracts. Incremental sync requires V3. See the
+[compatibility matrix](compatibility.md) and
+[migration and rollback guide](migration-and-rollback.md).
 
 ## Known limits
 
@@ -261,7 +268,7 @@ schema `1.0` contracts. Incremental sync requires V3.
 - Semantic authoring and visual judgment remain agent/human responsibilities;
   `generate` orchestrates deterministic stages but does not invent architecture
   facts or automatically approve aesthetics.
-- The `v0.6.x` pipeline fingerprints the complete diagram-model file, so a
+- The `v1.0.x` pipeline fingerprints the complete diagram-model file, so a
   presentation-only edit conservatively reruns every delivery stage even though
   its semantics-only fingerprint remains stable.
 - Phase 5 analyzers expose module/import evidence only. They do not infer dynamic

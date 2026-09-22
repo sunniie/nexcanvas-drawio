@@ -80,6 +80,11 @@ def validate() -> list[str]:
         "schemas/extension-manifest.schema.json",
         "schemas/visual-benchmark-suite.schema.json",
         "schemas/visual-benchmark-result.schema.json",
+        "schemas/diagram-qa.schema.json",
+        "schemas/visual-qa.schema.json",
+        "schemas/postflight.schema.json",
+        "schemas/stability-manifest.schema.json",
+        "config/stability-manifest.json",
         "conformance/suite.json",
         "conformance/hosts/codex.json",
         "conformance/hosts/github-copilot.json",
@@ -88,6 +93,9 @@ def validate() -> list[str]:
         "docs/host-capability-matrix.md",
         "docs/extensions.md",
         "docs/visual-benchmarks.md",
+        "docs/compatibility.md",
+        "docs/migration-and-rollback.md",
+        "docs/release-notes-v1.0.0.md",
         "docs/pipeline-state.md",
         "references/semantic-model-v3.md",
         "workflows/conformance.md",
@@ -155,6 +163,8 @@ def validate() -> list[str]:
         "workflows/conformance.md",
         "docs/extensions.md",
         "docs/visual-benchmarks.md",
+        "docs/compatibility.md",
+        "docs/migration-and-rollback.md",
     ]:
         path = ROOT / relative
         if path.is_file():
@@ -181,6 +191,15 @@ def validate() -> list[str]:
         load_extensions([ROOT / "tests" / "fixtures" / "extensions" / "complete"])
     except (OSError, ValueError) as exc:
         issues.append(f"extension or benchmark contracts are invalid: {exc}")
+
+    try:
+        from nexcanvas.cli import build_parser
+        from nexcanvas.stability import load_stability_manifest, validate_cli_surface
+
+        stability_manifest = load_stability_manifest(ROOT)
+        issues.extend(validate_cli_surface(build_parser(), stability_manifest))
+    except (OSError, ValueError) as exc:
+        issues.append(f"stable 1.0 contract set is invalid: {exc}")
 
     return issues
 

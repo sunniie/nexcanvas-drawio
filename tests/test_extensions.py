@@ -14,7 +14,7 @@ from nexcanvas.archetypes import resolve_provider_pack
 from nexcanvas.builder import build_drawio
 from nexcanvas.conformance import load_adapters
 from nexcanvas.contracts import validate_repository_snapshot
-from nexcanvas.extensions import load_extensions, validate_manifest
+from nexcanvas.extensions import _supports_product, load_extensions, validate_manifest
 from nexcanvas.quality import run_quality
 from nexcanvas.registry import resolve_route
 from nexcanvas.repository_analysis import analyze_repository
@@ -32,6 +32,11 @@ def _run(*command: str, cwd: Path) -> None:
 class ExtensionTests(unittest.TestCase):
     def setUp(self) -> None:
         self.extensions = load_extensions([FIXTURE])
+
+    def test_reference_extension_declares_stable_v1_compatibility(self) -> None:
+        manifest = json.loads((FIXTURE / "nexcanvas-extension.json").read_text(encoding="utf-8"))
+        self.assertTrue(_supports_product(manifest["requiresNexCanvas"], "1.0.0"))
+        self.assertFalse(_supports_product(manifest["requiresNexCanvas"], "2.0.0"))
 
     def test_manifest_exposes_all_six_versioned_component_kinds(self) -> None:
         report = self.extensions.describe()

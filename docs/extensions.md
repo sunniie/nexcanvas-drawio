@@ -49,7 +49,7 @@ commands fail before a hook runs.
   "id": "com.example.diagram-tools",
   "name": "Example diagram tools",
   "version": "1.0.0",
-  "requiresNexCanvas": ">=0.5.0,<0.8.0",
+  "requiresNexCanvas": ">=0.5.0,<2.0.0",
   "components": [
     {
       "kind": "analyzer",

@@ -14,7 +14,7 @@ request branches and is marked complete only after its exit gates pass.
 - [x] Phase 5 - repository analysis and incremental semantic sync
 - [ ] Phase 6 - cross-agent conformance
 - [x] Phase 7 - extension ecosystem and visual benchmarks
-- [ ] Phase 8 - stable contracts and 1.0 hardening
+- [x] Phase 8 - stable contracts and 1.0 hardening
 
 ## Mandatory phase gate
 
@@ -464,20 +464,49 @@ Recorded scope and contract impact:
   CLI surface, exit codes, platform matrix, persisted schemas, and policy links.
   Existing diagram projects require no migration.
 
-- [ ] Stabilize CLI and contract schemas.
-- [ ] Verify fresh installation and end-to-end examples on supported platforms.
-- [ ] Resolve critical issues and publish the compatibility matrix.
-- [ ] Document support, migration, rollback, and security-response policies.
-- [ ] Publish immutable, checksummed `v1.0.0` artifacts.
+- [x] Stabilize CLI and contract schemas.
+- [x] Verify fresh installation and end-to-end examples on supported platforms.
+- [x] Resolve critical issues and publish the compatibility matrix.
+- [x] Document support, migration, rollback, and security-response policies.
+- [x] Publish immutable, checksummed `v1.0.0` artifacts.
 
-Implementation checkpoint: the compatibility report/check commands, stable
-diagram/visual/postflight QA schemas, CLI-surface drift gate, packaged policy
-documents, and fresh-wheel structural E2E are implemented locally. Final status
-remains open until feature CI, release CI, downloaded-artifact verification, and
-final-main CI all pass.
+Exit evidence:
+
+- [Stable-contract implementation pull request #32](https://github.com/sunniie/nexcanvas-drawio/pull/32)
+  and its [passing feature CI](https://github.com/sunniie/nexcanvas-drawio/actions/runs/35704320966).
+- [Stable-1.x extension compatibility repair #34](https://github.com/sunniie/nexcanvas-drawio/pull/34)
+  and its [passing multi-platform CI](https://github.com/sunniie/nexcanvas-drawio/actions/runs/35705140703).
+- [Release pull request #33](https://github.com/sunniie/nexcanvas-drawio/pull/33)
+  and its [passing release-branch CI](https://github.com/sunniie/nexcanvas-drawio/actions/runs/35705407316).
+- [Release workflow](https://github.com/sunniie/nexcanvas-drawio/actions/runs/35705684479)
+  created the stable tag, normalized release title, wheel, source distribution,
+  portable skill ZIP, and checksum manifest.
+- [Final `main` CI](https://github.com/sunniie/nexcanvas-drawio/actions/runs/35705684513)
+  passed the Python 3.10-3.13 Ubuntu matrix, Windows and macOS package smoke,
+  repository/skill validation, reference postflights, conformance contracts,
+  seven-class visual benchmark, and aggregate quality gate.
+- The downloaded wheel installed outside the repository as `1.0.0`; full
+  runtime doctor, stable compatibility report, and all seven release-profile
+  visual benchmarks passed. The downloaded portable ZIP independently passed
+  skill validation, and every published artifact matched `SHA256SUMS.txt`.
+- GitHub Release [`v1.0.0`](https://github.com/sunniie/nexcanvas-drawio/releases/tag/v1.0.0)
+  is immutable, non-draft, non-prerelease, and targets the release commit.
 
 Phase 6 observed cross-host comparison is intentionally independent. A stable
 `v1.0.0` can publish truthful `not-run` host states, but does not convert absent
 Copilot or Claude evidence into a conformance claim.
 
-Target release: `v1.0.0`.
+Phase gate evaluation:
+
+- [x] Scope and public-contract impact were recorded before implementation.
+- [x] Work used reviewable, short-lived pull request branches.
+- [x] New behavior has contract, CLI, regression, packaging, and E2E coverage.
+- [x] All 106 unit tests and 25 Draw.io QA regression tests pass.
+- [x] The repository-local and Agent Skill validators pass.
+- [x] All four tracked reference projects pass live postflight validation.
+- [x] The seven-class visual benchmark has current automated and human-review evidence.
+- [x] Downloaded wheel and portable ZIP artifacts pass outside the repository.
+- [x] Feature, repair, release-branch, release, and final-main gates are green.
+- [x] Compatibility, migration, rollback, support, security, and known limits are documented.
+
+Target release: `v1.0.0` (released 2026-09-22).

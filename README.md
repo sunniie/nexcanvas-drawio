@@ -497,6 +497,15 @@ nexcanvas compatibility report
 nexcanvas compatibility check ./nexcanvas-output/my-project
 ```
 
+## Stable release
+
+[`NexCanvas v1.0.0`](https://github.com/sunniie/nexcanvas-drawio/releases/tag/v1.0.0)
+is the first stable contract line. The GitHub Release provides a portable Agent
+Skill ZIP, Python wheel, source distribution, and `SHA256SUMS.txt`. The supported
+runtime matrix, persisted-contract policy, V2 migration window, and known limits
+are summarized in the [v1.0.0 release notes](docs/release-notes-v1.0.0.md) and
+[compatibility matrix](docs/compatibility.md).
+
 ## Cross-agent conformance
 
 NexCanvas does not call two prompts equivalent merely because their screenshots

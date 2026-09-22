@@ -1,9 +1,8 @@
 # Public contracts
 
 NexCanvas versions the interfaces that users, agents, generated projects, and
-extensions depend on. Before `v1.0.0`, these contracts may change, but breaking
-changes require release notes and a migration path whenever persisted user data is
-affected.
+extensions depend on. Product `v1.0.0` establishes public contract set `1.0`.
+The machine-readable registry is `config/stability-manifest.json`.
 
 ## Versioned surfaces
 
@@ -12,7 +11,7 @@ The following are public contracts:
 - documented command names, options, exit codes, and machine-readable output;
 - `source_model.json`, semantic/diagram model, `diagram_lock.json`, and
   `project_state.json` schemas;
-- asset-manifest and QA-report schemas;
+- asset-manifest, diagram-QA, visual-QA, and postflight-report schemas;
 - the standard generated-project directory layout;
 - stable semantic IDs and semantics-only fingerprints in diagram model V3;
 - repository snapshot `1.0` and semantic sync-plan `1.0`;
@@ -22,9 +21,10 @@ The following are public contracts:
 - visual benchmark suite `1.0` and benchmark result `1.0`;
 - the delivery definition for editable, rendered, and verified artifacts.
 
-The `nexcanvas` command and its documented subcommands are public preview
-contracts. Python modules under `src/nexcanvas` remain implementation details
-until a supported Python API is explicitly published.
+The `nexcanvas` command and its documented subcommands, options, JSON results,
+and exit codes are stable public contracts in `v1.x`. Python modules under
+`src/nexcanvas` remain implementation details until a supported Python API is
+explicitly published.
 
 ## Compatibility classes
 
@@ -43,10 +43,10 @@ migration tool and fixtures covering representative prior projects.
 Unknown schema-major versions must fail with an actionable message. They must not
 be guessed, partially loaded, or silently rewritten.
 
-Diagram model `3.0` is canonical from product `v0.4.0`. Diagram model `2.0`
-remains a readable compatibility contract throughout `v0.5.x`, and the explicit
-V2-to-V3 migration writes a separate output instead of silently replacing user
-data.
+Diagram model `3.0` is canonical. Diagram model `2.0` remains a readable,
+validatable, buildable, and migratable compatibility contract throughout product
+`v1.x`. The explicit V2-to-V3 migration writes a separate output instead of
+silently replacing user data.
 
 Repository snapshot and semantic sync-plan schema `1.0` are introduced in
 product `v0.5.0`. They do not change Diagram Model V3, Source Model `2.0`,
@@ -58,10 +58,11 @@ snapshots remain valid.
 
 ## Deprecation policy
 
-Before `v1.0.0`, a deprecated contract is documented in the changelog and retained
-for at least one subsequent minor release when practical. After `v1.0.0`, supported
-contracts receive at least one minor-release deprecation window before removal,
-except for urgent security fixes.
+Supported contracts receive at least one minor-release deprecation window before
+removal. A removal or incompatible reinterpretation requires a major product or
+schema version, release notes, migration tooling for persisted user data, and
+rollback guidance. Urgent security fixes may shorten the window when retaining
+compatibility would preserve the vulnerability.
 
 ## Agent-host contract
 
@@ -77,8 +78,8 @@ become stale when any of those versioned inputs changes.
 
 ## Extension and benchmark contracts
 
-Extensions are public preview in product `v0.7.x`. Loading is explicit and
-opt-in; built-in IDs cannot be replaced. Manifest compatibility is checked
+Extensions are stable public contracts at manifest/API/protocol `1.0`. Loading
+is explicit and opt-in; built-in IDs cannot be replaced. Manifest compatibility is checked
 before execution, relative resources are confined to the extension root, and
 hook processes use versioned JSON stdin/stdout with bounded timeouts. Hooks are
 trusted local code, not a security sandbox.

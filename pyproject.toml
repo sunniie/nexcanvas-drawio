@@ -7,13 +7,13 @@ name = "nexcanvas-drawio"
 dynamic = ["version"]
 description = "Portable agent skill and deterministic toolkit for editable, reference-grade Draw.io architecture diagrams."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.14"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "NexCanvas contributors" }]
 keywords = ["drawio", "architecture", "diagramming", "agent-skill", "mxgraph"]
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 5 - Production/Stable",
   "Environment :: Console",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
@@ -43,7 +43,8 @@ version = { attr = "nexcanvas.__version__" }
 where = ["src"]
 
 [tool.setuptools.data-files]
-"share/nexcanvas" = ["SKILL.md"]
+"share/nexcanvas" = ["SKILL.md", "SUPPORT.md", "SECURITY.md"]
+"share/nexcanvas/docs" = ["docs/compatibility.md", "docs/public-contracts.md", "docs/versioning.md", "docs/migration-and-rollback.md"]
 "share/nexcanvas/config" = ["config/*.json"]
 "share/nexcanvas/assets/catalog" = ["assets/catalog/*.json"]
 "share/nexcanvas/schemas" = ["schemas/*.json"]

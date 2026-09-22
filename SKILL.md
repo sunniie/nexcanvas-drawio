@@ -73,6 +73,8 @@ editable artifact, previews, and QA reports.
 ## Required pipeline
 
 1. Run `nexcanvas doctor` and record whether Draw.io Desktop rendering is available.
+   For an existing project, run `nexcanvas compatibility check <project-dir>`
+   before changing its persisted contracts; the check is read-only.
 2. Infer one dominant `viewIntent`: architecture, workflow, sequence, data-flow, or lifecycle. Do not ask the user to choose when the brief is clear.
 3. Investigate only the source evidence required by that intent. For repository-backed facts, pin Git origin/revision and exact file/line ranges; separate confirmed facts, assumptions, and exclusions in `source_model.json`.
 4. Select one of the 48 profiles in `config/route-registry.json` as the specialized notation beneath the intent.

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nexcanvas.dev/schemas/postflight.schema.json",
+  "title": "NexCanvas Postflight Report",
+  "type": "object",
+  "required": ["schemaVersion", "checkedAt", "projectRoot", "ok", "counts", "issues", "artifacts"],
+  "properties": {
+    "schemaVersion": {"const": "2.0"},
+    "checkedAt": {"type": "string", "minLength": 1},
+    "projectRoot": {"const": "."},
+    "ok": {"type": "boolean"},
+    "counts": {
+      "type": "object",
+      "required": ["error", "warning"],
+      "properties": {
+        "error": {"type": "integer", "minimum": 0},
+        "warning": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "issues": {"type": "array", "items": {"type": "object"}},
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["path", "sha256", "bytes"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "bytes": {"type": "integer", "minimum": 0}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

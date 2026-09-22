@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nexcanvas.dev/schemas/diagram-qa.schema.json",
+  "title": "NexCanvas Diagram QA Report",
+  "type": "object",
+  "required": ["schemaVersion", "ok", "counts", "issues", "checkedAt"],
+  "properties": {
+    "schemaVersion": {"const": "2.0"},
+    "ok": {"type": "boolean"},
+    "checkedAt": {"type": "string", "minLength": 1},
+    "counts": {
+      "type": "object",
+      "required": ["error", "warning", "info"],
+      "properties": {
+        "error": {"type": "integer", "minimum": 0},
+        "warning": {"type": "integer", "minimum": 0},
+        "info": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "issues": {"type": "array", "items": {"$ref": "#/$defs/issue"}},
+    "geometry": {
+      "type": "object",
+      "required": ["profile", "errors", "warnings"],
+      "properties": {
+        "profile": {"type": "string", "minLength": 1},
+        "errors": {"type": "array", "items": {"type": "string"}},
+        "warnings": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "issue": {
+      "type": "object",
+      "required": ["severity", "code", "message", "location"],
+      "properties": {
+        "severity": {"enum": ["error", "warning", "info"]},
+        "code": {"type": "string", "minLength": 1},
+        "message": {"type": "string", "minLength": 1},
+        "location": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -455,10 +455,29 @@ Target release: `v0.7.0` (released 2026-09-21), followed by maintenance patch
 
 Objective: publish a supportable public API and migration promise.
 
+Recorded scope and contract impact:
+
+- [`ADR 0011`](docs/adr/0011-stable-1-0-contract-set.md) defines the stable CLI,
+  independently versioned persisted contracts, V2 compatibility window,
+  supported-platform boundary, deprecation rules, and package/release gates.
+- Stability manifest `1.0` is a new public contract. It records the supported
+  CLI surface, exit codes, platform matrix, persisted schemas, and policy links.
+  Existing diagram projects require no migration.
+
 - [ ] Stabilize CLI and contract schemas.
 - [ ] Verify fresh installation and end-to-end examples on supported platforms.
 - [ ] Resolve critical issues and publish the compatibility matrix.
 - [ ] Document support, migration, rollback, and security-response policies.
 - [ ] Publish immutable, checksummed `v1.0.0` artifacts.
+
+Implementation checkpoint: the compatibility report/check commands, stable
+diagram/visual/postflight QA schemas, CLI-surface drift gate, packaged policy
+documents, and fresh-wheel structural E2E are implemented locally. Final status
+remains open until feature CI, release CI, downloaded-artifact verification, and
+final-main CI all pass.
+
+Phase 6 observed cross-host comparison is intentionally independent. A stable
+`v1.0.0` can publish truthful `not-run` host states, but does not convert absent
+Copilot or Claude evidence into a conformance claim.
 
 Target release: `v1.0.0`.

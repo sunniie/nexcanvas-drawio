@@ -2,13 +2,13 @@
 
 ## Supported versions
 
-NexCanvas is currently a technical preview.
-
 | Version | Supported |
 |---|---|
-| `0.1.x` | Yes |
+| Latest `1.x` minor | Security and correctness fixes |
+| Previous `1.x` minor | Security fixes for 90 days after the next minor release |
+| `0.x` technical previews | No |
 | Unreleased `main` | Best effort |
-| Older snapshots | No |
+| Other snapshots | No |
 
 ## Reporting a vulnerability
 
@@ -23,8 +23,11 @@ and include:
 - whether public disclosure has already occurred.
 
 The maintainer will acknowledge a complete report as soon as practical, assess
-severity, coordinate a fix and disclosure timeline, and credit the reporter unless
-anonymity is requested.
+severity, coordinate a private fix and disclosure timeline, and credit the
+reporter unless anonymity is requested. A security release may shorten the normal
+deprecation window when compatibility would preserve the vulnerability. Release
+notes will identify affected versions, mitigation, the fixed version, and any
+required migration without disclosing exploit details prematurely.
 
 ## Security-sensitive areas
 

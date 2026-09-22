@@ -23,10 +23,37 @@ class UnifiedCliTests(unittest.TestCase):
             action for action in parser._actions if isinstance(action, argparse._SubParsersAction)
         )
         self.assertTrue(
-            {"doctor", "init", "analyze", "plan", "build", "render", "qa", "postflight", "generate", "sync", "migrate", "conformance"}.issubset(
+            {"doctor", "init", "analyze", "plan", "build", "render", "qa", "postflight", "generate", "sync", "migrate", "contract", "compatibility", "conformance", "asset", "extension", "benchmark"}.issubset(
                 subparsers.choices
             )
         )
+
+    def test_v3_diagram_qa_cli_normalizes_route_for_geometry_profile(self) -> None:
+        project = ROOT / "examples" / "v3-dense-industrial-ai"
+        with tempfile.TemporaryDirectory() as directory:
+            report_path = Path(directory) / "diagram-qa.json"
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                code = main(
+                    [
+                        "qa",
+                        "diagram",
+                        str(project / "diagram_model.json"),
+                        "--source-model",
+                        str(project / "source_model.json"),
+                        "--drawio",
+                        str(project / "artifacts" / "diagram.drawio"),
+                        "--project-root",
+                        str(project),
+                        "--output",
+                        str(report_path),
+                    ]
+                )
+            report = json.loads(output.getvalue())
+            self.assertEqual(code, 0)
+            self.assertTrue(report["ok"])
+            self.assertEqual(report["geometry"]["profile"], "composition")
+            self.assertTrue(report_path.is_file())
 
     def test_init_uses_callers_working_directory(self) -> None:
         previous = Path.cwd()

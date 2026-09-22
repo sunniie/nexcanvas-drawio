@@ -1,7 +1,8 @@
 # Extension authoring
 
-NexCanvas extension manifest `1.0` lets contributors add behavior without
-editing compiler modules. Extensions are explicit, versioned, and opt-in. They
+NexCanvas extension manifest/API/protocol `1.0` is a stable public contract from
+product `v1.0.0`. It lets contributors add behavior without editing compiler
+modules. Extensions are explicit, versioned, and opt-in. They
 do not replace built-in components.
 
 ## Trust boundary

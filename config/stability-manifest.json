@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "1.0",
+  "contractSet": "1.0",
+  "stableFrom": "1.0.0",
+  "supportLine": "1.x",
+  "platforms": {
+    "python": {
+      "supported": ["3.10", "3.11", "3.12", "3.13"],
+      "reference": "3.12"
+    },
+    "operatingSystems": [
+      {"id": "ubuntu", "runner": "ubuntu-latest", "python": ["3.10", "3.11", "3.12", "3.13"]},
+      {"id": "windows", "runner": "windows-latest", "python": ["3.12"]},
+      {"id": "macos", "runner": "macos-latest", "python": ["3.12"]}
+    ],
+    "drawio": {
+      "requiredFor": ["render", "completed-visual-approval"],
+      "optionalFor": ["init", "contract-validation", "plan", "build", "compatibility"]
+    }
+  },
+  "cli": {
+    "command": "nexcanvas",
+    "outputEncoding": "UTF-8",
+    "machineOutput": "JSON",
+    "globalOptions": ["--version"],
+    "exitCodes": {
+      "0": "requested operation and gate passed",
+      "1": "validation or quality gate did not pass",
+      "2": "invalid input, unsupported runtime, or manual resolution required",
+      "3": "generation reached the required external visual-review gate"
+    },
+    "commands": [
+      {"path": "doctor", "positionals": [], "options": ["--output"]},
+      {"path": "init", "positionals": ["project_root"], "options": ["--audience", "--brief", "--delivery-target", "--direction", "--extension", "--family", "--force", "--height", "--language", "--name", "--output-root", "--profile", "--theme", "--view-intent", "--visual-archetype", "--width"]},
+      {"path": "analyze capture", "positionals": ["repo_root"], "options": ["--output", "--source-id", "--source-model"]},
+      {"path": "analyze verify", "positionals": ["source_model"], "options": ["--output", "--repo-root"]},
+      {"path": "analyze snapshot", "positionals": ["repo_root"], "options": ["--exclude", "--extension", "--include", "--max-files", "--output", "--previous", "--source-id", "-o"]},
+      {"path": "analyze diff", "positionals": ["before", "after"], "options": ["--output", "-o"]},
+      {"path": "plan", "positionals": ["model"], "options": ["--output"]},
+      {"path": "build", "positionals": ["model"], "options": ["--extension", "--output", "--project-root", "--proof", "-o"]},
+      {"path": "render", "positionals": ["source"], "options": ["--format", "--output", "--report", "--scale", "-o"]},
+      {"path": "qa diagram", "positionals": ["model"], "options": ["--drawio", "--extension", "--fail-on-warning", "--output", "--padding", "--project-root", "--repo-root", "--source-model"]},
+      {"path": "qa visual", "positionals": ["artifact"], "options": ["--approve", "--expected-height", "--expected-width", "--notes", "--output", "--reviewer"]},
+      {"path": "postflight", "positionals": ["project_root"], "options": ["--extension", "--output", "--repo-root"]},
+      {"path": "generate", "positionals": ["project_root"], "options": ["--allow-warnings", "--approve-visual", "--expected-height", "--expected-width", "--extension", "--notes", "--padding", "--render-format", "--repo-root", "--restart", "--reviewer", "--scale"]},
+      {"path": "sync", "positionals": ["project_root"], "options": ["--apply", "--confirm-removal", "--dry-run", "--exclude", "--extension", "--include", "--max-files", "--output", "--repo-root", "--source-id"]},
+      {"path": "migrate v2-to-v3", "positionals": ["model"], "options": ["--force", "--output", "--source-model", "-o"]},
+      {"path": "intent", "positionals": ["brief"], "options": []},
+      {"path": "contract", "positionals": ["kind", "path"], "options": ["--extension", "--project-root"]},
+      {"path": "compatibility report", "positionals": [], "options": ["--output"]},
+      {"path": "compatibility check", "positionals": ["project_root"], "options": ["--output"]},
+      {"path": "conformance doctor", "positionals": [], "options": ["--extension", "--output"]},
+      {"path": "conformance prepare", "positionals": ["case"], "options": ["--extension", "--host", "--output"]},
+      {"path": "conformance evaluate", "positionals": ["request"], "options": ["--execution", "--extension", "--mode", "--output", "--project"]},
+      {"path": "conformance report", "positionals": ["results"], "options": ["--extension", "--markdown", "--no-discovery", "--output"]},
+      {"path": "asset search", "positionals": ["query"], "options": ["--limit"]},
+      {"path": "asset sync", "positionals": ["project_root", "query"], "options": ["--accept-terms", "--extension", "--generic-fallback", "--offline", "--provider", "--source-archive", "--title", "--user-svg"]},
+      {"path": "extension validate", "positionals": ["paths"], "options": ["--output"]},
+      {"path": "benchmark validate", "positionals": [], "options": ["--output"]},
+      {"path": "benchmark run", "positionals": [], "options": ["--automated-only", "--output"]}
+    ]
+  },
+  "contracts": [
+    {"id": "diagram-model-v3", "version": "3.0", "status": "stable", "schema": "schemas/diagram-model-v3.schema.json"},
+    {"id": "diagram-model-v2", "version": "2.0", "status": "compatibility", "schema": "schemas/diagram-model.schema.json", "notes": "Readable, buildable, and migratable throughout the 1.x line."},
+    {"id": "source-model", "version": "2.0", "status": "stable", "schema": "schemas/source-model.schema.json"},
+    {"id": "diagram-lock", "version": "2.0", "status": "stable", "schema": "schemas/diagram-lock.schema.json"},
+    {"id": "asset-manifest", "version": "2.0", "status": "stable", "schema": "schemas/asset-manifest.schema.json"},
+    {"id": "diagram-qa", "version": "2.0", "status": "stable", "schema": "schemas/diagram-qa.schema.json"},
+    {"id": "visual-qa", "version": "2.0", "status": "stable", "schema": "schemas/visual-qa.schema.json"},
+    {"id": "postflight", "version": "2.0", "status": "stable", "schema": "schemas/postflight.schema.json"},
+    {"id": "project-state", "version": "1.0", "status": "stable", "schema": "schemas/project-state.schema.json"},
+    {"id": "repository-snapshot", "version": "1.0", "status": "stable", "schema": "schemas/repository-snapshot.schema.json"},
+    {"id": "semantic-sync-plan", "version": "1.0", "status": "stable", "schema": "schemas/semantic-sync-plan.schema.json"},
+    {"id": "conformance-suite", "version": "1.0", "status": "stable", "schema": "schemas/conformance-suite.schema.json"},
+    {"id": "host-adapter", "version": "1.0", "status": "stable", "schema": "schemas/host-adapter.schema.json"},
+    {"id": "conformance-execution", "version": "1.0", "status": "stable", "schema": "schemas/conformance-execution.schema.json"},
+    {"id": "conformance-result", "version": "1.0", "status": "stable", "schema": "schemas/conformance-result.schema.json"},
+    {"id": "extension-manifest", "version": "1.0", "status": "stable", "schema": "schemas/extension-manifest.schema.json", "notes": "Includes extension API and hook protocol 1.0 compatibility declarations."},
+    {"id": "visual-benchmark-suite", "version": "1.0", "status": "stable", "schema": "schemas/visual-benchmark-suite.schema.json"},
+    {"id": "visual-benchmark-result", "version": "1.0", "status": "stable", "schema": "schemas/visual-benchmark-result.schema.json"},
+    {"id": "stability-manifest", "version": "1.0", "status": "stable", "schema": "schemas/stability-manifest.schema.json"}
+  ],
+  "policies": {
+    "compatibility": "docs/compatibility.md",
+    "publicContracts": "docs/public-contracts.md",
+    "versioning": "docs/versioning.md",
+    "support": "SUPPORT.md",
+    "security": "SECURITY.md",
+    "migrationAndRollback": "docs/migration-and-rollback.md"
+  }
+}
